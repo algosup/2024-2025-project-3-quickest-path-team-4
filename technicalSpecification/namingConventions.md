@@ -25,7 +25,7 @@
 
 ## Document Overview
 
-This document serves to guide individuals wishing to contribute to the project. It outlines the naming conventions for branches, folders, files, functions, variables, and other elements to ensure consistency, readability, and maintainability across the project.
+This document guides individuals who wish to contribute to the project. It outlines the naming conventions for branches, folders, files, functions, variables, and other elements to ensure consistency, readability, and maintainability across the project.
 
 ---
 
@@ -152,7 +152,7 @@ Commit messages should follow a consistent format to make it easier to understan
   - Example: `DELETION: Remove unused class NodeManager`
   - Optional Details: `The class was no longer relevant after refactoring.`
 
-- **DOC**: Use this for modification, creation or deletion made to document(s).
+- **DOC**: Use this for modification, creation, or deletion made to document(s).
   - Example: `DOC: Creation of technicalSpecifications.md`
   - Optional Details: `Added table of content`
 
@@ -163,7 +163,7 @@ Commit messages should follow a consistent format to make it easier to understan
 
 2. **Short Description**:
 
-- Must be clear, concise, and written in imperative mood (e.g., "Fix bug," not "Fixed bug").
+- Must be clear, concise, and written in an imperative mood (e.g., "Fix bug," not "Fixed bug").
 - Limit to 50 characters or fewer if possible.
 
 3. **Optional Details**:
@@ -179,7 +179,7 @@ Commit messages should follow a consistent format to make it easier to understan
 
 - **UPDATE**: Refactor code in GameController class Improved readability and reduced duplicate code.
 
-- **DELETION**: Remove obsolete config files Replaced with new configuration system in the latest update.
+- **DELETION**: Remove obsolete config files Replaced with a new configuration system in the latest update.
 
 ---
 

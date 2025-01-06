@@ -26,7 +26,7 @@ Thank you for your interest in contributing to the serious game project! This pr
 
 ### Code Style
 
-- Follow the coding style used in the existing codebase, in the technical specifications and in the (naming conventions)[https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/technicalSpecification/namingConventions.md].
+- Follow the coding style used in the existing codebase, in the technical specifications and in the [naming conventions](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/technicalSpecification/namingConventions.md).
 
 ### Commit Messages
 

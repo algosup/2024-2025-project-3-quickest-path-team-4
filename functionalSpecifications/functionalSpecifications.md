@@ -16,7 +16,7 @@ Functional Specifications
  - [3. Audience study](#3-audience-study)
    - [3.1 User Personas](#31-user-personas)
    - [3.2 Additional requirements](#32-additional-requirements)
- - [4. Algorithm Impementation](#4-algorithm-implementation)
+ - [4. Algorithm Implementation](#4-algorithm-implementation)
    - [4.1 Algorithm Selection](#41-algorithm-selection)
    - [4.2 Data Structures Choices](#42-data-structure-choices)
    - [4.3 Time and Space Complexity](#43-time-and-space-complexity)
@@ -81,7 +81,7 @@ The user personas who could need our product and their use case
 
 What kind of new requirements our product would need depending on our audience study .
 
-## 4. Algorithm Impementation
+## 4. Algorithm Implementation
 
 ### 4.1. Algorithm Selection
 
@@ -104,11 +104,46 @@ heuristics, and we define a potential list.
 
 ### 5.1. Minimum Viable Product
 
-List of different phases of our product, depending on the updates regarding how fast is our algorithm.
+The following is a list of the potential different phases of our product in development. Each phase is updated depending on how fast the algorithm solve our problem and how much data it can handle.
+
+|   **Phase**  |   **Expected Speed** | **Expected Amount of Data** | **Version**  |                     
+|   :-------  |   :--------- | :--------- |  :-------------  |
+|   **Phase 1**  |   Less than 10 seconds | Around 650 KB |  0.1 |
+|   **Phase 2**  |   Less than 5 seconds | Around 300 KB |  0.2 |
+|   **Phase 3**  |   Less than 5 seconds | Around 650 KB |  0.4 (Alpha) |
+|   **Phase 4**  |   Less than 2 seconds | Around 300 KB |  0.6 |
+|   **Phase 5**  |   Less than 2 seconds | Around 650 KB |  0.8 (Beta) |
+|   **Phase 6**  |   Less than 1 second | Around 300 KB |  0.9|
+|   **Phase 7**  |   Less than 1 second | Around 650 KB |  1.0 (Final) |
 
 ### 5.2. Non-Functional Requirements
 
-Everything in the titles
+Here are the different criteria for the non-functional requirements:
+
+#### Performance
+
+AAA
+
+#### Responsiveness
+
+AAA
+
+#### Scalability
+
+AAA
+
+#### Integrity
+
+AAA
+
+#### Portability
+
+AAA
+
+#### Maintainability 
+
+AAAA
+
 
 ### 5.3. Acceptance Criterias
 
@@ -144,5 +179,17 @@ Link to a working prototype of our product.
 
 The strategy listing what kind of tests must be performed for checking our algorithm.
 
-
 ## 8. Glossary
+
+| Terms | Definitions |
+| ----- | ----------- |
+| <span id="Algorithm">Algorithm</span> | The . |
+| <span id="Big O Notation">Big O Notation</span> | The . |
+| <span id="C++">C++</span> | The . |
+| <span id="Data Structure">Data Structure</span> | The . |
+| <span id="Heuristics">Heuristics</span> | The . |
+| <span id="HTTP">HTTP</span> | The . |
+| <span id="Landmark">Landmark</span> | The . |
+| <span id="Rest API">Rest API</span> | The . |
+| <span id="Space Complexity">Space Complexity</span> | The . 
+| <span id="Time Complexity">Time Complexity</span> | The . |

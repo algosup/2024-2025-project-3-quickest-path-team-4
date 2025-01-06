@@ -32,10 +32,7 @@ Functional Specifications
    - [6.3 User Interface](#63-user-interface)
    - [6.4 Implementation](#64-implementation)
    - [6.5 Prototype](#65-prototype)
- - [7. Data Integrity](#7-data-integrity)
-   - [7.1 Testing Strategy](#71-testing-strategy)
-   - [7.2 Graph Validation](#72-graph-validation)
-   - [7.3 Connectivity Check](#73-connectivity-check)
+ - [7. Testing Strategy](#7-testing-strategy)
  - [8. Glossary](#8-glossary)
 </details>
 
@@ -51,110 +48,101 @@ Functional Specifications
 
 ### 1.1. Document Purpose
 
-The
+Why we make this document
 
-### 1.1. Document Purpose
+### 1.2. Context
 
-The
+The project context, history behind it, and why we make it
 
-### 1.1. Document Purpose
+### 1.3. Data Source
 
-The
+Details about the provided Data source to test
 
 ## 2 Product Goal
 
-### 1.1. Document Purpose
+### 2.1. Project Scope
 
-The
+The scope of the project, with the most important features
 
-### 1.1. Document Purpose
+### 2.2. Constraints
 
-The
+The constraints and limits of ressources and technologies to use
 
-### 1.1. Document Purpose
+### 2.3. Risks and Assumptions
 
-The
+The list of the potential risks we could encounter and the potential decisions to anticipate.
 
 ## 3. Audience study
 
-### 1.1. Document Purpose
+### 3.1. User Personas
+The user personas who could need our product and their use case
 
-The
+### 3.2. Additional requirements
 
-### 1.1. Document Purpose
-
-The
+What kind of new requirements our product would need depending on our audience study .
 
 ## 4. Algorithm Impementation
 
-### 1.1. Document Purpose
+### 4.1. Algorithm Selection
 
-The
+What algorithm we decided to use and why
 
-### 1.1. Document Purpose
+### 4.2. Data Structures Choices
 
-The
+The data structures we plan to use for our algorithm and why
 
-### 1.1. Document Purpose
+### 4.3. Time and Space Complexity
 
-The
+Big O notation for the main algorithms.
 
-### 1.1. Document Purpose
+### 4.4. Heuristics
 
-The
+To prioritize speed over precision, our solution may use 
+heuristics, and we define a potential list.
 
 ## 5. Product Details
 
-### 5.1. Document Purpose
+### 5.1. Minimum Viable Product
 
-The
+List of different phases of our product, depending on the updates regarding how fast is our algorithm.
 
-### 5.2. Document Purpose
+### 5.2. Non-Functional Requirements
 
-The
+Everything in the titles
 
-### 5.3. Document Purpose
+### 5.3. Acceptance Criterias
 
-The
+In order to determine this IT project as successful, the product must meet all the following criterias:
 
-### 5.4. Document Purpose
+### 5.4. Out of Scope
 
-The
+What we won't do.
 
 ## 6. Rest API
 
-### 6.1. Document Purpose
+### 6.1. Type of Web Application
 
-The
+What kind of web application we will us.
 
-### 6.2. Document Purpose
+### 6.2. API Features
 
-The
+What kind of HTTP server, of inputs, outputs, and of response formats.
 
-### 6.3. Document Purpose
+### 6.3. User Interface
 
-The
+What our app should look like and how the user would interact with it.
 
-### 6.4. Document Purpose
+### 6.4. Implementation
 
-The
+What we plan to implement our algorithm within our API.
 
-### 6.5. Document Purpose
+### 6.5. Prototype
 
-The
+Link to a working prototype of our product.
 
-## 7. Data Integrity
+## 7. Testing Strategy
 
-### 7.1. Document Purpose
+The strategy listing what kind of tests must be performed for checking our algorithm.
 
-The
-
-### 7.2. Document Purpose
-
-The
-
-### 7.3. Document Purpose
-
-The
 
 ## 8. Glossary

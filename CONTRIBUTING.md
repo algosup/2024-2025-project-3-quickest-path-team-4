@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-Thank you for your interest in contributing to the serious game project! This project is a school assignment with a specific deadline, so we appreciate your understanding that we won't be maintaining this project beyond the current academic period, which ends on the 14th February 2025. However, your contributions are valuable for the success of the project during this period.
+Thank you for your interest in contributing to the quickest path project! This project is a school assignment with a specific deadline, so we appreciate your understanding that we won't be maintaining this project beyond the current academic period, which ends on the 14th February 2025. However, your contributions are valuable for the success of the project during this period.
 
 ## Getting Started
 

@@ -22,8 +22,8 @@ Functional Specifications
    - [4.3 Time and Space Complexity](#43-time-and-space-complexity)
    - [4.4 Heuristics](#44-heuristics)
  - [5. Product Details](#5-product-details)
-   - [5.1 Minimum Viable Product](#51-minimum-viable-product)
-   - [5.2 Non-Functional Requirements](#52-non-functional-requirements)
+   - [5.1 Non-Functional Requirements](#51-non-functional-requirements)
+   - [5.2 Minimum Viable Product](#52-minimum-viable-product)
    - [5.3 Acceptance Criterias](#53-acceptance-criterias)
    - [5.4 Out of Scope](#54-out-of-scope)
  - [6. Rest API](#6-rest-api)
@@ -102,48 +102,43 @@ heuristics, and we define a potential list.
 
 ## 5. Product Details
 
-### 5.1. Minimum Viable Product
-
-The following is a list of the potential different phases of our product in development. Each phase is updated depending on how fast the algorithm solve our problem and how much data it can handle.
-
-|   **Phase**  |   **Expected Speed** | **Expected Amount of Data** | **Version**  |                     
-|   :-------  |   :--------- | :--------- |  :-------------  |
-|   **Phase 1**  |   Less than 10 seconds | Around 650 KB |  0.1 |
-|   **Phase 2**  |   Less than 5 seconds | Around 300 KB |  0.2 |
-|   **Phase 3**  |   Less than 5 seconds | Around 650 KB |  0.4 (Alpha) |
-|   **Phase 4**  |   Less than 2 seconds | Around 300 KB |  0.6 |
-|   **Phase 5**  |   Less than 2 seconds | Around 650 KB |  0.8 (Beta) |
-|   **Phase 6**  |   Less than 1 second | Around 300 KB |  0.9|
-|   **Phase 7**  |   Less than 1 second | Around 650 KB |  1.0 (Final) |
-
-### 5.2. Non-Functional Requirements
+### 5.1. Non-Functional Requirements
 
 Here are the different criteria for the non-functional requirements:
 
-#### Performance
 
-AAA
-
-#### Responsiveness
-
-AAA
+#### Functionality
+The algorithm must be simple, space-efficient, and solve the problem correctly.
 
 #### Scalability
+The algorithm must handle large and complex inputs, including .csv files with up to 24 million nodes, while maintaining performance.
 
-AAA
+#### Performance
+The algorithm must use minimal memory and respond to all queries within 1 second on a typical laptop.
+
+#### Robustness
+The algorithm must handle invalid inputs, edge cases, and errors reliably. Heuristic solutions must not exceed the shortest path duration by more than 10%.
 
 #### Integrity
-
-AAA
-
-#### Portability
-
-AAA
+The algorithm must provide a clean API supporting real-world use and respond with XML and JSON payloads. A simpler, less efficient implementation is acceptable for initial support.
 
 #### Maintainability 
+The algorithm must allow updates and modifications based on user feedback, supporting long-term development.
 
-AAAA
 
+
+### 5.2. Minimum Viable Product
+
+The following is a list of the potential different phases of our product in development. Each phase is updated based on the algorithm's progress depending on the non-functional specification.
+
+|   **Phase**  |   **Targeted Non-Functional Requirement** | **Algorithm Improvements** | **Version**  |                     
+|   :-------  |   :--------- | :--------- |  :-------------  |
+|   **Phase 1**  |   Core Functionality | Very simple algorithm providing correct outputs for small and straight-forward outputs.|  0.1 |
+|   **Phase 2**  |   Scalability | Enhanced algorithm which can handle more complex structures of larger and various sizes.  |  0.2 |
+|   **Phase 3**  |   Performance | Improved runtime and reduced memory usage using advanced optimization techniques. |  0.4 (Alpha) |
+|   **Phase 4**  |   Robustness | Better versability and reliability, ensuring compatibility with different types of input formats. |  0.6 |
+|   **Phase 5**  |   Integrity | Packaged algorithm and integration in larger systems with a clean interface for users. |  0.8 (Beta) |
+|   **Phase 6**  |   Maintainability | Refined algorithm depending on user feedback and additional insights, with optional enhancements or features. | 1.0 (Final)|
 
 ### 5.3. Acceptance Criterias
 

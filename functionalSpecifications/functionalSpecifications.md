@@ -55,20 +55,16 @@ Indeed, it must describe how the product will work while declaring its intended 
 In fact, the document works as a contract between the development team and the stakeholders, where the requirements and constraints that must be satisfied will be defined. 
 
 ### 1.2. Context
-The project imagined by ALGOSUP is to develop a a high performance software solution that calcuates s the quickest path between two landmarks in the United States. 
+The project imagined by ALGOSUP is to develop a high performance software solution with an algorithm that calcuates the quickest path between two landmarks in the United States. 
 
-The ALGOSUP staff wanted to grade our Computer Science skills, so we have to work as a team to develop the most versatile and performant algorithm possible to provide quickly a solution to our problem.
+ALGOSUP wanted to encourage us to work as a team to explore and implement efficient algorithms tailored to handle large scale datasets, while also considering real-world constraints like speed and accuracy.
 
 ### 1.3. Data Source
-
-Details about the provided Data source to test
-
 To assist us in the testing process of our project, Franck provided us with a file (USA-roads.csv) that contains approximately 24 millions of nodes in the following format: *Landmark_A_ID,Landmark_B_ID,Time*.
 
 In this file, each line represents a connection between two unspecified landmarks in the United States with a travel time expressed as an integer in an unspecified but proportional unit of time.
 
-Additionally, the different connections are bidirectional, meaning if a connection exists from A to B, the same 
-applies for B to A (even if not explicitly listed).
+Additionally, the different connections are bidirectional, meaning if a connection exists from A to B, the same applies for B to A.
 
 ## 2 Product Goal
 
@@ -76,13 +72,32 @@ applies for B to A (even if not explicitly listed).
 
 The scope of the project, with the most important features
 
-### 2.2. Constraints
+Our product will be developed with the following features:
 
-The constraints and limits of ressources and technologies to use
+- An performant and efficient **algorithm** that receive 2 inputs (**Source** and **Destination**) and provide 2 outputs (**travel time** and **an ordered list of the landmarks in the path**).
+- A **REST API** running on an HTTP server (localhost) with a simple interface that will contain our algorithm, and be able to handle the XML and JSON formats.
+- A **Data Validation tool**, which will be useful to verify the integrity of the provided .csv file. Its source code with instructions on how to use it has to be in our Github repository.
+- AAA
+- AAA
+
+### 2.2. Constraints
+At first, the product must be implemented in C++ to achieve optimal performance, allowing us the potential to loop fastly over large volumes of data.
+
+Then, the API must be able to handle queries within 1 second on a typical laptop, encouraging us to provide a lot of optimization in our algorithm and to perform many essential testings.
+
+The staff also advised us to prioritize speed for precision and use heuristics for getting approximative results. However, we are only allowed to return an approximative path with a 10% error margin compared the actual shortest path value.
+
+Before using the dataset, we need to ensure the data integrity by performing the folliwng checks:
+  - **Graph Validation**: Check that the file forms a Directed Acyclic Graph (DAG) and doesn't contain any loop.
+  - **Connectivity Check**: Make sure that the graph is fully connected, allowing the navigation between any two landmarks.
 
 ### 2.3. Risks and Assumptions
-
-The list of the potential risks we could encounter and the potential decisions to anticipate.
+| Risks | Assumptions | 
+| ------| ----------- |
+| Frequent lagging issues due to the very huge size of the dataset. | Allowing the code to catch an error when the algorithm take too much time and stop everything. | 
+| Apparition of vulnerabilities, such as attacks or insecure data footage, when creating a REST API. | Establishment of a plan to anticipate and treat vulnerabilities, and implement radical security measures.| 
+| Constant update triggering an indirect reduce of the code quality and the algorithm's speed and efficiency, stopping any real progress.  | Establishment of proper development plan to indicate the change, monitor the algorithm's testing and its progress through time.  | 
+| Lack of advanced knowledge regarding REST APIs in the team. | Further research about REST APIs and their relationships with algorithms would be benefical. | 
 
 ## 3. Audience study
 
@@ -190,10 +205,17 @@ The strategy listing what kind of tests must be performed for checking our algor
 | <span id="Algorithm">Algorithm</span> | The . |
 | <span id="Big O Notation">Big O Notation</span> | The . |
 | <span id="C++">C++</span> | The . |
+| <span id="DAG">DAG</span> | The . |
 | <span id="Data Structure">Data Structure</span> | The . |
+| <span id="Github">Github</span> | The . |
 | <span id="Heuristics">Heuristics</span> | The . |
 | <span id="HTTP">HTTP</span> | The . |
+| <span id="Input">input</span> | The . |
+| <span id="JSON">JSON</span> | The . |
 | <span id="Landmark">Landmark</span> | The . |
+| <span id="Output">Output</span> | The . |
+| <span id="Query">Query</span> | The . |
 | <span id="Rest API">Rest API</span> | The . |
 | <span id="Space Complexity">Space Complexity</span> | The . 
 | <span id="Time Complexity">Time Complexity</span> | The . |
+| <span id="XML">XML</span> | The . |

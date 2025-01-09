@@ -55,12 +55,20 @@ Indeed, it must describe how the product will work while declaring its intended 
 In fact, the document works as a contract between the development team and the stakeholders, where the requirements and constraints that must be satisfied will be defined. 
 
 ### 1.2. Context
+The project imagined by ALGOSUP is to develop a a high performance software solution that calcuates s the quickest path between two landmarks in the United States. 
 
-The project context, history behind it, and why we make it
+The ALGOSUP staff wanted to grade our Computer Science skills, so we have to work as a team to develop the most versatile and performant algorithm possible to provide quickly a solution to our problem.
 
 ### 1.3. Data Source
 
 Details about the provided Data source to test
+
+To assist us in the testing process of our project, Franck provided us with a file (USA-roads.csv) that contains approximately 24 millions of nodes in the following format: *Landmark_A_ID,Landmark_B_ID,Time*.
+
+In this file, each line represents a connection between two unspecified landmarks in the United States with a travel time expressed as an integer in an unspecified but proportional unit of time.
+
+Additionally, the different connections are bidirectional, meaning if a connection exists from A to B, the same 
+applies for B to A (even if not explicitly listed).
 
 ## 2 Product Goal
 

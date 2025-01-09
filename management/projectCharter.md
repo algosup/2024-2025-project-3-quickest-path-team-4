@@ -1,4 +1,4 @@
-# 2024 - 2025 Project-3-quickest-path Team-4 - Project Charter
+# 2024 - 2025 Project-3 quickest-path Team-4 - Project Charter
 
 ## Project Definition
 

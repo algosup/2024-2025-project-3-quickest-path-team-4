@@ -1,4 +1,4 @@
-Functional Specifications
+# Functional Specifications
 
 ## Table of Contents
 
@@ -41,14 +41,18 @@ Functional Specifications
 | Author        | Paul NOWAK (Program Manager) |
 |---------------|------------|
 | Created       | 01/06/2025 |
-| Last modified | 01/06/2025 |
+| Last modified | 01/09/2025 |
 | Document deadline | 01/15/2025 |
 
 ## 1. Overview
 
 ### 1.1. Document Purpose
 
-Why we make this document
+The purpose of the document is to provide clear and detailed instructions about the product and its goal for developers, designers and stakeholders.
+
+Indeed, it must describe how the product will work while declaring its intended behavior and its implemented features.
+
+In fact, the document works as a contract between the development team and the stakeholders, where the requirements and constraints that must be satisfied will be defined. 
 
 ### 1.2. Context
 
@@ -125,20 +129,17 @@ The algorithm must provide a clean API supporting real-world use and respond wit
 #### Maintainability 
 The algorithm must allow updates and modifications based on user feedback, supporting long-term development.
 
-
-
 ### 5.2. Minimum Viable Product
 
 The following is a list of the potential different phases of our product in development. Each phase is updated based on the algorithm's progress depending on the non-functional specification.
 
 |   **Phase**  |   **Targeted Non-Functional Requirement** | **Algorithm Improvements** | **Version**  |                     
 |   :-------  |   :--------- | :--------- |  :-------------  |
-|   **Phase 1**  |   Core Functionality | Very simple algorithm providing correct outputs for small and straight-forward outputs.|  0.1 |
-|   **Phase 2**  |   Scalability | Enhanced algorithm which can handle more complex structures of larger and various sizes.  |  0.2 |
-|   **Phase 3**  |   Performance | Improved runtime and reduced memory usage using advanced optimization techniques. |  0.4 (Alpha) |
-|   **Phase 4**  |   Robustness | Better versability and reliability, ensuring compatibility with different types of input formats. |  0.6 |
-|   **Phase 5**  |   Integrity | Packaged algorithm and integration in larger systems with a clean interface for users. |  0.8 (Beta) |
-|   **Phase 6**  |   Maintainability | Refined algorithm depending on user feedback and additional insights, with optional enhancements or features. | 1.0 (Final)|
+|   **Phase 1**  |   Core Functionality & Scalability | Algorithm providing correct outputs, using complex structures of large and various sizes.|  0.2 |
+|   **Phase 2**  |   Performance  | Improved runtime and reduced memory usage using advanced optimization techniques. |  0.4 (Alpha) |
+|   **Phase 3**  |   Integrity | Implementation of the algorithm in a REST API with a clean interface for users. |  0.6  |
+|   **Phase 4**  |   Robustness | Better versability and reliability, capable of providing outputs in JSON or XML format. |  0.8 (Beta) |
+|   **Phase 5**  |   Maintainability | Refined algorithm depending on user feedback and additional insights, with optional enhancements or features. | 1.0 (Final)|
 
 ### 5.3. Acceptance Criterias
 

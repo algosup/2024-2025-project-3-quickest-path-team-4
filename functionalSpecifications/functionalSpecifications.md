@@ -26,7 +26,7 @@
    - [5.2 API Features](#52-api-features)
    - [5.3 User Interface](#53-user-interface)
    - [5.4 Prototype](#54-prototype)
- - [6. Testing Strategy](#6-testing-strategy)
+ - [6. Security Measures](#6-security-measures)
  - [7. Glossary](#7-glossary)
 </details>
 
@@ -173,7 +173,7 @@ For creating the web application, we will create a HTML page that will contain t
 However, the page will also allow the user to send a HTTP request to have access to the REST API server, and retrieve the required data for our algorithm.
 
 ### 5.2. API Features
-Our group has decided to use the REST API called Boost.Beast, a C++ library that simplifies the creation of HTTP servers. Furthermore, the library is extremely fast and easy to install.
+Our group has decided to use the REST API called **Boost.Beast**, a C++ library that simplifies the creation of HTTP servers. Furthermore, the library is extremely fast and easy to install.
 
 ### 5.3. User Interface
 The HTML page should display a simple screen allowing the user to type the 2 required inputs (**Source** and **Destination**), with scrollable list where the user choose both places while making sure they aren't the same.
@@ -186,15 +186,17 @@ Finally, the screen should have enough place to display the 2 outputs: the **Rou
 ### 5.4. Prototype
 Here is a link for a working prototype for our REST API:
 
--[LINK TO REST API]()
+-(LINK TO REST API)[]
 
+## 6. Security Measures
 
-## 6. Testing Strategy
+To avoid any individual to use our REST API in any malevolent way, such has leaking personal data or virus implementation, our group have decided to employ several security measures.
 
-The strategy listing what kind of tests must be performed for checking our algorithm.
+- Most importantly, we create our web page in HTTPS format to communicate with our REST API.
+- We make sure to keep our libraries up to date, such has Boost.Beast. 
+- We implement a error handling program to anticipate any user input error and avoid exposing any sensitive information through error messages.
 
-To ensure the performance quality of our algorithm, several important test must be regularly performed:
-- 
+Thankfully, the Boost.Beast library is already provided with data encryption service, a WAF (Web Application Firewall), and other secure coding libraries to assist the developper.
 
 ## 7. Glossary
 
@@ -209,9 +211,11 @@ To ensure the performance quality of our algorithm, several important test must 
 | <span id="Heuristics">Heuristics</span> | The . |
 | <span id="HTML">HTML</span> | The . |
 | <span id="HTTP">HTTP</span> | The . |
+| <span id="HTTPS">HTTPS</span> | The . |
 | <span id="Input">input</span> | The . |
 | <span id="JSON">JSON</span> | The . |
 | <span id="Landmark">Landmark</span> | The . |
+| <span id="Low-Level">Low-Level</span> | The . |
 | <span id="Output">Output</span> | The . |
 | <span id="Query">Query</span> | The . |
 | <span id="Rest API">Rest API</span> | The . |

@@ -36,7 +36,7 @@
 |---------------|------------|
 | Created       | 01/06/2025 |
 | Last modified | 01/15/2025 |
-| Document deadline | 01/15/2025 |
+| Document deadline | 02/07/2025 |
 
 ## 1. Overview
 
@@ -202,11 +202,11 @@ Thankfully, the Boost.Beast library is already provided with data encryption ser
 
 | Terms | Definitions |
 | ----- | ----------- |
-| <span id="Algorithm">Algorithm</span> | The . |
-| <span id="Big O Notation">Big O Notation</span> | The . |
-| <span id="C++">C++</span> | The . |
-| <span id="DAG">DAG</span> | The . |
-| <span id="Data Structure">Data Structure</span> | The . |
+| <span id="Algorithm">Algorithm</span> | Finite set of rules or instructions that specify a sequence of computational steps to solve a specific problem efficiently. . |
+| <span id="Big O Notation">Big O Notation</span> | Describes the time complexity or space complexity of an algorithm, providing a theoretical measure of the resources (e.g., execution time or storage space) required as the input size grows |
+| <span id="C++">C++</span> | Compiled language that is popular for creating computer programs and widely used in game development. Developed as an extension of C, it shares almost the same syntax. |
+| <span id="DAG">DAG</span> | Meaning Directed Acyclic Graph, type of graph consisting of vertices and directed edges (arcs), where each edge points from one vertex to another, and no cycles exist.. |
+| <span id="Data Structure">Data Structure</span> | Way to organize, store, and manage data efficiently, enabling easy access and manipulation based on the type of data and its intended use. It consists of data values, the relationships among them, and the operations that can be performed on the data. |
 | <span id="Github">Github</span> | The . |
 | <span id="Heuristics">Heuristics</span> | The . |
 | <span id="HTML">HTML</span> | The . |
@@ -219,6 +219,4 @@ Thankfully, the Boost.Beast library is already provided with data encryption ser
 | <span id="Output">Output</span> | The . |
 | <span id="Query">Query</span> | The . |
 | <span id="Rest API">Rest API</span> | The . |
-| <span id="Space Complexity">Space Complexity</span> | The . 
-| <span id="Time Complexity">Time Complexity</span> | The . |
 | <span id="XML">XML</span> | The . |

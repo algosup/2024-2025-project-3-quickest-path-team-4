@@ -13,9 +13,7 @@
    - [2.1 Project Scope](#21-project-scope)
    - [2.2 Constraints](#22-constraints)
    - [2.3 Risks and Assumptions](#23-risks-and-assumptions)
- - [3. Algorithm Implementation](#3-algorithm-implementation)
-   - [3.1 Algorithm Selection](#31-algorithm-selection)
-   - [3.2 Algorithm Expectations](#32-algorithm-expectations)
+ - [3. Algorithm Requirements](#3-algorithm-requirements)
  - [4. Product Details](#4-product-details)
    - [4.1 Non-Functional Requirements](#41-non-functional-requirements)
    - [4.2 Minimum Viable Product](#42-minimum-viable-product)
@@ -70,7 +68,7 @@ Our product will be developed with the following features:
 
 - An performant and efficient **algorithm** that receive 2 inputs (**Source** and **Destination**) and provide 2 outputs (**travel time** and **an ordered list of the landmarks in the path**).
 - A **HTML page** that will contain a simple interface where the users will provide the inputs
-- A **REST API** running on an HTTP server (localhost) called by the HTML page that will contain our algorithm, and be able to handle the XML and JSON formats.
+- A **REST API** running on an HTTP server (localhost) called by the HTML page that will contain our algorithm.
 - A **Data Validation tool**, which will be useful to verify the integrity of the provided .csv file. Its source code with instructions on how to use it has to be in our Github repository.
 
 ### 2.2. Constraints
@@ -94,23 +92,14 @@ One last thing: we shouldn't allow the user to provide the same place both as th
 | Constant update triggering an indirect reduce of the code quality and the algorithm's speed and efficiency, potentially stopping any real progress.  | Establishment of proper development plan to indicate the change, monitor the algorithm's testing and its progress through time.  | 
 | Lack of advanced knowledge regarding REST APIs in the team. | Further research about REST APIs and their relationships with algorithms would be benefical. | 
 
-## 3. Algorithm Implementation
+## 3. Algorithm Requirements
+The algorithm consist in finding the shortest path between a landmark A and a landmark B, making calculations depending on their proximity and the other intermediate nodes that can be found.
 
-### 3.1. Algorithm Selection
-
-Our group has decided to choose the      algorithm to implement it.
-
-The algorithm consist in...
-
-
-At first, it wil sort the data provided in the .csv file, before getting the source and destination as the algorithm's inputs, and enter them in the algorithm that will perform all the required calculations before returning the result.
-
-### 3.2. Algorithm Expectations
+At first, it will sort the data provided in the .csv file, before getting the source and destination as the algorithm's inputs, and enter them in the algorithm that will perform all the required calculations before returning the result.
 
 After the user entered the inputs and selected "confirm", the algorithm should take a quick time to calculate the path before providing the shortest route to take, with all the intermediate points we need to pass by, alongside the travel time as its 2 outputs.
 
-Finally, the result should be quickly displayed on screen.
-
+Finally, the results should be quickly found and returned.
 
 ## 4. Product Details
 
@@ -173,7 +162,12 @@ For creating the web application, we will create a HTML page that will contain t
 However, the page will also allow the user to send a HTTP request to have access to the REST API server, and retrieve the required data for our algorithm.
 
 ### 5.2. API Features
-Our group has decided to use the REST API called **Boost.Beast**, a C++ library that simplifies the creation of HTTP servers. Furthermore, the library is extremely fast and easy to install.
+Among all the main specific HTTP requests possible, the API will allow us to use a **GET** endpoint to request with the following features:
+- **Input**: IDs of the source and destination landmarks. They must be selected by the user before running the algorithm.
+- **Output**: Travel time and the ordered list of landmarks in the path. They should be provided quickly and clearly to the client once the calculations were performed.
+- **Response Formats**: Support both XML and JSON for response payloads.
+
+Additionally, all these features must be compatible with C++, efficient, fast and robust.
 
 ### 5.3. User Interface
 The HTML page should display a simple screen allowing the user to type the 2 required inputs (**Source** and **Destination**), with scrollable list where the user choose both places while making sure they aren't the same.
@@ -202,21 +196,22 @@ Thankfully, the Boost.Beast library is already provided with data encryption ser
 
 | Terms | Definitions |
 | ----- | ----------- |
-| <span id="Algorithm">Algorithm</span> | Finite set of rules or instructions that specify a sequence of computational steps to solve a specific problem efficiently. . |
+| <span id="Algorithm">Algorithm</span> | Finite set of rules or instructions that specify a sequence of computational steps to solve a specific problem efficiently. |
+| <span id="API">API</span> | Meaning Application Programming Interface, set of functions and procedures allowing the creation of applications that access the features or data of an operating system, application, or other service. |
 | <span id="Big O Notation">Big O Notation</span> | Describes the time complexity or space complexity of an algorithm, providing a theoretical measure of the resources (e.g., execution time or storage space) required as the input size grows |
 | <span id="C++">C++</span> | Compiled language that is popular for creating computer programs and widely used in game development. Developed as an extension of C, it shares almost the same syntax. |
 | <span id="DAG">DAG</span> | Meaning Directed Acyclic Graph, type of graph consisting of vertices and directed edges (arcs), where each edge points from one vertex to another, and no cycles exist.. |
 | <span id="Data Structure">Data Structure</span> | Way to organize, store, and manage data efficiently, enabling easy access and manipulation based on the type of data and its intended use. It consists of data values, the relationships among them, and the operations that can be performed on the data. |
-| <span id="Github">Github</span> | The . |
-| <span id="Heuristics">Heuristics</span> | The . |
-| <span id="HTML">HTML</span> | The . |
-| <span id="HTTP">HTTP</span> | The . |
-| <span id="HTTPS">HTTPS</span> | The . |
-| <span id="Input">input</span> | The . |
-| <span id="JSON">JSON</span> | The . |
-| <span id="Landmark">Landmark</span> | The . |
-| <span id="Low-Level">Low-Level</span> | The . |
-| <span id="Output">Output</span> | The . |
-| <span id="Query">Query</span> | The . |
-| <span id="Rest API">Rest API</span> | The . |
+| <span id="Github">Github</span> | Cloud-based platform that allow its users to create coding projects through repository and work together to store and share code. Indeed, it give us the feature to track and manage our changes over time. |
+| <span id="Heuristics">Heuristics</span> | Mental shortcuts or pragmatic approaches used to solve problems quickly and efficiently when time, resources, or information are limited. These methods do not guarantee an optimal or perfect solution but provide results that are "good enough" to be useful in practical situations. |
+| <span id="HTML">HTML</span> | Meaning Hypertext Markup Language, text-based format describing how content is structured in a file, and allowing to display text, images and other forms of multimedia on a webpage. |
+| <span id="HTTP">HTTP</span> | Meaning Hypertext Transfer Protocol, set of rules adjusting file transfer (texts, images, sounds...) on the Web, and indirectly used when we connect and open a web browser. |
+| <span id="HTTPS">HTTPS</span> | Meaning Hyper Text Transfer Protocol Secure, secured extension of the HTTP protocol, allowing the data transferred between the user and the web server are encrypted and can't be leaked or modified. |
+| <span id="Input">>Input</span> | Refers to the data, signals, or instructions provided to a system (e.g., a computer program, device, or process) to trigger specific operations or produce a result. |
+| <span id="JSON">JSON</span> | Meaning JavaScript Object Notation, open standard file and data interchange format that uses human-readable text to store and transmit data objects containing of name–value pairs and arrays (or other serializable values). |
+| <span id="Landmark">Landmark</span> | Something used to mark the boundary of land. |
+| <span id="Low-Level">Low-Level</span> | Denotation of programming languages or operations which are relatively close to machine code in form. |
+| <span id="Output">Output</span> | Refers to the result, response, or data generated by a system after processing the input. |
+| <span id="Query">Query</span> | Request for data that we can access, manipulate, delete, or retrieve from a database. |
+| <span id="Rest API">Rest API</span> | Meaning Representational State Transfer API, follows the REST architectural style, which provides rules for building lightweight, flexible web APIs. |
 | <span id="XML">XML</span> | The . |

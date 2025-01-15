@@ -13,27 +13,21 @@
    - [2.1 Project Scope](#21-project-scope)
    - [2.2 Constraints](#22-constraints)
    - [2.3 Risks and Assumptions](#23-risks-and-assumptions)
- - [3. Audience study](#3-audience-study)
-   - [3.1 User Personas](#31-user-personas)
-   - [3.2 Additional requirements](#32-additional-requirements)
- - [4. Algorithm Implementation](#4-algorithm-implementation)
-   - [4.1 Algorithm Selection](#41-algorithm-selection)
-   - [4.2 Data Structures Choices](#42-data-structure-choices)
-   - [4.3 Time and Space Complexity](#43-time-and-space-complexity)
-   - [4.4 Heuristics](#44-heuristics)
- - [5. Product Details](#5-product-details)
-   - [5.1 Non-Functional Requirements](#51-non-functional-requirements)
-   - [5.2 Minimum Viable Product](#52-minimum-viable-product)
-   - [5.3 Acceptance Criterias](#53-acceptance-criterias)
-   - [5.4 Out of Scope](#54-out-of-scope)
- - [6. Rest API](#6-rest-api)
-   - [6.1 Type of Web Application](#61-type-of-web-application)
-   - [6.2 API Features](#62-api-features)
-   - [6.3 User Interface](#63-user-interface)
-   - [6.4 Implementation](#64-implementation)
-   - [6.5 Prototype](#65-prototype)
- - [7. Testing Strategy](#7-testing-strategy)
- - [8. Glossary](#8-glossary)
+ - [3. Algorithm Implementation](#3-algorithm-implementation)
+   - [3.1 Algorithm Selection](#31-algorithm-selection)
+   - [3.2 Algorithm Expectations](#32-algorithm-expectations)
+ - [4. Product Details](#4-product-details)
+   - [4.1 Non-Functional Requirements](#41-non-functional-requirements)
+   - [4.2 Minimum Viable Product](#42-minimum-viable-product)
+   - [4.3 Acceptance Criterias](#43-acceptance-criterias)
+   - [4.4 Out of Scope](#44-out-of-scope)
+ - [5. Rest API](#5-rest-api)
+   - [5.1 Type of Web Application](#51-type-of-web-application)
+   - [5.2 API Features](#52-api-features)
+   - [5.3 User Interface](#53-user-interface)
+   - [5.4 Prototype](#54-prototype)
+ - [6. Testing Strategy](#6-testing-strategy)
+ - [7. Glossary](#7-glossary)
 </details>
 
 ## Document Evolution
@@ -41,7 +35,7 @@
 | Author        | Paul NOWAK (Program Manager) |
 |---------------|------------|
 | Created       | 01/06/2025 |
-| Last modified | 01/09/2025 |
+| Last modified | 01/15/2025 |
 | Document deadline | 01/15/2025 |
 
 ## 1. Overview
@@ -75,10 +69,9 @@ The scope of the project, with the most important features
 Our product will be developed with the following features:
 
 - An performant and efficient **algorithm** that receive 2 inputs (**Source** and **Destination**) and provide 2 outputs (**travel time** and **an ordered list of the landmarks in the path**).
-- A **REST API** running on an HTTP server (localhost) with a simple interface that will contain our algorithm, and be able to handle the XML and JSON formats.
+- A **HTML page** that will contain a simple interface where the users will provide the inputs
+- A **REST API** running on an HTTP server (localhost) called by the HTML page that will contain our algorithm, and be able to handle the XML and JSON formats.
 - A **Data Validation tool**, which will be useful to verify the integrity of the provided .csv file. Its source code with instructions on how to use it has to be in our Github repository.
-- AAA
-- AAA
 
 ### 2.2. Constraints
 At first, the product must be implemented in C++ to achieve optimal performance, allowing us the potential to loop fastly over large volumes of data.
@@ -91,48 +84,39 @@ Before using the dataset, we need to ensure the data integrity by performing the
   - **Graph Validation**: Check that the file forms a Directed Acyclic Graph (DAG) and doesn't contain any loop.
   - **Connectivity Check**: Make sure that the graph is fully connected, allowing the navigation between any two landmarks.
 
+One last thing: we shouldn't allow the user to provide the same place both as the **Source** and the **Destination**.
+
 ### 2.3. Risks and Assumptions
 | Risks | Assumptions | 
 | ------| ----------- |
 | Frequent lagging issues due to the very huge size of the dataset. | Allowing the code to catch an error when the algorithm take too much time and stop everything. | 
 | Apparition of vulnerabilities, such as attacks or insecure data footage, when creating a REST API. | Establishment of a plan to anticipate and treat vulnerabilities, and implement radical security measures.| 
-| Constant update triggering an indirect reduce of the code quality and the algorithm's speed and efficiency, stopping any real progress.  | Establishment of proper development plan to indicate the change, monitor the algorithm's testing and its progress through time.  | 
+| Constant update triggering an indirect reduce of the code quality and the algorithm's speed and efficiency, potentially stopping any real progress.  | Establishment of proper development plan to indicate the change, monitor the algorithm's testing and its progress through time.  | 
 | Lack of advanced knowledge regarding REST APIs in the team. | Further research about REST APIs and their relationships with algorithms would be benefical. | 
 
-## 3. Audience study
+## 3. Algorithm Implementation
 
-### 3.1. User Personas
-The user personas who could need our product and their use case
+### 3.1. Algorithm Selection
 
-### 3.2. Additional requirements
+Our group has decided to choose the      algorithm to implement it.
 
-What kind of new requirements our product would need depending on our audience study .
+The algorithm consist in...
 
-## 4. Algorithm Implementation
 
-### 4.1. Algorithm Selection
+At first, it wil sort the data provided in the .csv file, before getting the source and destination as the algorithm's inputs, and enter them in the algorithm that will perform all the required calculations before returning the result.
 
-What algorithm we decided to use and why
+### 3.2. Algorithm Expectations
 
-### 4.2. Data Structures Choices
+After the user entered the inputs and selected "confirm", the algorithm should take a quick time to calculate the path before providing the shortest route to take, with all the intermediate points we need to pass by, alongside the travel time as its 2 outputs.
 
-The data structures we plan to use for our algorithm and why
+Finally, the result should be quickly displayed on screen.
 
-### 4.3. Time and Space Complexity
 
-Big O notation for the main algorithms.
+## 4. Product Details
 
-### 4.4. Heuristics
-
-To prioritize speed over precision, our solution may use 
-heuristics, and we define a potential list.
-
-## 5. Product Details
-
-### 5.1. Non-Functional Requirements
+### 4.1. Non-Functional Requirements
 
 Here are the different criteria for the non-functional requirements:
-
 
 #### Functionality
 The algorithm must be simple, space-efficient, and solve the problem correctly.
@@ -152,7 +136,7 @@ The algorithm must provide a clean API supporting real-world use and respond wit
 #### Maintainability 
 The algorithm must allow updates and modifications based on user feedback, supporting long-term development.
 
-### 5.2. Minimum Viable Product
+### 4.2. Minimum Viable Product
 
 The following is a list of the potential different phases of our product in development. Each phase is updated based on the algorithm's progress depending on the non-functional specification.
 
@@ -164,41 +148,55 @@ The following is a list of the potential different phases of our product in deve
 |   **Phase 4**  |   Robustness | Better versability and reliability, capable of providing outputs in JSON or XML format. |  0.8 (Beta) |
 |   **Phase 5**  |   Maintainability | Refined algorithm depending on user feedback and additional insights, with optional enhancements or features. | 1.0 (Final)|
 
-### 5.3. Acceptance Criterias
+### 4.3. Acceptance Criterias
 
 In order to determine this IT project as successful, the product must meet all the following criterias:
 
-### 5.4. Out of Scope
+- The algorithm correctly processes and outputs valid results for inputs up to 24 million nodes within 1 second.
+- The algorithm handles invalid inputs (e.g., missing fields, corrupted data) gracefully by returning appropriate error codes and messages in JSON and XML formats.
+- API responses meet the specified payload structure for both JSON and XML formats.
+- The solution achieves at least 90% accuracy for heuristic calculations without exceeding a 10% margin of error.
+- The product is successfully deployed in a REST API with a functional interface tested on at least three representative use cases.
 
-What we won't do.
+### 4.4. Out of Scope
 
-## 6. Rest API
+Here are the list of features which we won't work on for this project or which we gave up during development:
+  - Compatibility with other output formats other than XML or JSON.
+  - Interactive map of the United States showing visually the output.
+  - More detailed input choices by choosing the path from a landmark A to a landmark B.
 
-### 6.1. Type of Web Application
+## 5. Rest API
 
-What kind of web application we will us.
+### 5.1. Type of Web Application
+For creating the web application, we will create a HTML page that will contain the user interface required to receive the inputs and provide the user.
 
-### 6.2. API Features
+However, the page will also allow the user to send a HTTP request to have access to the REST API server, and retrieve the required data for our algorithm.
 
-What kind of HTTP server, of inputs, outputs, and of response formats.
+### 5.2. API Features
+Our group has decided to use the REST API called Boost.Beast, a C++ library that simplifies the creation of HTTP servers. Furthermore, the library is extremely fast and easy to install.
 
-### 6.3. User Interface
+### 5.3. User Interface
+The HTML page should display a simple screen allowing the user to type the 2 required inputs (**Source** and **Destination**), with scrollable list where the user choose both places while making sure they aren't the same.
 
-What our app should look like and how the user would interact with it.
+Then, a press button named **CONFIRM** will appear, and clicking it would launch the algorithm
 
-### 6.4. Implementation
+Finally, the screen should have enough place to display the 2 outputs: the **Route** will be obviously represented as an ordered list, and **Travel Time** will simply be a label that will be placed right next to the list.
 
-What we plan to implement our algorithm within our API.
 
-### 6.5. Prototype
+### 5.4. Prototype
+Here is a link for a working prototype for our REST API:
 
-Link to a working prototype of our product.
+-[LINK TO REST API]()
 
-## 7. Testing Strategy
+
+## 6. Testing Strategy
 
 The strategy listing what kind of tests must be performed for checking our algorithm.
 
-## 8. Glossary
+To ensure the performance quality of our algorithm, several important test must be regularly performed:
+- 
+
+## 7. Glossary
 
 | Terms | Definitions |
 | ----- | ----------- |
@@ -209,6 +207,7 @@ The strategy listing what kind of tests must be performed for checking our algor
 | <span id="Data Structure">Data Structure</span> | The . |
 | <span id="Github">Github</span> | The . |
 | <span id="Heuristics">Heuristics</span> | The . |
+| <span id="HTML">HTML</span> | The . |
 | <span id="HTTP">HTTP</span> | The . |
 | <span id="Input">input</span> | The . |
 | <span id="JSON">JSON</span> | The . |

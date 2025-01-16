@@ -1,4 +1,11 @@
-  
+  <details>
+	<summary> Table of content </summary>
+
+
+</details>
+
+<br>
+
 # Introduction
 
 This **test plan** provides a concise overview of the strategies, methods, and resources used to verify the functionality, performance, and reliability of the **2024–2025 Project 3: Call for Tender** software solution.
@@ -9,26 +16,26 @@ This plan details how the testing team will validate data integrity, measure alg
 
 # Test objectives
 
-### Validate functional accuracy
+## Validate functional accuracy
 
 - Confirm that the algorithm reliability provides the quickest route between any two U.S. landmarks.
 
-### Ensure performance
+## Ensure performance
 
 - Verify that all valid requests receive a response in under one second, even when handling a dataset[^2] of approximately 24 million nodes.
 
-### Check data integrity
+## Check data integrity
 
 - Validate the integrity of the CSV file (e.g., USA-roads.csv)
 - Verifying graph structure, ensuring it's free of loops[^4], and confirming full connectivity[^5] between landmarks.
 
-### Verify REST API compliance
+## Verify REST API compliance
 
 - Confirm that the single GET[^19] endpoint[^20] correctly accepts source/destination IDs.
 - Return both XML and JSON formats.
 - Handles error conditions gracefully.
 
-### Alignment with specifications 
+## Alignment with specifications 
 
 - Confirm that all tested functionalities map to the requirements outlined in the project's functional and technical specifications.
 
@@ -60,13 +67,8 @@ This plan details how the testing team will validate data integrity, measure alg
 	- Confirm a 1-second response time for typical requests on an average laptop[^11].
 - Endpoint compliance
 	- Check error/exception handling(e.g., invalid or missing parameters).
+#//todo HTTP methods, status codes, data integrity, error handling
 
-### Big O notation
-
-- Verify the documented Big O complexities[^12] match actual performance.
-- Confirm that the approach scales with ~24 million nodes within acceptable resource constraints.
-- #//todo what is acceptable
-- #//todo is this should be here?
 ### Code
 
 - Static code analysis.
@@ -131,7 +133,7 @@ A sample dataset[^16] serves as a small graph with clearly defined edges and tra
 - Edges: 14.
 - Travel time: From 2 to 46.
 
-#//todo 
+#//todo download the image
 
 ![[TestSample]]
 
@@ -147,7 +149,7 @@ This program analyses the CSV input to confirm that the graph meets the fundamen
 
 **Verification goal:** detects disconnected components that could disrupt path calculation.
 
-### Depth First Search (DFS)[^22]
+## Depth First Search (DFS)[^22]
 
 - Performs a DFS[^22] across all connected components, treating the graph as undirected[^23].
 - Identifies any cycles[^17] by checking if a visited neighbour is not the current parent node.
@@ -221,6 +223,11 @@ Refer to the [GitHub repository](https://github.com/YourRepoURL) for the full so
 
 # The REST API
 
+The REST API[^1] provides an interface for querying the quickest path between two landmarks. To ensure its functionality, performance, and reliability, the API will undergo rigorous testing using tools like **Postman**[^25] and standard HTTP methods[^26].
+
+
+---
+
 postman link
 https://www.postman.com/api-platform/api-testing/
 
@@ -242,11 +249,43 @@ HTTP status codes:
 - **4xx (400-499):** The syntax is incorrect, and the server cannot fulfil the request
 - **5xx (500-599):** The server has completely failed to complete the request
 
-
 # Test cases
 
-  
+The test cases can be found in the [test cases](./testCases.md) document.
 
+## ID creation
+
+| If related to the | then start with | followed by  |
+| ----------------- | --------------- | ------------ |
+| data verification | DV              | _totalNumber |
+| algorithm         | AL              | _totalNumber |
+| REST API          | RA              | _totalNumber |
+| unit tests        | UT              | _totalNumber |
+| CPP code          | CC              | _totalNumber |
+
+<h2>Title example [ID]</h2>
+
+**Test case ID:** Unique identifier
+
+**Test case description:** detailed description of what the test case is designed to evaluate.
+
+**Preconditions:** list any prerequisites that must be met before executing the test case.
+
+**Test steps:** outline the specific steps to be followed during the test execution.
+
+| Steps | Instructions | Expected behaviour     | Working version                  |
+| ----- | ------------ | ---------------------- | -------------------------------- |
+| 01    | Do this      | This should appear     | The version were this is working |
+| 02    | Do that      | That should be display | 0.0.1 - 0.1.3 - 0.2.0            |
+| ...   |              |                        |                                  |
+|       |              |                        |                                  |
+
+
+**Expected result:** clearly define the expected outcome at the end of those steps.
+
+**Postconditions:** note any conditions that should be verified after the test case execution.
+
+ 
 # Environments and tools
 
   
@@ -290,7 +329,7 @@ testCases.md
 [^3]: Sustaining millions of concurrent requests or node failures
 [^4]: Indicates a graph with no self-loop edges (where a node connects to itself).
 [^5]: Describes a state where every node in a graph can reach every other node, ensuring no isolated subgraphs exist.
-[^6]: Nodes with no connections. Edges whose endpoints is the same node.
+[^6]: Nodes with no connections. Edges whose endpoints are the same node.
 [^7]: A representation of which nodes (or vertices) are connected to which others in a graph, often stored as a list or matrix.
 [^8]: An analysis of how an algorithm’s runtime (time complexity) and memory usage (space complexity) scale with input size.
 [^9]: _Extensible Markup Language_: A structured format commonly used for data representation and exchange.
@@ -310,3 +349,5 @@ testCases.md
 [^23]: Describes a graph whose edges do not have a direction; travelling from node A to node B is equivalent to travelling from node B to node A.
 
 Known benchmarks[^24]
+**Postman**[^25]
+standard HTTP methods[^26].

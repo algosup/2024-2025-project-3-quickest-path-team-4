@@ -11,7 +11,7 @@ This plan details how the testing team will validate data integrity, measure alg
 
 ### Validate functional accuracy
 
-- Confirm that the algorithm reliability provides the quickest route *( tolerance of 10% )* between any two U.S. landmarks.
+- Confirm that the algorithm reliability provides the quickest route between any two U.S. landmarks.
 
 ### Ensure performance
 
@@ -70,7 +70,7 @@ This plan details how the testing team will validate data integrity, measure alg
 ### Code
 
 - Static code analysis.
-	- Checking for memory leaks[^13], and performance bottlenecks[^14].
+	- Checking for memory leaks[^13] and performance bottlenecks[^14].
 - Validate standard compliance and minimal dependencies 
 	- Only STL[^18] + required Web server libraries.
 	- #//todo what is stl?
@@ -101,10 +101,10 @@ This plan details how the testing team will validate data integrity, measure alg
 
 A sample dataset[^16] serves as a small graph with clearly defined edges and travel times. 
 - Shortest path accuracy.
-	- Easily trace individual routes and confirm whether the algorithm identifies the quickest path within the required 10% approximation threshold.
-- Connectivity verification
+	- Easily trace individual routes and confirm whether the algorithm identifies the quickest path.
+- Connectivity verification.
 	- Visualise the entire graph to ensure proper connectivity and spot potential cycles[^17].
-- Input/output validation
+- Input/output validation.
 	- Keep file parsing straightforward and confirm the adjacency list.
 	- Confirm it generates the expected output formats (JSON and XML).
 
@@ -131,6 +131,8 @@ A sample dataset[^16] serves as a small graph with clearly defined edges and tra
 - Edges: 14.
 - Travel time: From 2 to 46.
 
+#//todo 
+
 ![[TestSample]]
 
 # Data verification
@@ -141,7 +143,7 @@ This program analyses the CSV input to confirm that the graph meets the fundamen
 
 - Executes a BFS[^21] from an arbitrary start node.
 - Compares the number of visited nodes to the total node count.
-- Logs a message if the graph is **fully connected** or reports partial connectivity otherwise.
+- Logs a message if the graph is fully connected or reports partial connectivity otherwise.
 
 **Verification goal:** detects disconnected components that could disrupt path calculation.
 
@@ -162,7 +164,7 @@ This program analyses the CSV input to confirm that the graph meets the fundamen
 
 ## Isolated edges
 
-- Checks each edge to see if **both endpoints**[^20]  have degree = 1.
+- Checks each edge to see if both endpoints[^20]  have degree = 1.
 - Counts how many edges meet this condition.
 
 **Verification goal:** flags minimal connections where nodes have no other links. These often represent dead-end routes or special cases in large graphs. 
@@ -181,11 +183,65 @@ Refer to the [GitHub repository](https://github.com/YourRepoURL) for the full so
 
 # The algorithm
 
-  
+## Correctness verification
+
+- Small graphs.
+	- Run the algorithm on small, manually crafted datasets where the shortest paths are easy to calculate by hand.
+	- Compare the computed paths to the expected results.
+- Known benchmarks.[^24]
+	- Use standard shortest-path benchmark graphs to confirm that the output aligns with established correct solutions.
+
+## Scalability 
+
+- Dataset sizes.
+	- Gradually increase the number of nodes and edges, and measure the runtime.
+	- Verify that responses remain under 1 second.
+
+## Edge cases
+
+- Uniform edge weights.
+	- Check a graph where every edge has the same weight to confirm the algorithm still finds the correct shortest paths.
+
+## Regression tests
+
+- Automated test suite.
+	- Integrate the Dijkstra tests into a CI/CD pipeline.
+	- Trigger them automatically with new commits or pull requests to detect regressions in accuracy or performance.
+- Performance monitoring.
+	- Record execution time and memory usage to spot any trends of increasing resource consumption over successive builds.
+
+## Success criteria
+
+- Accuracy.
+    The computed paths match the baseline shortest paths as determined by manual calculations or trusted benchmarks.
+- Speed.
+    The algorithm completes in under **1 second** (as applicable to the dataset size) on an average laptop or target hardware configuration.
+- Stability.  
+    No crashes or memory leaks occur, even under larger-scale testing or moderate concurrency.
 
 # The REST API
 
-  
+postman link
+https://www.postman.com/api-platform/api-testing/
+
+steps to test a REST API
+https://qalified.com/blog/rest-api-testing/
+HTTP Requests:
+
+- **GET:** This type of request gathers data from a specified URL
+- **PATCH:** This type of request manages iterative updates
+- **POST:** This type of request enables the new entity development (Also to send data to the server).
+- **PUT:** This request updates or builds new data at the specified URL.
+- **DELETE:** This request deletes existing instances at a specific URL
+
+HTTP status codes:
+
+- **1xx (100-199):** An informative statement
+- **2xx (200-299):** Successful response verified
+- **3xx (300-399):** Additional action needed to fulfil the request
+- **4xx (400-499):** The syntax is incorrect, and the server cannot fulfil the request
+- **5xx (500-599):** The server has completely failed to complete the request
+
 
 # Test cases
 
@@ -252,3 +308,5 @@ testCases.md
 [^21]: Breadth First Search: A graph traversal algorithm that explores all neighbours of a node before moving on to the next level of neighbours, useful for finding shortest paths in unweighted graphs or determining connectivity.
 [^22]: Depth First Search: A graph traversal algorithm that explores one branch of a graph deeply before backtracking, often used for cycle detection and path exploration.
 [^23]: Describes a graph whose edges do not have a direction; travelling from node A to node B is equivalent to travelling from node B to node A.
+
+Known benchmarks[^24]

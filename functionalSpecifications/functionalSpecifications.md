@@ -24,16 +24,18 @@
    - [5.2 API Features](#52-api-features)
    - [5.3 User Interface](#53-user-interface)
    - [5.4 Prototype](#54-prototype)
- - [6. Security Measures](#6-security-measures)
+ - [6. Security ](#6-security-measures)
+   - [6.1 Security Measures](#61-security-measures)
+   - [6.2 Error Handling](#62-error-handling)
  - [7. Glossary](#7-glossary)
  
 </details>
 
 ## Document Evolution
 
-| Author        | Paul NOWAK (Program Manager) |
+| Author| Paul NOWAK (Program Manager) |
 |---------------|------------|
-| Created       | 01/06/2025 |
+| Created | 01/06/2025 |
 | Last modified | 01/16/2025 |
 | Document deadline | 02/07/2025 |
 
@@ -72,7 +74,9 @@ Our product will be developed with the following features:
 ### 2.2. Constraints
 At first, the product must be implemented in C++<sup><a href="#3">[3]</a></sup> to achieve optimal performance, allowing us the potential to loop fast over large volumes of data.
 
-Then, the API<sup><a href="#2">[2]</a></sup> must be able to handle queries<sup><a href="#17">[17]</a></sup> within 1 second on a typical laptop, encouraging us to provide a lot of optimization in our algorithm<sup><a href="#1">[1]</a></sup> and to perform many essential tests.
+Then, the API<sup><a href="#2">[2]</a></sup> must be able to handle queries<sup><a href="#17">[17]</a></sup> within 1 second on a typical laptop, encouraging us to provide a lot of optimization in our algorithm<sup><a href="#1">[1]</a></sup> and to perform many essential tests. 
+
+Its access doesn't require any Internet connection if we use the laptop where we created the local server. However, the Internet will be needed if the client uses another computer.
 
 The staff also advised us to prioritize speed for precision and use heuristics<sup><a href="#9">[9]</a></sup> for getting approximative results. However, we are only allowed to return an approximative path with a 10% error margin compared to the actual shortest path value.
 
@@ -175,12 +179,25 @@ Here is a link to a working prototype for our REST API<sup><a href="#18">[18]</a
 
 - (LINK TO REST API)[]
 
-## 6. Security Measures
+## 6. Security 
+
+### 6.1. Security Measures
 To prevent anyone from using our REST API<sup><a href="#18">[18]</a></sup> in any malevolent way, such as leaking personal data or virus implementation, our group has decided to employ several security measures.
 
 - Most importantly, we will create our web page in HTTPS<sup><a href="#12">[12]</a></sup> format to communicate with our REST API<sup><a href="#18">[18]</a></sup>.
 - We will make sure to keep our libraries up to date. 
 - We will implement an error handling program to anticipate any input<sup><a href="#13">[13]</a></sup> error and avoid exposing any sensitive information through error messages.
+
+### 6.2. Error Handling
+Here is the following error cases the program will handle:
+
+| **Case** | **Error Handling** |
+| ----- | ----------- |
+| Entering characters other than numbers in the landmark<sup><a href="#15">[15]</a></sup> inputs<sup><a href="#13">[13]</a></sup>. | Show the error message: "Please use only numbers." |
+| Opening a new window to access the local server while a window with the REST API<sup><a href="#18">[18]</a></sup> is already opened. | Delete the new window and redirect to the one with the REST API<sup><a href="#18">[18]</a></sup>. |
+| Accessing the REST API<sup><a href="#18">[18]</a></sup> with another computer without a decent Internet connexion. | Display the error message "Error 404, please check your Internet connection." |
+| The user reloads the page while the algorithm<sup><a href="#1">[1]</a></sup> is running. | The algorithm<sup><a href="#1">[1]</a></sup> halts due to the reload, requiring us to re-enter their inputs<sup><a href="#13">[13]</a></sup>.|
+| The user's computer lacks sufficient memory to execute the algorithm<sup><a href="#1">[1]</a></sup> effectively. | The program displays a loading icon with the following message: "Insufficient memory detected. Please free up some memory and try again." |
 
 ## 7. Glossary
 

@@ -13,6 +13,7 @@
     - [File Architecture](#file-architecture)
     - [Dependencies](#dependencies)
       - [STL](#stl)
+        - [Usage of STL](#usage-of-stl)
       - [REST API](#rest-api)
         - [Boost.Beast](#boostbeast)
           - [Boost.Beast C++ Implementation](#boostbeast-c-implementation)
@@ -22,6 +23,10 @@
   - [Algorithm](#algorithm)
     - [Algorithm Description](#algorithm-description)
     - [Data Source](#data-source)
+    - [Data Integrity Verification](#data-integrity-verification)
+      - [Functional Specifications](#functional-specifications)
+      - [Graph Validation Verification](#graph-validation-verification)
+      - [Connectivity Checks](#connectivity-checks)
     - [Data Flow](#data-flow)
     - [Performance](#performance)
       - [Big-O Notation](#big-o-notation)
@@ -90,6 +95,17 @@ For C++'s documentation: [C++ Reference](https://cplusplus.com/reference/)
 
 #### STL
 
+The C++ Standard Template Library (STL) is a set of template classes and functions that provides the implementation of common data structures and algorithms such as lists, stacks, arrays, sorting, searching, etc. It also provides the iterators and functors which makes it easier to work with algorithms and containers. /
+We were asked as a requirement not to use external libraries for the project, we solemnly rely on STL for this project. Our team doesn't have to install any other libraries.
+
+##### Usage of STL
+
+STL offers a wide range of containers, which are the data structures used to store objects and data. For this project, our team mostly uses vectors.
+
+```c++
+#include <vector>
+```
+
 #### REST API
 
 A REST API (also called a RESTful API or RESTful web API) is an application programming interface (API) that conforms to the design principles of the representational state transfer (REST) architectural style.
@@ -113,15 +129,15 @@ The sequence diagram below explains how the user, server, and algorithm communic
 
 Boost.Beast is a C++ library that provides low-level HTTP and WebSocket functionality. It allows developers to implement REST APIs by handling HTTP requests and responses efficiently.
 
-We decided to use Boost.Beast as it is tailored to our project, fast and resilient, Boost.Beast is the backbone for our REST API.
+We decided to use Boost.Beast as it is tailored to our project, is fast and resilient, Boost.Beast is the backbone of our REST API.
 
 ###### Boost.Beast C++ Implementation
 
-To implement and setup Boost.Beast in our project:
+To implement and set up Boost.Beast in our project:
 
 1. Download the [the latest Boost.Beast version](https://www.boost.org/users/history/).
 2. Extract the files into your project's source folder.
-3. Navigate to the extracted folder using in your terminal.
+3. Navigate to the extracted folder using your terminal.
 4. Execute the command: `tar --bzip2 -xf /path/to/boost_1_82_0.tar.bz2`
 
 Boost.Beast is now installed and initialized in your project's directory.
@@ -182,6 +198,55 @@ You can use this starting point to set up the initial server for the project.
 ### Algorithm Description
 
 ### Data Source
+
+The client provided the dataset as a `.csv` file containing approximately 24 million nodes. Each row in the file represents a connection between two landmarks and is formatted as follows: \
+`Landmark_A_ID,Landmark_B_ID,Time`
+
+Here:
+
+- Landmark_A_ID and Landmark_B_ID are unique identifiers for landmarks.
+- Time represents the travel time between the two landmarks in an unspecified unit, time being an unit of time itself.
+
+These connections can be visualized as edges in a graph, where landmarks serve as nodes, and the Time represents the edge weights.
+
+To use this data effectively:
+
+1. We parse the .csv file, separating the elements by the comma delimiter.
+2. Each row is then processed to extract the source (Landmark_A_ID), destination (Landmark_B_ID), and weight (Time).
+3. Finally, the data is stored in an adjacency matrix, for efficient graph traversal during algorithm execution.
+
+Below is the improved explanation along with pseudocode to parse the data:
+
+```pseudocode
+function parseCSV(file_path):
+    graph = empty adjacency_matrix[]
+
+    open file at file_path
+    for each line in file:
+        data = split(line, ",")
+        landmark_A = int(data[0])
+        landmark_B = int(data[1])
+        time = float(data[2])
+
+        if landmark_A not in graph:
+            graph[landmark_A] = empty list()
+        if landmark_B not in graph:
+            graph[landmark_B] = empty list()
+
+        graph[landmark_A].append((landmark_B, time))
+        graph[landmark_B].append((landmark_A, time))  # if the graph is undirected
+
+    close file
+    return graph
+```
+
+### Data Integrity Verification
+
+#### Functional Specifications
+
+#### Graph Validation Verification
+
+#### Connectivity Checks
 
 ### Data Flow
 

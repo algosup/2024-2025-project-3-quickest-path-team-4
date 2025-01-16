@@ -5,58 +5,58 @@
 <details open>
 <summary>Table of Contents</summary>
 
- - [1. Overview](#1-overview)
-   - [1.1 Document Purpose](#11-document-purpose)
-   - [1.2 Context](#12-context)
-   - [1.3 Data Source](#13-data-source)
- - [2. Product Goal](#2-product-goal)
-   - [2.1 Project Scope](#21-project-scope)
-   - [2.2 Constraints](#22-constraints)
-   - [2.3 Risks and Assumptions](#23-risks-and-assumptions)
- - [3. Algorithm Requirements](#3-algorithm-requirements)
- - [4. Product Details](#4-product-details)
-   - [4.1 Non-Functional Requirements](#41-non-functional-requirements)
-   - [4.2 Minimum Viable Product](#42-minimum-viable-product)
-   - [4.3 Acceptance Criterias](#43-acceptance-criterias)
-   - [4.4 Out of Scope](#44-out-of-scope)
- - [5. Rest API](#5-rest-api)
-   - [5.1 Type of Web Application](#51-type-of-web-application)
-   - [5.2 API Features](#52-api-features)
-   - [5.3 User Interface](#53-user-interface)
-   - [5.4 Prototype](#54-prototype)
- - [6. Security Measures](#6-security-measures)
- - [7. Glossary](#7-glossary)
+ - [1. Overview](#1-overview)
+   - [1.1 Document Purpose](#11-document-purpose)
+   - [1.2 Context](#12-context)
+   - [1.3 Data Source](#13-data-source)
+ - [2. Product Goal](#2-product-goal)
+   - [2.1 Project Scope](#21-project-scope)
+   - [2.2 Constraints](#22-constraints)
+   - [2.3 Risks and Assumptions](#23-risks-and-assumptions)
+ - [3. Algorithm Requirements](#3-algorithm-requirements)
+ - [4. Product Details](#4-product-details)
+   - [4.1 Non-Functional Requirements](#41-non-functional-requirements)
+   - [4.2 Minimum Viable Product](#42-minimum-viable-product)
+   - [4.3 Acceptance Criterias](#43-acceptance-criterias)
+   - [4.4 Out of Scope](#44-out-of-scope)
+ - [5. Rest API](#5-rest-api)
+   - [5.1 Type of Web Application](#51-type-of-web-application)
+   - [5.2 API Features](#52-api-features)
+   - [5.3 User Interface](#53-user-interface)
+   - [5.4 Prototype](#54-prototype)
+ - [6. Security Measures](#6-security-measures)
+ - [7. Glossary](#7-glossary)
 </details>
 
 ## Document Evolution
 
-| Author        | Paul NOWAK (Program Manager) |
+| Author        | Paul NOWAK (Program Manager) |
 |---------------|------------|
-| Created       | 01/06/2025 |
-| Last modified | 01/15/2025 |
+| Created       | 01/06/2025 |
+| Last modified | 01/16/2025 |
 | Document deadline | 02/07/2025 |
 
 ## 1. Overview
 
 ### 1.1. Document Purpose
 
-The purpose of the document is to provide clear and detailed instructions about the product and its goal for developers, designers and stakeholders.
+The document's purpose is to provide clear and detailed instructions about the product and its goal for developers, designers, and stakeholders.
 
-Indeed, it must describe how the product will work while declaring its intended behavior and its implemented features.
+Indeed, it must describe how the product will work while declaring its intended behavior and implemented features.
 
-In fact, the document works as a contract between the development team and the stakeholders, where the requirements and constraints that must be satisfied will be defined. 
+The document works as a contract between the development team and the stakeholders, where the requirements and constraints that must be satisfied will be defined. 
 
 ### 1.2. Context
-The project imagined by ALGOSUP is to develop a high performance software solution with an algorithm that calcuates the quickest path between two landmarks in the United States. 
+The project imagined by ALGOSUP is to develop a high-performance software solution with an algorithm that calculates the quickest path between two landmarks in the United States. 
 
-ALGOSUP wanted to encourage us to work as a team to explore and implement efficient algorithms tailored to handle large scale datasets, while also considering real-world constraints like speed and accuracy.
+ALGOSUP wanted to encourage us to work as a team to explore and implement efficient algorithms tailored to handle large-scale datasets while also considering real-world constraints like speed and accuracy.
 
 ### 1.3. Data Source
-To assist us in the testing process of our project, Franck provided us with a file (USA-roads.csv) that contains approximately 24 millions of nodes in the following format: *Landmark_A_ID,Landmark_B_ID,Time*.
+To assist us in the testing process of our project, Franck provided us with a file (USA-roads.csv) that contains approximately 24 million nodes in the following format: *Landmark_A_ID, Landmark_B_ID, Time*.
 
 In this file, each line represents a connection between two unspecified landmarks in the United States with a travel time expressed as an integer in an unspecified but proportional unit of time.
 
-Additionally, the different connections are bidirectional, meaning if a connection exists from A to B, the same applies for B to A.
+Additionally, the different connections are bidirectional, meaning if a connection exists from A to B, the same applies to B to A.
 
 ## 2 Product Goal
 
@@ -69,35 +69,35 @@ Our product will be developed with the following features:
 - An performant and efficient **algorithm** that receive 2 inputs (**Source** and **Destination**) and provide 2 outputs (**travel time** and **an ordered list of the landmarks in the path**).
 - A **HTML page** that will contain a simple interface where the users will provide the inputs
 - A **REST API** running on an HTTP server (localhost) called by the HTML page that will contain our algorithm.
-- A **Data Validation tool**, which will be useful to verify the integrity of the provided .csv file. Its source code with instructions on how to use it has to be in our Github repository.
+- A **Data Validation tool**, which will be useful to verify the integrity of the provided .csv file. Its source code with instructions on how to use it has to be in our GitHub repository.
 
 ### 2.2. Constraints
-At first, the product must be implemented in C++ to achieve optimal performance, allowing us the potential to loop fastly over large volumes of data.
+At first, the product must be implemented in C++ to achieve optimal performance, allowing us the potential to loop fast over large volumes of data.
 
-Then, the API must be able to handle queries within 1 second on a typical laptop, encouraging us to provide a lot of optimization in our algorithm and to perform many essential testings.
+Then, the API must be able to handle queries within 1 second on a typical laptop, encouraging us to provide a lot of optimization in our algorithm and to perform many essential tests.
 
-The staff also advised us to prioritize speed for precision and use heuristics for getting approximative results. However, we are only allowed to return an approximative path with a 10% error margin compared the actual shortest path value.
+The staff also advised us to prioritize speed for precision and use heuristics for getting approximative results. However, we are only allowed to return an approximative path with a 10% error margin compared to the actual shortest path value.
 
-Before using the dataset, we need to ensure the data integrity by performing the folliwng checks:
-  - **Graph Validation**: Check that the file forms a Directed Acyclic Graph (DAG) and doesn't contain any loop.
-  - **Connectivity Check**: Make sure that the graph is fully connected, allowing the navigation between any two landmarks.
+Before using the dataset, we need to ensure the data integrity by performing the following checks:
+  - **Graph Validation**: Check that the file forms a Directed Acyclic Graph (DAG) and doesn't have any loop.
+  - **Connectivity Check**: Make sure the graph is fully connected, allowing the navigation between any two landmarks.
 
-One last thing: we shouldn't allow the user to provide the same place both as the **Source** and the **Destination**.
+One last thing: we shouldn't allow the user to provide the same landmark as both the **Source** and the **Destination**.
 
 ### 2.3. Risks and Assumptions
 | Risks | Assumptions | 
 | ------| ----------- |
-| Frequent lagging issues due to the very huge size of the dataset. | Allowing the code to catch an error when the algorithm take too much time and stop everything. | 
+| Frequent lagging issues due to the very huge size of the dataset. | Allowing the code to catch an error when the algorithm takes too much time and stops everything. | 
 | Apparition of vulnerabilities, such as attacks or insecure data footage, when creating a REST API. | Establishment of a plan to anticipate and treat vulnerabilities, and implement radical security measures.| 
-| Constant update triggering an indirect reduce of the code quality and the algorithm's speed and efficiency, potentially stopping any real progress.  | Establishment of proper development plan to indicate the change, monitor the algorithm's testing and its progress through time.  | 
-| Lack of advanced knowledge regarding REST APIs in the team. | Further research about REST APIs and their relationships with algorithms would be benefical. | 
+| Constant updates that trigger an indirect reduction of the code quality and the algorithm's speed and efficiency, potentially stopping any real progress.  | Establishment of a proper development plan to indicate the change, and monitor the algorithm's testing and its progress through time.  | 
+| Lack of advanced knowledge regarding REST APIs in the team. | Further research about REST APIs and their relationships with algorithms would be beneficial. | 
 
 ## 3. Algorithm Requirements
-The algorithm consist in finding the shortest path between a landmark A and a landmark B, making calculations depending on their proximity and the other intermediate nodes that can be found.
+The algorithm finds the shortest path between landmark A and landmark B, making calculations depending on their proximity and the other intermediate nodes that can be found.
 
 At first, it will sort the data provided in the .csv file, before getting the source and destination as the algorithm's inputs, and enter them in the algorithm that will perform all the required calculations before returning the result.
 
-After the user entered the inputs and selected "confirm", the algorithm should take a quick time to calculate the path before providing the shortest route to take, with all the intermediate points we need to pass by, alongside the travel time as its 2 outputs.
+After the user enters the inputs and selects "confirm", the algorithm should take a quick time to calculate the path before providing the shortest route, with all the intermediate points we need to pass by, alongside the travel time as its 2 outputs.
 
 Finally, the results should be quickly found and returned.
 
@@ -111,7 +111,7 @@ Here are the different criteria for the non-functional requirements:
 The algorithm must be simple, space-efficient, and solve the problem correctly.
 
 #### Scalability
-The algorithm must handle large and complex inputs, including .csv files with up to 24 million nodes, while maintaining performance.
+The algorithm must handle large and complex inputs, including .csv files with up to 24 million nodes while maintaining performance.
 
 #### Performance
 The algorithm must use minimal memory and respond to all queries within 1 second on a typical laptop.
@@ -120,26 +120,26 @@ The algorithm must use minimal memory and respond to all queries within 1 second
 The algorithm must handle invalid inputs, edge cases, and errors reliably. Heuristic solutions must not exceed the shortest path duration by more than 10%.
 
 #### Integrity
-The algorithm must provide a clean API supporting real-world use and respond with XML and JSON payloads. A simpler, less efficient implementation is acceptable for initial support.
+The algorithm must provide a clean API that supports real-world use and responds with XML and JSON payloads. A simpler, less efficient implementation is acceptable for initial support.
 
 #### Maintainability 
 The algorithm must allow updates and modifications based on user feedback, supporting long-term development.
 
 ### 4.2. Minimum Viable Product
 
-The following is a list of the potential different phases of our product in development. Each phase is updated based on the algorithm's progress depending on the non-functional specification.
+The following is a list of the potential different development phases of our product. Each phase is updated based on the algorithm's progress depending on the non-functional specification.
 
-|   **Phase**  |   **Targeted Non-Functional Requirement** | **Algorithm Improvements** | **Version**  |                     
-|   :-------  |   :--------- | :--------- |  :-------------  |
-|   **Phase 1**  |   Core Functionality & Scalability | Algorithm providing correct outputs, using complex structures of large and various sizes.|  0.2 |
-|   **Phase 2**  |   Performance  | Improved runtime and reduced memory usage using advanced optimization techniques. |  0.4 (Alpha) |
-|   **Phase 3**  |   Integrity | Implementation of the algorithm in a REST API with a clean interface for users. |  0.6  |
-|   **Phase 4**  |   Robustness | Better versability and reliability, capable of providing outputs in JSON or XML format. |  0.8 (Beta) |
-|   **Phase 5**  |   Maintainability | Refined algorithm depending on user feedback and additional insights, with optional enhancements or features. | 1.0 (Final)|
+|   **Phase** |   **Targeted Non-Functional Requirement** | **Algorithm Improvements** | **Version** |                     
+|   :-------  |   :--------- | :--------- |  :-------------  |
+|   **Phase 1** |   Core Functionality & Scalability | Algorithm providing correct outputs, using complex structures of large and various sizes.|  0.2 |
+|   **Phase 2** |   Performance  | Improved runtime and reduced memory usage using advanced optimization techniques. |  0.4 (Alpha) |
+|   **Phase 3** |   Integrity | Implementation of the algorithm in a REST API with a clean User Interface. |  0.6  |
+|   **Phase 4** |   Robustness | Better versability and reliability, capable of providing outputs in JSON or XML format. |  0.8 (Beta) |
+|   **Phase 5** |   Maintainability | Refined algorithm depending on user feedback and additional insights, with optional enhancements or features. | 1.0 (Final)|
 
-### 4.3. Acceptance Criterias
+### 4.3. Acceptance Criteria
 
-In order to determine this IT project as successful, the product must meet all the following criterias:
+To determine if this IT project is successful, the product must meet all the following criteria:
 
 - The algorithm correctly processes and outputs valid results for inputs up to 24 million nodes within 1 second.
 - The algorithm handles invalid inputs (e.g., missing fields, corrupted data) gracefully by returning appropriate error codes and messages in JSON and XML formats.
@@ -149,33 +149,32 @@ In order to determine this IT project as successful, the product must meet all t
 
 ### 4.4. Out of Scope
 
-Here are the list of features which we won't work on for this project or which we gave up during development:
-  - Compatibility with other output formats other than XML or JSON.
-  - Interactive map of the United States showing visually the output.
-  - More detailed input choices by choosing the path from a landmark A to a landmark B.
+Here is the list of features that we won't work on for this project or that we gave up during development:
+  - Compatibility with other output formats other than XML or JSON.
+  - Interactive map of the United States as the output.
+  - More detailed input choices by choosing the path from landmark A to landmark B.
 
 ## 5. Rest API
 
 ### 5.1. Type of Web Application
-For creating the web application, we will create a HTML page that will contain the user interface required to receive the inputs and provide the user.
+To create the web application, we will build an HTML page containing the user interface required to receive the inputs and provide the user.
 
-However, the page will also allow the user to send a HTTP request to have access to the REST API server, and retrieve the required data for our algorithm.
+However, the page will also allow the user to send an HTTP request to have access to the REST API server and retrieve the required data for our algorithm.
 
 ### 5.2. API Features
 Among all the main specific HTTP requests possible, the API will allow us to use a **GET** endpoint to request with the following features:
 - **Input**: IDs of the source and destination landmarks. They must be selected by the user before running the algorithm.
-- **Output**: Travel time and the ordered list of landmarks in the path. They should be provided quickly and clearly to the client once the calculations were performed.
-- **Response Formats**: Support both XML and JSON for response payloads.
+- **Output**: Travel time and the ordered list of landmarks in the path. They should be provided quickly and clearly to the client once the calculations are performed.
+- **Response Formats**: Support XML and JSON for response payloads.
 
-Additionally, all these features must be compatible with C++, efficient, fast and robust.
+Additionally, all these features must be compatible with C++, efficient, fast, and robust.
 
 ### 5.3. User Interface
-The HTML page should display a simple screen allowing the user to type the 2 required inputs (**Source** and **Destination**), with scrollable list where the user choose both places while making sure they aren't the same.
+The HTML page should display a simple screen allowing the user to type the 2 required inputs (**Source** and **Destination**), with a scrollable list where the user chooses both places while making sure they aren't the same.
 
-Then, a press button named **CONFIRM** will appear, and clicking it would launch the algorithm
+Then, a press button named **CONFIRM** will appear, and clicking it will launch the algorithm
 
-Finally, the screen should have enough place to display the 2 outputs: the **Route** will be obviously represented as an ordered list, and **Travel Time** will simply be a label that will be placed right next to the list.
-
+Finally, the screen should have enough space to display the 2 outputs: the **Route** will be obviously represented as an ordered list, and **Travel Time** will simply be a label placed right next to the list.
 
 ### 5.4. Prototype
 Here is a link for a working prototype for our REST API:
@@ -184,34 +183,32 @@ Here is a link for a working prototype for our REST API:
 
 ## 6. Security Measures
 
-To avoid any individual to use our REST API in any malevolent way, such has leaking personal data or virus implementation, our group have decided to employ several security measures.
+To prevent anyone from using our REST API in any malevolent way, such as leaking personal data or virus implementation, our group has decided to employ several security measures.
 
 - Most importantly, we create our web page in HTTPS format to communicate with our REST API.
-- We make sure to keep our libraries up to date, such has Boost.Beast. 
-- We implement a error handling program to anticipate any user input error and avoid exposing any sensitive information through error messages.
-
-Thankfully, the Boost.Beast library is already provided with data encryption service, a WAF (Web Application Firewall), and other secure coding libraries to assist the developper.
+- We make sure to keep our libraries up to date. 
+- We implement an error handling program to anticipate any input error and avoid exposing any sensitive information through error messages.
 
 ## 7. Glossary
 
 | Terms | Definitions |
 | ----- | ----------- |
 | <span id="Algorithm">Algorithm</span> | Finite set of rules or instructions that specify a sequence of computational steps to solve a specific problem efficiently. |
-| <span id="API">API</span> | Meaning Application Programming Interface, set of functions and procedures allowing the creation of applications that access the features or data of an operating system, application, or other service. |
+| <span id="API">API</span> | Meaning *Application Programming Interface*, a set of functions and procedures allowing the creation of applications that access the features or data of an operating system, application, or other service. |
 | <span id="Big O Notation">Big O Notation</span> | Describes the time complexity or space complexity of an algorithm, providing a theoretical measure of the resources (e.g., execution time or storage space) required as the input size grows |
 | <span id="C++">C++</span> | Compiled language that is popular for creating computer programs and widely used in game development. Developed as an extension of C, it shares almost the same syntax. |
-| <span id="DAG">DAG</span> | Meaning Directed Acyclic Graph, type of graph consisting of vertices and directed edges (arcs), where each edge points from one vertex to another, and no cycles exist.. |
+| <span id="DAG">DAG</span> | Meaning *Directed Acyclic Graph*, a type of graph consisting of vertices and directed edges (arcs), where each edge points from one vertex to another, and no cycles exist.. |
 | <span id="Data Structure">Data Structure</span> | Way to organize, store, and manage data efficiently, enabling easy access and manipulation based on the type of data and its intended use. It consists of data values, the relationships among them, and the operations that can be performed on the data. |
-| <span id="Github">Github</span> | Cloud-based platform that allow its users to create coding projects through repository and work together to store and share code. Indeed, it give us the feature to track and manage our changes over time. |
-| <span id="Heuristics">Heuristics</span> | Mental shortcuts or pragmatic approaches used to solve problems quickly and efficiently when time, resources, or information are limited. These methods do not guarantee an optimal or perfect solution but provide results that are "good enough" to be useful in practical situations. |
-| <span id="HTML">HTML</span> | Meaning Hypertext Markup Language, text-based format describing how content is structured in a file, and allowing to display text, images and other forms of multimedia on a webpage. |
-| <span id="HTTP">HTTP</span> | Meaning Hypertext Transfer Protocol, set of rules adjusting file transfer (texts, images, sounds...) on the Web, and indirectly used when we connect and open a web browser. |
-| <span id="HTTPS">HTTPS</span> | Meaning Hyper Text Transfer Protocol Secure, secured extension of the HTTP protocol, allowing the data transferred between the user and the web server are encrypted and can't be leaked or modified. |
+| <span id="Github">Github</span> | Cloud-based platform that allows its users to create coding projects through a repository and work together to store and share code. Indeed, it allows us to track and manage our changes over time. |
+| <span id="Heuristics">Heuristics</span> | Mental shortcuts or pragmatic approaches are used to solve problems quickly and efficiently when time, resources, or information are limited. These methods do not guarantee an optimal or perfect solution but provide results that are "good enough" to be useful in practical situations. |
+| <span id="HTML">HTML</span> | Meaning *Hypertext Markup Language*, text-based format describing how content is structured in a file, and displaying text, images, and other forms of multimedia on a webpage. |
+| <span id="HTTP">HTTP</span> | Meaning *Hypertext Transfer Protocol*, a set of rules adjusting file transfer (texts, images, sounds...) on the Web, and indirectly used when we connect and open a web browser. |
+| <span id="HTTPS">HTTPS</span> | Meaning *Hyper Text Transfer Protocol Secure*, a secured extension of the HTTP protocol, allowing the data transferred between the user and the webserver to be encrypted and can't be leaked or modified. |
 | <span id="Input">>Input</span> | Refers to the data, signals, or instructions provided to a system (e.g., a computer program, device, or process) to trigger specific operations or produce a result. |
-| <span id="JSON">JSON</span> | Meaning JavaScript Object Notation, open standard file and data interchange format that uses human-readable text to store and transmit data objects containing of name–value pairs and arrays (or other serializable values). |
+| <span id="JSON">JSON</span> | Meaning *JavaScript Object Notation*, open standard file and data interchange format that uses human-readable text to store and transmit data objects containing name-value pairs and arrays (or other serializable values). |
 | <span id="Landmark">Landmark</span> | Something used to mark the boundary of land. |
 | <span id="Low-Level">Low-Level</span> | Denotation of programming languages or operations which are relatively close to machine code in form. |
 | <span id="Output">Output</span> | Refers to the result, response, or data generated by a system after processing the input. |
 | <span id="Query">Query</span> | Request for data that we can access, manipulate, delete, or retrieve from a database. |
-| <span id="Rest API">Rest API</span> | Meaning Representational State Transfer API, follows the REST architectural style, which provides rules for building lightweight, flexible web APIs. |
-| <span id="XML">XML</span> | The . |
+| <span id="Rest API">Rest API</span> | Meaning *Representational State Transfer API*, follows the REST architectural style, which provides rules for building lightweight, flexible web APIs. |
+| <span id="XML">XML</span> | Meaning *Extensible Markup Language*, markup language and file format for storing, transmitting, and reconstructing data. |

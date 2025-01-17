@@ -5,34 +5,122 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
 
-void send_file(const std::string &file_path, beast::tcp_stream &stream, http::request<http::string_body> &req)
+// Structure to hold the parsed CSV data
+struct RoadData
 {
-    // Open the file to be sent
-    std::ifstream file(file_path, std::ios::binary);
-    if (!file.is_open())
+    std::string landmark_a_id;
+    std::string landmark_b_id;
+    std::string time;
+};
+
+// Function to parse CSV into a vector of RoadData structs
+std::vector<RoadData> parse_csv(const std::string &file_path)
+{
+    std::vector<RoadData> data;
+    std::ifstream file(file_path);
+    std::string line;
+
+    // Skip header
+    std::getline(file, line);
+
+    while (std::getline(file, line))
     {
-        throw std::runtime_error("Failed to open file: " + file_path);
+        std::stringstream ss(line);
+        std::string landmark_a_id, landmark_b_id, time;
+
+        std::getline(ss, landmark_a_id, ',');
+        std::getline(ss, landmark_b_id, ',');
+        std::getline(ss, time, ',');
+
+        data.push_back({landmark_a_id, landmark_b_id, time});
     }
 
-    // Prepare the response with file content
-    boost::system::error_code ec;
-    http::response<http::file_body> res{http::status::ok, req.version()};
-    res.set(http::field::server, "Boost.Beast");
-    res.set(http::field::content_type, "text/csv");
+    return data;
+}
 
-    res.body().open(file_path.c_str(), beast::file_mode::scan, ec);
-    if (ec)
+// Function to convert parsed CSV to JSON
+std::string csv_to_json(const std::vector<RoadData> &data)
+{
+    std::ostringstream oss;
+    oss << "[";
+
+    for (size_t i = 0; i < data.size(); ++i)
     {
-        throw std::runtime_error("Error opening file: " + ec.message());
+        const auto &entry = data[i];
+        if (i > 0)
+            oss << ", ";
+
+        oss << "{"
+            << "\"Landmark_A_ID\": \"" << entry.landmark_a_id << "\", "
+            << "\"Landmark_B_ID\": \"" << entry.landmark_b_id << "\", "
+            << "\"Time\": \"" << entry.time << "\""
+            << "}";
     }
+
+    oss << "]";
+    return oss.str();
+}
+
+// Function to convert parsed CSV to XML
+std::string csv_to_xml(const std::vector<RoadData> &data)
+{
+    std::ostringstream oss;
+    oss << "<rows>";
+
+    for (const auto &entry : data)
+    {
+        oss << "<row "
+            << "Landmark_A_ID=\"" << entry.landmark_a_id << "\" "
+            << "Landmark_B_ID=\"" << entry.landmark_b_id << "\" "
+            << "Time=\"" << entry.time << "\"/>";
+    }
+
+    oss << "</rows>";
+    return oss.str();
+}
+
+// Function to send file content as JSON or XML based on the Accept header
+void send_response(beast::tcp_stream &stream, const std::string &file_path, http::request<http::string_body> &req)
+{
+    std::vector<RoadData> data = parse_csv(file_path);
+
+    // Prepare the response based on the "Accept" header
+    std::string accept(req[http::field::accept].data(), req[http::field::accept].size());
+
+    http::response<http::string_body> res;
+    if (accept == "application/json")
+    {
+        std::string json_data = csv_to_json(data);
+        res = http::response<http::string_body>(http::status::ok, req.version());
+        res.set(http::field::server, "Boost.Beast");
+        res.set(http::field::content_type, "application/json");
+        res.body() = json_data;
+    }
+    else if (accept == "application/xml")
+    {
+        std::string xml_data = csv_to_xml(data);
+        res = http::response<http::string_body>(http::status::ok, req.version());
+        res.set(http::field::server, "Boost.Beast");
+        res.set(http::field::content_type, "application/xml");
+        res.body() = xml_data;
+    }
+    else
+    {
+        // Default to JSON if no acceptable format is specified
+        std::string json_data = csv_to_json(data);
+        res = http::response<http::string_body>(http::status::ok, req.version());
+        res.set(http::field::server, "Boost.Beast");
+        res.set(http::field::content_type, "application/json");
+        res.body() = json_data;
+    }
+
     res.prepare_payload();
-
-    // Send the response
     http::write(stream, res);
 }
 
@@ -68,8 +156,8 @@ int main()
 
                 std::cout << "Received request: " << req << "\n";
 
-                // Send the file
-                send_file(file_path, stream, req);
+                // Send the file content as JSON or XML based on the Accept header
+                send_response(stream, file_path, req);
             }
             catch (const std::exception &e)
             {

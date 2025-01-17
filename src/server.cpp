@@ -112,11 +112,13 @@ int main() {
                 std::cerr << "Error handling request: " << e.what() << "\n";
             }
 
-            // Shutdown and close the socket after handling the request
-            beast::error_code ec;
-            socket.shutdown(net::ip::tcp::socket::shutdown_send, ec);
-            if (ec && ec != beast::errc::not_connected) {
-                std::cerr << "Socket shutdown error: " << ec.message() << "\n";
+            // Ensure the socket is open before calling shutdown
+            if (socket.is_open()) {
+                beast::error_code ec;
+                socket.shutdown(net::ip::tcp::socket::shutdown_send, ec);
+                if (ec && ec != beast::errc::not_connected) {
+                    std::cerr << "Socket shutdown error: " << ec.message() << "\n";
+                }
             }
         }
     } catch (const std::exception& e) {

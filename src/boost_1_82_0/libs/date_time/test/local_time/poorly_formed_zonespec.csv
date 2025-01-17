@@ -1,2 +1,3 @@
-"ID","STD ABBR","STD NAME","DST ABBR","DST NAME","GMT offset","DST adjustment","DST Start Date rule","Start time","DST End date rule","End time"
-"Unique/Zone_name","GMT","","+00:00:00"
+version https://git-lfs.github.com/spec/v1
+oid sha256:199c471339bf77fda690c09205a35bd10410badea4270755932d523e114fe164
+size 185

@@ -10,17 +10,30 @@ namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
 
-std::string read_file(const std::string &file_path)
+void send_file(const std::string &file_path, beast::tcp_stream &stream, http::request<http::string_body> &req)
 {
-    std::ifstream file(file_path);
+    // Open the file to be sent
+    std::ifstream file(file_path, std::ios::binary);
     if (!file.is_open())
     {
         throw std::runtime_error("Failed to open file: " + file_path);
     }
 
-    std::ostringstream ss;
-    ss << file.rdbuf();
-    return ss.str();
+    // Prepare the response with file content
+    boost::system::error_code ec;
+    http::response<http::file_body> res{http::status::ok, req.version()};
+    res.set(http::field::server, "Boost.Beast");
+    res.set(http::field::content_type, "text/csv");
+
+    res.body().open(file_path.c_str(), beast::file_mode::scan, ec);
+    if (ec)
+    {
+        throw std::runtime_error("Error opening file: " + ec.message());
+    }
+    res.prepare_payload();
+
+    // Send the response
+    http::write(stream, res);
 }
 
 int main()
@@ -45,25 +58,18 @@ int main()
 
             try
             {
+                // Convert the socket to a tcp_stream
+                beast::tcp_stream stream(std::move(socket));
+
                 // Read the request
                 beast::flat_buffer buffer;
                 http::request<http::string_body> req;
-                http::read(socket, buffer, req);
+                http::read(stream, buffer, req);
 
                 std::cout << "Received request: " << req << "\n";
 
-                // Prepare the response
-                std::string file_content = read_file(file_path);
-
-                http::response<http::string_body> res{
-                    http::status::ok, req.version()};
-                res.set(http::field::server, "Boost.Beast");
-                res.set(http::field::content_type, "text/csv");
-                res.body() = file_content;
-                res.prepare_payload();
-
-                // Send the response
-                http::write(socket, res);
+                // Send the file
+                send_file(file_path, stream, req);
             }
             catch (const std::exception &e)
             {
@@ -84,4 +90,3 @@ int main()
         std::cerr << "Error: " << e.what() << "\n";
     }
 }
-

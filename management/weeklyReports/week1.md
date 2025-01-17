@@ -16,7 +16,7 @@ This week was the first week of the project, which means the team mostly focused
     - Since there are no fixed deadlines for the project, we wanted to set deadlines for ourselves so as not to end up doing everything at the last minute. We also wanted a plan to know what to focus on.
 
 ## Team Morale
-Here is a graph representing the teams satisfaction for the first week. \n
+Here is a graph representing the teams satisfaction for the first week. <br>
 <img src="Images/teamSatisfactionWeek1.png" width="500"> 
 
 ## Project advancements

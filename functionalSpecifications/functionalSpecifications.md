@@ -20,10 +20,7 @@
    - [4.3 Minimum Viable Product](#43-minimum-viable-product)
    - [4.4 Acceptance Criteria](#44-acceptance-criteria)
    - [4.5 Out of Scope](#45-out-of-scope)
- - [5. REST API](#5-rest-api)
-   - [5.1 Type of Web Application](#51-type-of-web-application)
-   - [5.2 API Features](#52-api-features)
-   - [5.3 User Interface](#53-user-interface)
+ - [5. REST API Features](#5-rest-api-features)
  - [6. Security ](#6-security-measures)
    - [6.1 Security Measures](#61-security-measures)
    - [6.2 Error Handling](#62-error-handling)
@@ -69,18 +66,17 @@ You can find the file in a .zip format in the README file. <!-- Don't forget to 
 Our product will be developed with the following features:
 
 - An performant and efficient **algorithm**<sup><a href="#1">[1]</a></sup> that receive 2 inputs<sup><a href="#13">[13]</a></sup> (**Source** and **Destination**) and provide 2 outputs<sup><a href="#16">[16]</a></sup> (**travel time** and **an ordered list of the landmarks<sup><a href="#15">[15]</a></sup> in the path**).
-- A **HTML page** that will contain a simple interface where the users will provide the inputs<sup><a href="#13">[13]</a></sup>.
 - A **REST API** running on an HTTP<sup><a href="#11">[11]</a></sup> server (localhost) called by the HTML<sup><a href="#10">[10]</a></sup> page that will contain our algorithm<sup><a href="#1">[1]</a></sup>. Upon receiving a user's request, the API will deliver response payloads in both JSON and XML<sup><a href="#20">[20]</a></sup> formats.
 - A **Data Validation tool**, that will be useful to verify the integrity of the provided .csv file. Its source code with instructions on how to use it has to be in our GitHub<sup><a href="#7">[7]</a></sup> repository. Before using the dataset<sup><a href="#5">[5]</a></sup>, we also need to ensure that the file forms a Directed Acyclic Graph<sup><a href="#8">[8]</a></sup> (DAG<sup><a href="#4">[4]</a></sup>) and doesn't have any loop. Indeed, the graph<sup><a href="#8">[8]</a></sup> must be fully connected, allowing the navigation between any two landmarks<sup><a href="#15">[15]</a></sup>.
 
 ### 2.2. Constraints
 At first, the product must be implemented in C++<sup><a href="#3">[3]</a></sup> to achieve optimal performance, allowing us the potential to loop fast over large volumes of data.
 
-Then, the API<sup><a href="#2">[2]</a></sup> must be able to handle queries<sup><a href="#17">[17]</a></sup> within 1 second on a typical laptop, encouraging us to provide a lot of optimization in our algorithm<sup><a href="#1">[1]</a></sup> and to perform many essential tests. 
+Then, the API<sup><a href="#2">[2]</a></sup> must be able to handle queries<sup><a href="#17">[17]</a></sup> within 1 second, encouraging us to provide a lot of optimization in our algorithm<sup><a href="#1">[1]</a></sup> and to perform many essential tests. 
 
 Its access doesn't require any Internet connection if we use the laptop where we created the local server. However, the Internet will be needed if the client uses another computer.
 
-The school team also advised us to prioritize speed for precision and use heuristics<sup><a href="#9">[9]</a></sup> for getting approximative results. However, we are only allowed to return an approximative path with a 10% error margin compared to the actual shortest path value.
+The use of heuristics<sup><a href="#9">[9]</a></sup> is also possible to prioritize speed for precision and get approximative results. However, we must return an approximative path with a 10% error margin compared to the actual shortest path value.
 
 Lastly: we shouldn't allow the user to provide the same landmark<sup><a href="#15">[15]</a></sup> as both the **Source** and the **Destination**.
 
@@ -104,15 +100,15 @@ Finally, the results should be returned in **under 1 second**.
 ## 4. Product Details
 
 ### 4.1. Memory Requirements
-To calculate the minimal memory amount required for our product, knowing the inputs and outputs types is essential if we plan to use an adjacency list to represent the graph.
+Understanding the input and output types is crucial when using an adjacency list to represent the graph, as it helps determine the minimal memory required for our product.
 
-First, there are 24 millions of nodes, each represented by an unsigned integer can vary from 0 to 4294967295. Knowing that each edge is bidirectional, the total number of edges would be *24 million lines in the CSV file * 2 = 48 million edges*.
+First, there are 24 million nodes, each represented by an unsigned integer varying from 0 to 4294967295. Knowing that each edge is bidirectional, the total number of edges would be *24 million lines in the CSV file * 2 = 48 million edges*.
 
 Each edge entry in the adjacency list stores:
 
-- 1. The target node (unsigned integer, 4 bytes).
-- 2. Travel time (unsigned integer, 4 bytes).
-- 3. A pointer or index for linked list or vector (typically 8 bytes on 64-bit systems).
+- The target node (unsigned integer, 4 bytes).
+- Travel time (unsigned integer, 4 bytes).
+- A pointer or index for linked list or vector (typically 8 bytes on 64-bit systems).
 
 So, the total memory required to store the adjacency list would be:
 
@@ -124,9 +120,9 @@ So, the total memory required to store the adjacency list would be:
 = 48 \, \text{million} \times (4 + 4 + 8) \, \text{bytes} = 768 \, \text{MB}
 \]
 
-If we take into account the miscellaneous structures, such as visited flags, input/output buffers, and REST API<sup><a href="#18">[18]</a></sup> handling, add overhead, we can add a rough estimate of **50 MB**.
+By accounting for miscellaneous structures such as visited flags, input/output buffers, and REST API[18] handling, we can estimate an additional memory requirement of approximately **50 MB**.
 
-The minimal memory required would be **768 MB** (adjacency list) + **50 MB** (miscallenous structures) = **818 MB**.
+In the end, the minimal memory required would be **768 MB** (adjacency list) + **50 MB** (miscellaneous structures) = **818 MB**.
 
 
 ### 4.2. Non-Functional Requirements
@@ -142,7 +138,7 @@ The algorithm<sup><a href="#1">[1]</a></sup> must handle large and complex input
 The algorithm<sup><a href="#1">[1]</a></sup> must use a minimal memory of **818 MB** and respond to all queries<sup><a href="#17">[17]</a></sup> **within 1 second** on any kind of computer.
 
 #### Robustness
-The algorithm<sup><a href="#1">[1]</a></sup> must handle invalid inputs<sup><a href="#13">[13]</a></sup>, edge cases, and errors reliably. Heuristic solutions must not exceed the shortest path duration by **more** than 10%**. <!-- It measures the unexpected loss so yes it's robustness. -->
+The algorithm<sup><a href="#1">[1]</a></sup> must handle invalid inputs<sup><a href="#13">[13]</a></sup>, edge cases, and errors reliably. Heuristic solutions must not exceed the shortest path duration by **more than 10%**. <!-- It measures the unexpected loss so yes it's robustness. -->
 
 #### Integrity
 The algorithm<sup><a href="#1">[1]</a></sup> must provide a clean API<sup><a href="#2">[2]</a></sup> that supports real-world use and responds with **XML**<sup><a href="#20">[20]</a></sup> and **JSON**<sup><a href="#14">[14]</a></sup> payloads. 
@@ -157,7 +153,7 @@ The following is a list of the potential different development phases of our pro
 |:------- |:--------- | :--------- |:-------------|
 |**Phase 1** |Core Functionality & Scalability | Algorithm<sup><a href="#1">[1]</a></sup> providing correct outputs<sup><a href="#16">[16]</a></sup>, using complex structures of large and various sizes.| 0.2 |
 |**Phase 2** |Performance| Improved runtime and reduced memory usage using advanced optimization techniques. |0.4 (Alpha) |
-|**Phase 3** |Integrity | Implementation of the algorithm<sup><a href="#1">[1]</a></sup> in a REST API<sup><a href="#18">[18]</a></sup> with a clean User Interface. |0.6|
+|**Phase 3** |Integrity | Implementation of the algorithm<sup><a href="#1">[1]</a></sup> in a clean REST API<sup><a href="#18">[18]</a></sup>. |0.6|
 |**Phase 4** |Robustness | Better versability and reliability, capable of providing outputs<sup><a href="#16">[16]</a></sup> in JSON<sup><a href="#14">[14]</a></sup> or XML<sup><a href="#20">[20]</a></sup> format. | 0.8 (Beta) |
 |**Phase 5** | Maintainability | Refined algorithm<sup><a href="#1">[1]</a></sup> depending on user feedback and additional insights, with optional enhancements or features. | 1.0 (Final)|
 
@@ -168,7 +164,7 @@ To determine if this IT project is successful, the product must meet all the fol
 - The algorithm<sup><a href="#1">[1]</a></sup> handles invalid inputs<sup><a href="#13">[13]</a></sup> (e.g., missing fields, corrupted data) gracefully by returning appropriate error codes and messages in JSON<sup><a href="#14">[14]</a></sup> and XML<sup><a href="#20">[20]</a></sup> formats.
 - API<sup><a href="#2">[2]</a></sup> responses meet the specified payload structure for both JSON<sup><a href="#14">[14]</a></sup> and XML<sup><a href="#20">[20]</a></sup> formats.
 - The solution achieves at least 90% accuracy for heuristic calculations without exceeding a 10% margin of error.
-- The product is successfully deployed in a REST API<sup><a href="#18">[18]</a></sup> with a functional interface tested on at least three representative use cases.
+- The product is successfully deployed in a REST API<sup><a href="#18">[18]</a></sup> that can be called with efficient queries.
 
 ### 4.5. Out of Scope
 
@@ -176,15 +172,14 @@ Here is the list of features that we won't work on for this project or that we g
 - Compatibility with other output<sup><a href="#16">[16]</a></sup> formats.
 - Interactive map of the United States as the output<sup><a href="#16">[16]</a></sup>.
 - More detailed input<sup><a href="#13">[13]</a></sup> options allow us to specify not only the source and destination landmarks<sup><a href="#15">[15]</a></sup> but also any intermediate landmarks<sup><a href="#15">[15]</a></sup>  that we want the path to pass through..
+- User Interface created as a HTML page where the user enter the source and destination landmarks' IDs and press "Confirm" to display the route and the total time travel.
 
-## 5. REST API
+## 5. REST API Features
 
-### 5.1. Type of Web Application
-To create the web application, we will build an HTML<sup><a href="#10">[10]</a></sup> page containing the user interface required to receive the inputs<sup><a href="#13">[13]</a></sup> and allow the user to test the algorithm.
+We will build the code that will create a server hosting the REST API, and that will be able to store all the data contained within the .csv file.
 
-Furthemore, the page will also allow the user to send an HTTP<sup><a href="#11">[11]</a></sup> request to have access to the REST API<sup><a href="#18">[18]</a></sup> server and retrieve the required data for our algorithm<sup><a href="#1">[1]</a></sup>.
+Furthemore, the user will be able to send an HTTP<sup><a href="#11">[11]</a></sup> request to have access to the REST API<sup><a href="#18">[18]</a></sup> server and retrieve the required data for our algorithm<sup><a href="#1">[1]</a></sup>.
 
-### 5.2. API Features
 Among all the main specific HTTP<sup><a href="#11">[11]</a></sup> requests possible, the API<sup><a href="#2">[2]</a></sup> will allow us to use a **GET** endpoint<sup><a href="#6">[6]</a></sup> to request with the following features:
 - **Input**: IDs of the source and destination landmarks<sup><a href="#15">[15]</a></sup>. They must be entered by the user before running the algorithm<sup><a href="#1">[1]</a></sup>.
 - **Output**: Travel time and the ordered list of landmarks<sup><a href="#15">[15]</a></sup> in the path. They should be provided quickly and clearly to the client once the calculations are performed.
@@ -217,12 +212,6 @@ The JSON/XML<sup><a href="#20">[20]</a></sup> file should return both the route 
 
 Additionally, all these features must be compatible with C++<sup><a href="#3">[3]</a></sup>, efficient, fast, and robust.
 
-### 5.3. User Interface
-The HTML<sup><a href="#10">[10]</a></sup> page should display a simple screen allowing the user to type the 2 required inputs<sup><a href="#13">[13]</a></sup> (**Source** and **Destination**), with text boxes where the user types both places while making sure they aren't the same.
-
-Then, the user clicks on a press button named **CONFIRM** will appear, launching the algorithm<sup><a href="#1">[1]</a></sup>.
-
-Finally, the screen should have enough space to display the 2 outputs<sup><a href="#16">[16]</a></sup>: the **Route** will obviously be represented as an ordered list, and **Travel Time** will simply be a label placed right next to the list.
 
 ## 6. Security 
 
@@ -240,11 +229,10 @@ Here is the following error cases the program will handle:
 | **Case** | **Error Handling** |
 | ----- | ----------- |
 | Entering characters other than numbers in the landmark<sup><a href="#15">[15]</a></sup> inputs<sup><a href="#13">[13]</a></sup>. | It should show the error message: "Please use only integer numbers." |
-| Opening a new window to access the local server while a window with the REST API<sup><a href="#18">[18]</a></sup> is already opened. | Delete the new window and redirect to the one with the REST API<sup><a href="#18">[18]</a></sup>. |
 | Accessing the REST API<sup><a href="#18">[18]</a></sup> with another computer without an Internet connexion. | The browser should display the error message "Error 503, Service Unavailable." |
-| The user reloads the page while the algorithm<sup><a href="#1">[1]</a></sup> is running. | The algorithm<sup><a href="#1">[1]</a></sup> halts due to the reload, requiring the user to re-enter their inputs<sup><a href="#13">[13]</a></sup>.|
+| The user reloads the page while the algorithm<sup><a href="#1">[1]</a></sup> is running. | The algorithm<sup><a href="#1">[1]</a></sup> halts due to the reload, requiring the user to re-enter the command lines.|
 | The user's computer lacks sufficient memory to execute the algorithm<sup><a href="#1">[1]</a></sup> effectively. | The program displays a loading icon with the following message: "Insufficient memory detected. Please free up some memory and try again." |
-|In one of the landmarks inputs, the user types an ID integer below 1 or above 24 millions. | The program displays a pop-up message saying: "ID out of range. Please select a number between 0 and 24 000 000." |
+| In one of the landmarks inputs, the user types an ID integer below 1 or above 24 millions. | The program displays a pop-up message saying: "ID out of range. Please select a number between 0 and 24 000 000." |
 
 ## 7. Glossary
 
@@ -269,6 +257,6 @@ Here is the following error cases the program will handle:
 | <span id="15.5">**Localhost**</span> | Local server environment that can be used to test and run server side scripts on a computer. |
 | <span id="16">**Output**</span> | Refers to the result, response, or data generated by a system after processing the input<sup><a href="#13">[13]</a></sup>. |
 | <span id="17">**Query**</span> | Request for data that we can access, manipulate, delete, or retrieve from a database. |
-| <span id="18">**Rest API**</span> | Meaning *Representational State Transfer API*, follows the REST architectural style, which provides rules for building lightweight, flexible web APIs<sup><a href="#2">[2]</a></sup>. |
+| <span id="18">**Rest API**</span> | Meaning *Representational State Transfer (REST) API*, it follows the REST architectural style, defines rules for creating lightweight and flexible web APIs<sup><a href="#2">[2]</a></sup>. A RESTful API<sup><a href="#2">[2]</a></sup> must comply with a client-server architecture, stateless communication, cacheable data, a uniform interface enabling resource manipulation and hypermedia navigation, a layered system design, and optionally, code-on-demand for extended client functionality. |
 | <span id="19">**TLS**</span> | Meaning *Transport layer Security*, data encryption system between clients and servers that protect sensitive information like API<sup><a href="#2">[2]</a></sup> keys and access tokens from being intercepted. |
 | <span id="20">**XML**</span> | Meaning *Extensible Markup Language*, markup language and file format for storing, transmitting, and reconstructing data. |

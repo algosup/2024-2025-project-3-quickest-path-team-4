@@ -16,7 +16,8 @@ This week was the first week of the project, which means the team mostly focused
     - Since there are no fixed deadlines for the project, we wanted to set deadlines for ourselves so as not to end up doing everything at the last minute. We also wanted a plan to know what to focus on.
 
 ## Team Morale
-Here is a graph representing the teams satisfaction for the first week.<img src="Images/teamSatisfactionWeek1.png" width="500"> 
+Here is a graph representing the teams satisfaction for the first week. <br>
+<img src="Images/teamSatisfactionWeek1.png" width="500"> 
 
 ## Project advancements
 
@@ -28,8 +29,6 @@ Here is a graph representing the teams satisfaction for the first week.<img src=
     - We have a skeleton for the document. However, the document does not have the expected amount of content.
 4. **Planning/Deadlines**
     - We have fixed deadlines and created a schedule to ensure good coordination in the team using a Gantt Chart for deadlines and a RACI matrix for responsibility.
-
-Here is a graph representing the team's satisfaction for the first week.
 
 ## Extras
 
@@ -52,7 +51,7 @@ Here is a graph representing the team's satisfaction for the first week.
 2. **Finish choosing an algorithm**
  - Before the end of next week, no matter what, we will have chosen an algorithm to allow us to get to work.
 3. **Start working on the code**
- - We need to start working on the code a bit to allow us to do extensive testing to avoid issues.
+ - We need to start working on the code early to allow us to do extensive testing, this will help us avoid issues in the long run.
 
 ## Conclusion
 

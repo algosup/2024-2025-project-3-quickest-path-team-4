@@ -192,6 +192,11 @@ std::vector<int> findIsolatedNodes(const WeightedAdjList &adj)
 // 6) Find "Isolated Edges" => edges where both endpoints have degree=1
 //
 
+/*!
+    /brief Find isolated edges in a graph.
+    /param adj The adjacency list of the graph.
+    /param allEdges The list of all edges in the graph.
+*/
 std::vector<WeightedEdge> findIsolatedEdges(
     const WeightedAdjList &adj,
     const std::vector<WeightedEdge> &allEdges
@@ -204,7 +209,7 @@ std::vector<WeightedEdge> findIsolatedEdges(
     std::unordered_map<int,int> degree;
     degree.reserve(adj.size());
     for (auto &kv : adj) {
-        degree[kv.first] = kv.second.size();
+        degree[kv.first] = kv.second.size();        
     }
 
     // check each edge
@@ -233,7 +238,7 @@ void writeJsonFormat(
         return;
     }
 
-    // gather nodes and sort them
+    // Gather nodes and sort them
     std::vector<int> nodes;
     nodes.reserve(adj.size());
     for (auto &kv : adj) {
@@ -243,36 +248,38 @@ void writeJsonFormat(
 
     out << "{\n";
 
-    // iterate each node in ascending order
+    // Iterate each node in ascending order
     for (size_t i = 0; i < nodes.size(); i++) {
         int node = nodes[i];
         out << "  \"" << node << "\":[";   // "1":[
 
-        // get the neighbor list
+        // Get the neighbor list
         const auto &nbrList = adj.at(node);
 
-        // optional: sort neighbors by ID
-        std::vector<std::pair<int,int>> sortedNbrs(nbrList.begin(), nbrList.end());
+        // Optional: sort neighbors by ID
+        std::vector<std::pair<int, int>> sortedNbrs(nbrList.begin(), nbrList.end());
         std::sort(sortedNbrs.begin(), sortedNbrs.end(),
-                  [](auto &a, auto &b){
+                  [](auto &a, auto &b) {
                       return a.first < b.first; 
                   });
 
-        // Print array of [nbr,time] pairs
+        // Print array of [nbr,time,degree] triples
         out << "["; 
         for (size_t j = 0; j < sortedNbrs.size(); j++) {
             int nbr  = sortedNbrs[j].first;
             int time = sortedNbrs[j].second;
-            out << nbr << "," << time;
+            int degree = adj.at(nbr).size(); // Get degree of connected node
+
+            out << nbr << "," << time << "," << degree;
             if (j + 1 < sortedNbrs.size()) {
                 out << "],[";
             }
         }
-        out << "]"; // close last pair
+        out << "]"; // Close last triple
 
-        out << "]"; // close this node's array
+        out << "]"; // Close this node's array
 
-        // if not the last node, put a comma
+        // If not the last node, put a comma
         if (i + 1 < nodes.size()) {
             out << ",";
         }
@@ -283,8 +290,10 @@ void writeJsonFormat(
     out.close();
 
     std::cout << "Wrote adjacency to " << filename 
-              << " in JSON-like format.\n";
+              << " in JSON-like format with degrees.\n";
 }
+
+
 
 //
 // 8) Main
@@ -316,7 +325,7 @@ int main(int argc, char** argv)
     }
 
     // 2) Write adjacency in the JSON-like format 
-    writeJsonFormat(adj, "sortedData.json");
+    writeJsonFormat(adj, "adjaAndNode.json");
 
     // 3) Basic stats
     std::cout << "Number of distinct nodes in adjacency: " << adj.size() << "\n";

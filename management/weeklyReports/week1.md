@@ -30,8 +30,6 @@ Here is a graph representing the teams satisfaction for the first week. <br>
 4. **Planning/Deadlines**
     - We have fixed deadlines and created a schedule to ensure good coordination in the team using a Gantt Chart for deadlines and a RACI matrix for responsibility.
 
-Here is a graph representing the team's satisfaction for the first week.
-
 ## Extras
 
 1. **REST API**
@@ -53,7 +51,7 @@ Here is a graph representing the team's satisfaction for the first week.
 2. **Finish choosing an algorithm**
  - Before the end of next week, no matter what, we will have chosen an algorithm to allow us to get to work.
 3. **Start working on the code**
- - We need to start working on the code a bit to allow us to do extensive testing to avoid issues.
+ - We need to start working on the code early to allow us to do extensive testing, this will help us avoid issues in the long run.
 
 ## Conclusion
 

@@ -221,7 +221,7 @@ To prevent anyone from using the REST API<sup><a href="#18">[18]</a></sup> in an
 - Most importantly, we will create our web page in HTTPS<sup><a href="#12">[12]</a></sup> format to communicate with our REST API<sup><a href="#18">[18]</a></sup>, preventing attackers to intercept, manipulate, or steal data transmitted or received by your REST API<sup><a href="#18">[18]</a></sup>.
 - We will make sure to keep our libraries up to date. 
 - We will use a TLS (Transport Layer Security) to provide data encryption service for our REST API<sup><a href="#18">[18]</a></sup>, and help maintain data integrity and confidentiality by preventing man-in-the-middle attacks.
-- We will implement an error handling program to anticipate any input<sup><a href="#13">[13]</a></sup> error and avoid exposing any sensitive information through error messages.
+- We will implement an error handling program to anticipate any input<sup><a href="#13">[13]</a></sup> error and avoid exposing any sensitive information through error messages. 
 
 ### 6.2. Error Handling
 Here is the following error cases the program will handle:
@@ -260,3 +260,5 @@ Here is the following error cases the program will handle:
 | <span id="18">**Rest API**</span> | Meaning *Representational State Transfer (REST) API*, it follows the REST architectural style, defines rules for creating lightweight and flexible web APIs<sup><a href="#2">[2]</a></sup>. A RESTful API<sup><a href="#2">[2]</a></sup> must comply with a client-server architecture, stateless communication, cacheable data, a uniform interface enabling resource manipulation and hypermedia navigation, a layered system design, and optionally, code-on-demand for extended client functionality. |
 | <span id="19">**TLS**</span> | Meaning *Transport layer Security*, data encryption system between clients and servers that protect sensitive information like API<sup><a href="#2">[2]</a></sup> keys and access tokens from being intercepted. |
 | <span id="20">**XML**</span> | Meaning *Extensible Markup Language*, markup language and file format for storing, transmitting, and reconstructing data. |
+
+<!-- #9 -->

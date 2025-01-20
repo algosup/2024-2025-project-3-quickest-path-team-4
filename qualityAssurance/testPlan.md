@@ -51,7 +51,6 @@
 - [Risks and assumptions](#risks-and-assumptions)
 	- [Risks](#risks)
 	- [Assumptions](#assumptions)
-- [Timeline](#timeline)
 - [GitHub issues](#github-issues)
 	- [Workflow](#workflow)
 	- [Types of issues](#types-of-issues)
@@ -471,7 +470,7 @@ The test cases can be found in the [test cases](./testCases.md) document.
 - Limited security requirements
     - No authentication or authorization mechanisms are required for the REST API, as security testing is out of scope.
 
-# Timeline
+<!-- # Timeline -->
 
   <!-- todo -->
 

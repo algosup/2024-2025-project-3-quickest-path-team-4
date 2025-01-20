@@ -12,13 +12,14 @@
  - [2. Product Goal](#2-product-goal)
    - [2.1 Project Scope](#21-project-scope)
    - [2.2 Constraints](#22-constraints)
-   - [2.3 Risks and Assumptions](#23-risks-and-assumptions)
+   - [2.3 Risks and Mitigations](#23-risks-and-mitigations)
  - [3. Algorithm Goal](#3-algorithm-goal)
  - [4. Product Details](#4-product-details)
-   - [4.1 Non-Functional Requirements](#41-non-functional-requirements)
-   - [4.2 Minimum Viable Product](#42-minimum-viable-product)
-   - [4.3 Acceptance Criteria](#43-acceptance-criteria)
-   - [4.4 Out of Scope](#44-out-of-scope)
+   - [4.1 Memory Requirements](#41-memory-requirements)
+   - [4.2 Non-Functional Requirements](#42-non-functional-requirements)
+   - [4.3 Minimum Viable Product](#43-minimum-viable-product)
+   - [4.4 Acceptance Criteria](#44-acceptance-criteria)
+   - [4.5 Out of Scope](#45-out-of-scope)
  - [5. Rest API](#5-rest-api)
    - [5.1 Type of Web Application](#51-type-of-web-application)
    - [5.2 API Features](#52-api-features)
@@ -32,11 +33,11 @@
 </details>
 
 ## Document Evolution
-
+<!-- Won't change -->
 | Author| Paul NOWAK (Program Manager) |
 |---------------|------------|
 | Created | 01/06/2025 |
-| Last modified | 01/16/2025 |
+| Last modified | 01/17/2025 |
 | Document deadline | 02/07/2025 |
 
 ## 1. Overview
@@ -61,6 +62,8 @@ In this file, each line represents a connection between two unspecified landmark
 
 Additionally, the different connections are bidirectional, meaning if a connection exists from A to B, the same applies to B to A.
 
+You can find the file in a .zip format in the README file. <!-- Don't forget to add it in the README -->
+
 ## 2 Product Goal
 
 ### 2.1. Project Scope
@@ -68,8 +71,8 @@ Our product will be developed with the following features:
 
 - An performant and efficient **algorithm**<sup><a href="#1">[1]</a></sup> that receive 2 inputs<sup><a href="#13">[13]</a></sup> (**Source** and **Destination**) and provide 2 outputs<sup><a href="#16">[16]</a></sup> (**travel time** and **an ordered list of the landmarks<sup><a href="#15">[15]</a></sup> in the path**).
 - A **HTML page** that will contain a simple interface where the users will provide the inputs<sup><a href="#13">[13]</a></sup>.
-- A **REST API** running on an HTTP<sup><a href="#11">[11]</a></sup> server (localhost) called by the HTML<sup><a href="#10">[10]</a></sup> page that will contain our algorithm<sup><a href="#1">[1]</a></sup>.
-- A **Data Validation tool**, which will be useful to verify the integrity of the provided .csv file. Its source code with instructions on how to use it has to be in our GitHub<sup><a href="#7">[7]</a></sup> repository.
+- A **REST API** running on an HTTP<sup><a href="#11">[11]</a></sup> server (localhost) called by the HTML<sup><a href="#10">[10]</a></sup> page that will contain our algorithm<sup><a href="#1">[1]</a></sup>. Upon receiving a user's request, the API will deliver response payloads in both JSON and XML formats.
+- A **Data Validation tool**, that will be useful to verify the integrity of the provided .csv file. Its source code with instructions on how to use it has to be in our GitHub<sup><a href="#7">[7]</a></sup> repository. Before using the dataset<sup><a href="#5">[5]</a></sup>, we also need to ensure that the file forms a Directed Acyclic Graph<sup><a href="#8">[8]</a></sup> (DAG<sup><a href="#4">[4]</a></sup>) and doesn't have any loop. Indeed, the graph<sup><a href="#8">[8]</a></sup> must be fully connected, allowing the navigation between any two landmarks<sup><a href="#15">[15]</a></sup>.
 
 ### 2.2. Constraints
 At first, the product must be implemented in C++<sup><a href="#3">[3]</a></sup> to achieve optimal performance, allowing us the potential to loop fast over large volumes of data.
@@ -78,15 +81,12 @@ Then, the API<sup><a href="#2">[2]</a></sup> must be able to handle queries<sup>
 
 Its access doesn't require any Internet connection if we use the laptop where we created the local server. However, the Internet will be needed if the client uses another computer.
 
-The staff also advised us to prioritize speed for precision and use heuristics<sup><a href="#9">[9]</a></sup> for getting approximative results. However, we are only allowed to return an approximative path with a 10% error margin compared to the actual shortest path value.
+The school team also advised us to prioritize speed for precision and use heuristics<sup><a href="#9">[9]</a></sup> for getting approximative results. However, we are only allowed to return an approximative path with a 10% error margin compared to the actual shortest path value.
 
-Before using the dataset<sup><a href="#5">[5]</a></sup>, we need to ensure the data integrity by performing the following checks:
-- **Graph Validation**: Check that the file forms a Directed Acyclic Graph<sup><a href="#8">[8]</a></sup> (DAG<sup><a href="#4">[4]</a></sup>) and doesn't have any loop.
-- **Connectivity Check**: Make sure the graph<sup><a href="#8">[8]</a></sup> is fully connected, allowing the navigation between any two landmarks<sup><a href="#15">[15]</a></sup>.
 Lastly: we shouldn't allow the user to provide the same landmark<sup><a href="#15">[15]</a></sup> as both the **Source** and the **Destination**.
 
-### 2.3. Risks and Assumptions
-| Risks | Assumptions | 
+### 2.3. Risks and Mitigations
+| Risks | Mitigations | 
 | ------| ----------- |
 | Frequent lagging issues due to the large size of the dataset<sup><a href="#5">[5]</a></sup>. | Allowing the code to catch an error when the algorithm<sup><a href="#1">[1]</a></sup> takes too much time and stops everything. | 
 | Apparition of vulnerabilities, such as attacks or insecure data footage, when creating a REST API<sup><a href="#18">[18]</a></sup>. | Establishment of a plan to anticipate and treat vulnerabilities, and implement radical security measures.| 
@@ -94,38 +94,64 @@ Lastly: we shouldn't allow the user to provide the same landmark<sup><a href="#1
 | Lack of advanced knowledge regarding REST APIs<sup><a href="#18">[18]</a></sup> in the team. | Further research about REST APIs<sup><a href="#18">[18]</a></sup> and their relationships with algorithms<sup><a href="#1">[1]</a></sup> would be beneficial. | 
 
 ## 3. Algorithm Goal
-The algorithm<sup><a href="#1">[1]</a></sup> finds the shortest path between landmark<sup><a href="#15">[15]</a></sup> A and landmark<sup><a href="#15">[15]</a></sup> B, making calculations depending on their proximity and the other intermediate nodes that can be found.
+The algorithm<sup><a href="#1">[1]</a></sup> finds **the shortest path between landmark<sup><a href="#15">[15]</a></sup> A and landmark<sup><a href="#15">[15]</a></sup> B**, making calculations depending on their proximity and the other intermediate nodes that can be found.
 
 At first, it will sort the data provided in the .csv file, before getting the source and destination as the algorithm<sup><a href="#1">[1]</a></sup>'s inputs<sup><a href="#13">[13]</a></sup>, and enter them in the algorithm<sup><a href="#1">[1]</a></sup> that will perform all the required calculations before returning the result.
 
 After the user enters the inputs<sup><a href="#13">[13]</a></sup> and selects "confirm", the algorithm<sup><a href="#1">[1]</a></sup> should quickly and efficiently calculate the path before providing the shortest route, with all the intermediate points we need to pass by, alongside the travel time as its 2 outputs<sup><a href="#16">[16]</a></sup>.
 
-Finally, the results should be returned in under 1 second.
+Finally, the results should be returned in **under 1 second**.
 
 ## 4. Product Details
 
-### 4.1. Non-Functional Requirements
+### 4.1. Memory Requirements
+To calculate the minimal memory amount required for our product, knowing the inputs and outputs types is essential if we plan to use an adjacency list to represent the graph.
+
+First, there are 24 millions of nodes, each represented by an unsigned integer can vary from 0 to 4294967295. Knowing that each edge is bidirectional, the total number of edges would be *24 million lines in the CSV file * 2 = 48 million edges*.
+
+Each edge entry in the adjacency list stores:
+
+- 1. The target node (unsigned integer, 4 bytes).
+- 2. Travel time (unsigned integer, 4 bytes).
+- 3. A pointer or index for linked list or vector (typically 8 bytes on 64-bit systems).
+
+So, the total memory required to store the adjacency list would be:
+
+\[
+\text{Memory for adjacency list} = \text{Edges} \times (\text{Target Node} + \text{Travel Time} + \text{Pointer})
+\]
+
+\[
+= 48 \, \text{million} \times (4 + 4 + 8) \, \text{bytes} = 768 \, \text{MB}
+\]
+
+If we take into account the miscellaneous structures, such as visited flags, input/output buffers, and REST API handling, add overhead, we can add a rough estimate of **50 MB**.
+
+The minimal memory required would be **768 MB** (adjacency list) + **50 MB** (miscallenous structures) = **818 MB**.
+
+
+### 4.2. Non-Functional Requirements
 Here are the different criteria for the non-functional requirements:
 
 #### Functionality
 The algorithm<sup><a href="#1">[1]</a></sup> must be stable, accurate, space-efficient, and solve the problem correctly.
 
 #### Scalability
-The algorithm<sup><a href="#1">[1]</a></sup> must handle large and complex inputs<sup><a href="#13">[13]</a></sup>, including .csv files with up to 24 million nodes while maintaining performance.
+The algorithm<sup><a href="#1">[1]</a></sup> must handle large and complex inputs<sup><a href="#13">[13]</a></sup>, including .csv files with up to **24 million nodes** while maintaining performance.
 
 #### Performance
-The algorithm<sup><a href="#1">[1]</a></sup> must use minimal memory and respond to all queries<sup><a href="#17">[17]</a></sup> within 1 second on a typical laptop.
+The algorithm<sup><a href="#1">[1]</a></sup> must use a minimal memory of **818 MB** and respond to all queries<sup><a href="#17">[17]</a></sup> **within 1 second** on a typical laptop.
 
 #### Robustness
-The algorithm<sup><a href="#1">[1]</a></sup> must handle invalid inputs<sup><a href="#13">[13]</a></sup>, edge cases, and errors reliably. Heuristic solutions must not exceed the shortest path duration by more than 10%.
+The algorithm<sup><a href="#1">[1]</a></sup> must handle invalid inputs<sup><a href="#13">[13]</a></sup>, edge cases, and errors reliably. Heuristic solutions must not exceed the shortest path duration by **more** than 10%**.
 
 #### Integrity
-The algorithm<sup><a href="#1">[1]</a></sup> must provide a clean API<sup><a href="#2">[2]</a></sup> that supports real-world use and responds with XML<sup><a href="#19">[19]</a></sup> and JSON<sup><a href="#14">[14]</a></sup> payloads. A simpler, less efficient implementation is acceptable for initial support.
+The algorithm<sup><a href="#1">[1]</a></sup> must provide a clean API<sup><a href="#2">[2]</a></sup> that supports real-world use and responds with **XML**<sup><a href="#19">[19]</a></sup> and **JSON**<sup><a href="#14">[14]</a></sup> payloads. A simpler, less efficient implementation is acceptable for initial support.
 
 #### Maintainability 
 The algorithm<sup><a href="#1">[1]</a></sup> must allow updates and modifications based on user feedback, supporting long-term development.
 
-### 4.2. Minimum Viable Product
+### 4.3. Minimum Viable Product
 The following is a list of the potential different development phases of our product. Each phase is updated based on the algorithm<sup><a href="#1">[1]</a></sup>'s progress depending on the non-functional specification.
 
 |**Phase** |**Targeted Non-Functional Requirements** | **Algorithm Improvements** | **Version** |
@@ -136,7 +162,7 @@ The following is a list of the potential different development phases of our pro
 |**Phase 4** |Robustness | Better versability and reliability, capable of providing outputs<sup><a href="#16">[16]</a></sup> in JSON<sup><a href="#14">[14]</a></sup> or XML<sup><a href="#19">[19]</a></sup> format. | 0.8 (Beta) |
 |**Phase 5** | Maintainability | Refined algorithm<sup><a href="#1">[1]</a></sup> depending on user feedback and additional insights, with optional enhancements or features. | 1.0 (Final)|
 
-### 4.3. Acceptance Criteria
+### 4.4. Acceptance Criteria
 To determine if this IT project is successful, the product must meet all the following criteria:
 
 - The algorithm<sup><a href="#1">[1]</a></sup> correctly processes and outputs<sup><a href="#16">[16]</a></sup> valid results for inputs<sup><a href="#13">[13]</a></sup> up to 24 million nodes within 1 second.
@@ -145,7 +171,7 @@ To determine if this IT project is successful, the product must meet all the fol
 - The solution achieves at least 90% accuracy for heuristic calculations without exceeding a 10% margin of error.
 - The product is successfully deployed in a REST API<sup><a href="#18">[18]</a></sup> with a functional interface tested on at least three representative use cases.
 
-### 4.4. Out of Scope
+### 4.5. Out of Scope
 
 Here is the list of features that we won't work on for this project or that we gave up during development:
 - Compatibility with other output<sup><a href="#16">[16]</a></sup> formats.

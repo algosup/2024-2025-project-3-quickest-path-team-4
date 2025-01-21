@@ -4,8 +4,15 @@
   - [Introduction](#introduction)
     - [Project Introduction](#project-introduction)
     - [Document Purpose](#document-purpose)
-  - [Development Environment](#development-environment)
+  - [Technical Requirements](#technical-requirements)
     - [Programming Language](#programming-language)
+    - [REST API](#rest-api)
+    - [Data Source](#data-source)
+    - [Performance Goals](#performance-goals)
+    - [Data Integrity Verification](#data-integrity-verification)
+    - [Expected Deliverables](#expected-deliverables)
+  - [Development Environment](#development-environment)
+    - [Programming Language](#programming-language-1)
       - [Why C++?](#why-c)
       - [Compiler Recommendations](#compiler-recommendations)
     - [Development Environment Setup](#development-environment-setup)
@@ -14,7 +21,7 @@
     - [Dependencies](#dependencies)
       - [STL](#stl)
         - [Usage of STL](#usage-of-stl)
-      - [REST API](#rest-api)
+      - [REST API](#rest-api-1)
         - [Boost.Beast](#boostbeast)
           - [Boost.Beast C++ Implementation](#boostbeast-c-implementation)
         - [Localhost](#localhost)
@@ -22,8 +29,8 @@
     - [System Architecture](#system-architecture)
   - [Algorithm](#algorithm)
     - [Algorithm Description](#algorithm-description)
-    - [Data Source](#data-source)
-    - [Data Integrity Verification](#data-integrity-verification)
+    - [Data Source](#data-source-1)
+    - [Data Integrity Verification](#data-integrity-verification-1)
       - [Functional Specifications](#functional-specifications)
       - [Graph Validation Verification](#graph-validation-verification)
       - [Connectivity Checks](#connectivity-checks)
@@ -45,6 +52,56 @@ The software will be developed in C++ to fully exploit the language's performanc
 This document outlines the code guidelines, technologies, algorithms used, and dependencies required for the project. It provides a clear understanding of the system's architecture, performance goals, and data handling, ensuring consistency and quality in development.
 
 It sets standards for coding practices and collaboration between internal developers and external contributors. For the client, it offers insight into the technical specifications and how the solution meets their needs for calculating the shortest path between landmarks.
+
+## Technical Requirements
+
+### Programming Language
+
+The software must be implemented in C++ to achieve optimal performance.
+
+### REST API
+
+The software exposes its functionality through a Representational state transfer (REST) application programming interface (API) running on an Hypertext Transfer Protocol (HTTP) localhost server. It includes a single get endpoint with the following features:
+
+- Input: Accept IDs of both the source and destination landmarks.
+- Output: Travel time and the ordered list of landmarks in the path.
+- Response format must accept both JSON and XML.
+
+### Data Source
+
+The software uses a .csv file named Data-Roads.csv, containing approximately 24 million nodes, each node representing a landmark in the USA. Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
+
+Each line is at it follows:
+
+```
+Landmark_A_ID,Landmark_B_ID,Time
+```
+
+### Performance Goals
+
+The API must handle all queries within 1 second on a typical laptop.
+
+We prioritize speed over precision , meaning we may use heuristics (an approximation of a calculus which can be interpreted as "good enough"), the returned path should not exceed the shortest path duration by more than 10%.
+
+### Data Integrity Verification
+
+Provide a verification to check whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) free of loops.
+
+Provide a verification to ensure the graph is fully connected and showing the possibility to navigate between any two landmarks.
+
+Checks can be done using another programming language than C++, though, to stay uniform, we will be doing these checks using C++ as well.
+
+### Expected Deliverables
+
+1. C++ Source Code: Including comments and clear documentation. The code has to be of
+your own creation, and you should not use libraries beside STL and what is required for the
+Web server.
+2. Time and Space Complexity: Big O notation for the main algorithms.
+3. REST API Implementation: Demonstrating the ability to handle multiple formats (XML and
+JSON).
+4. Test Suite: Tests to validate correctness, performance, and compliance with the 10%
+approximation rule.
+5. Data Validation Tool: A utility to verify the integrity of the provided CSV file.
 
 ## Development Environment
 
@@ -78,13 +135,15 @@ For C++'s documentation: [C++ Reference](https://cplusplus.com/reference/)
 
 ```md
 2024-2025-project-3-quickest-path-team-4/src
-├─── 
-│   ├─── 
-│   │   └─── 
-│   ├─── 
-│   │   └───
-│   ├─── 
-│   │   └─── 
+├─── src
+│   ├─── boost_1_82_0 
+│   │   └─── (all the files necessary for Boost.Beast integrity)
+│   ├─── algorithm
+│   │   └─── dijksta.cpp
+│   │   └─── dijkstra.bin
+│   ├─── server
+│   │   └─── server.cpp
+│   │   └─── server.bin
 │   └─── 
 │       
 ├─── 
@@ -95,16 +154,45 @@ For C++'s documentation: [C++ Reference](https://cplusplus.com/reference/)
 
 #### STL
 
-The C++ Standard Template Library (STL) is a set of template classes and functions that provides the implementation of common data structures and algorithms such as lists, stacks, arrays, sorting, searching, etc. It also provides the iterators and functors which makes it easier to work with algorithms and containers. /
-We were asked as a requirement not to use external libraries for the project, we solemnly rely on STL for this project. Our team doesn't have to install any other libraries.
+The Standard Template Library (STL) is a powerful library in C++ that provides a collection of ready-to-use classes and functions for common data structures and algorithms. These include dynamic arrays, linked lists, stacks, queues, hash tables, and sorting or searching algorithms. STL helps simplify code, increase efficiency, and maintain consistency.
+
+For this project, where performance and scalability are critical, STL plays a vital role by offering optimized implementations of data structures and algorithms. Below is a breakdown of the selected STL components and how they are used in this project:
 
 ##### Usage of STL
 
-STL offers a wide range of containers, which are the data structures used to store objects and data. For this project, our team mostly uses vectors.
+Standard Template Library are C++ libraries offering wide range, which are the data structures used to store objects and data. Here are those most important for this project:
 
-```c++
-#include <vector>
-```
+- ```<iostream>```
+  - Purpose: Provides input and output functionality for the project.
+  - Usage: Used for logging messages, displaying debug information, and handling input/output operations during development and testing.
+
+- ```<string>```
+  - Purpose: Provides a robust way to handle strings in C++.
+  - Usage: Used to manage API request/response data, handle file paths, and process input/output strings in the program.
+
+- ```<vector>```
+  - Purpose: A dynamic array that allows for efficient storage and manipulation of elements.
+  - Usage: Represents adjacency lists in graph representations, where each node’s connections are stored in a dynamic array.
+
+- ```<fstream>```
+  - Purpose: Provides file input/output functionality.
+  - Usage: Reads the .csv file containing graph data, parsing and storing connections for graph construction.
+
+- ```<queue>```
+  - Purpose: Implements a FIFO (First-In-First-Out) data structure, including priority queues.
+  - Usage: A priority queue is utilized in Dijkstra's algorithm to process nodes based on their shortest path distances.
+
+- ```<unordered_map>```
+  - Purpose: Implements a hash table-based associative container for fast key-value pair access.
+  - Usage: Maps landmark IDs to their respective neighbors and weights, enabling efficient graph traversal and data retrieval.
+
+- ```<chrono>```
+  - Purpose: Provides tools for measuring time intervals and system clocks.
+  - Usage: Used to benchmark algorithm performance, ensuring compliance with the <1-second query response goal.
+
+- ```<algorithm>```
+  - Purpose: Provides a collection of utility functions for operations like sorting, searching, and manipulating data.
+  - Usage: Helps implement sorting or binary search operations required in graph construction and validation.
 
 #### REST API
 
@@ -115,9 +203,13 @@ REST APIs provide a flexible, lightweight way to integrate applications and conn
 Rest APIs have to follow 5 principles:
 
 - Uniform interface: All API requests for the same resource should look the same, no matter where the request comes from.
+
 - Client-server decoupling: In REST API design, client and server applications must be completely independent of each other.
+
 - Statelessness: REST APIs are stateless, meaning that each request needs to include all the information necessary for processing it.
+
 - Cacheability: When possible, resources should be cacheable on the client or server side. Server responses also need to contain information about whether caching is allowed for the delivered resource.
+
 - Layered system architecture: In REST APIs, the calls and responses go through different layers. Don’t assume that the client, and server applications connect directly to each other.
 
 For this project, we have to include a single GET endpoint. The endpoint shows where the resource is located. It typically includes a Uniform Resource Identifier (URI). In our case, the URI is located on a local-hosted server.
@@ -188,6 +280,42 @@ Execute this program using: `g++ -std=c++17 -Iboost_1_82_0  main.cpp -o beast_ex
 You can use this starting point to set up the initial server for the project.
 
 ##### Localhost
+
+Localhost refers to the local computer where the server is running. By default, the IP address for localhost is 127.0.0.1, and the system can use any open port to handle API requests. In our project, we have configured the server to operate on port 8080. This allows developers to test the REST API locally before deploying it in a production environment.
+
+Purpose in the Project:
+
+- Enables the development and debugging of the REST API without needing external servers.
+
+- Facilitates testing and validation of the algorithm's performance and correctness.
+
+- Ensures secure, isolated testing by restricting external access during development.
+
+**How It Works:**
+
+The Boost.Beast library initializes an HTTP server on the localhost address, we will be using a computer serving as a server during this project, which IP address is 192.168.15.115.
+
+Our client here can send GET requests to the server, this GET request is triggered the first time the algorithm code is ran.
+
+It will process the request and respond with the shortest path data in either JSON or XML format.
+
+**Setting up Localhost:**
+
+To set up localhost on port 8080 for this project:
+
+1. Server Initialization:
+Use the Boost.Beast library to create an HTTP server.
+Bind the server to 192.168.15.115:8080.
+2. Handling Requests:
+The server listens for incoming GET requests.
+It parses the input parameters (source and destination landmark IDs) and passes them to the shortest path algorithm.
+The result is formatted into the requested response format (JSON or XML) and sent back to the client.
+
+**Storing Data on the localhost server**
+
+The following code sample shows how to store a file into the server and then how to retrieve it.
+
+
 
 ##### API Flow
 

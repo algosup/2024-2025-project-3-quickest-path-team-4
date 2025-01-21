@@ -61,7 +61,7 @@ The software must be implemented in C++ to achieve optimal performance.
 
 ### REST API
 
-The software exposes its functionality through a Representational state transfer (REST) application programming interface (API) running on an Hypertext Transfer Protocol (HTTP) localhost server. It includes a single get endpoint with the following features:
+The software exposes its functionality through a Representational State Transfer (REST) application programming interface (API) running on a Hypertext Transfer Protocol (HTTP) localhost server. It includes a single get endpoint with the following features:
 
 - Input: Accept IDs of both the source and destination landmarks.
 - Output: Travel time and the ordered list of landmarks in the path.
@@ -69,9 +69,9 @@ The software exposes its functionality through a Representational state transfer
 
 ### Data Source
 
-The software uses a .csv file named Data-Roads.csv, containing approximately 24 million nodes, each node representing a landmark in the USA. Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
+The software uses a .csv file named Data-Roads.csv, containing approximately 24 million nodes, each representing a landmark in the USA. Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
 
-Each line is at it follows:
+Each line is as follows:
 
 ```
 Landmark_A_ID,Landmark_B_ID,Time
@@ -81,20 +81,19 @@ Landmark_A_ID,Landmark_B_ID,Time
 
 The API must handle all queries within 1 second on a typical laptop.
 
-We prioritize speed over precision , meaning we may use heuristics (an approximation of a calculus which can be interpreted as "good enough"), the returned path should not exceed the shortest path duration by more than 10%.
+We prioritize speed over precision, meaning we may use heuristics (an approximation of calculus that can be interpreted as "good enough"). However, the returned path should not exceed the shortest path duration by more than 10%.
 
 ### Data Integrity Verification
 
-Provide a verification to check whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) free of loops.
+Verify to check whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) free of loops.
 
-Provide a verification to ensure the graph is fully connected and showing the possibility to navigate between any two landmarks.
+Verify to ensure the graph is fully connected and shows the possibility of navigating between any two landmarks.
 
-Checks can be done using another programming language than C++, though, to stay uniform, we will be doing these checks using C++ as well.
+Checks can be done using a programming language other than C++, though to stay uniform, we will be doing these checks using C++ as well.
 
 ### Expected Deliverables
 
-1. C++ Source Code: Including comments and clear documentation. The code has to be of
-your own creation, and you should not use libraries beside STL and what is required for the
+1. C++ Source Code: Including comments and clear documentation. The code should not use libraries besides STL and what is required for the
 Web server.
 2. Time and Space Complexity: Big O notation for the main algorithms.
 3. REST API Implementation: Demonstrating the ability to handle multiple formats (XML and
@@ -160,7 +159,7 @@ For this project, where performance and scalability are critical, STL plays a vi
 
 ##### Usage of STL
 
-Standard Template Library are C++ libraries offering wide range, which are the data structures used to store objects and data. Here are those most important for this project:
+Standard Template Library are C++ libraries offering a wide range, which are the data structures used to store objects and data. Here are the most important for this project:
 
 - ```<iostream>```
   - Purpose: Provides input and output functionality for the project.
@@ -254,7 +253,7 @@ int main() {
 
         std::cout << "Server listening on port 8080...\n";
 
-        acceptor.accept(socket);
+ acceptor.accept(socket);
 
         beast::flat_buffer buffer;
         http::request<http::string_body> req;
@@ -264,15 +263,15 @@ int main() {
 
         http::response<http::string_body> res{
             http::status::ok, req.version()};
-        res.set(http::field::server, "Boost.Beast");
-        res.set(http::field::content_type, "text/plain");
-        res.body() = "Hello, world!";
-        res.prepare_payload();
+ res.set(http::field::server, "Boost.Beast");
+ res.set(http::field::content_type, "text/plain");
+ res.body() = "Hello, world!";
+ res.prepare_payload();
 
         http::write(socket, res);
-    } catch (const std::exception& e) {
+ } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
-    }
+ }
 }
 ```
 
@@ -283,7 +282,7 @@ You can use this starting point to set up the initial server for the project.
 
 Localhost refers to the local computer where the server is running. By default, the IP address for localhost is 127.0.0.1, and the system can use any open port to handle API requests. In our project, we have configured the server to operate on port 8080. This allows developers to test the REST API locally before deploying it in a production environment.
 
-Purpose in the Project:
+Purpose of the Project:
 
 - Enables the development and debugging of the REST API without needing external servers.
 
@@ -295,7 +294,7 @@ Purpose in the Project:
 
 The Boost.Beast library initializes an HTTP server on the localhost address, we will be using a computer serving as a server during this project, which IP address is 192.168.15.115.
 
-Our client here can send GET requests to the server, this GET request is triggered the first time the algorithm code is ran.
+Our client here can send GET requests to the server, this GET request is triggered the first time the algorithm code is run.
 
 It will process the request and respond with the shortest path data in either JSON or XML format.
 
@@ -313,9 +312,139 @@ The result is formatted into the requested response format (JSON or XML) and sen
 
 **Storing Data on the localhost server**
 
-The following code sample shows how to store a file into the server and then how to retrieve it.
+The following code sample shows how to store a file on the server and then how to retrieve it.
 
+```c++
+// Function to read the entire file content as a string
+std::string read_file(const std::string& file_path) {
+    std::ifstream file(file_path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open file: " + file_path);
+ }
 
+    std::ostringstream ss;
+ ss << file.rdbuf();
+    return ss.str();
+}
+
+// Function to format the file content as a JSON response
+std::string to_json(const std::string& file_content) {
+    std::string json_response = "{\"file_content\": \"";
+ // Escape double quotes in the file content
+    std::string escaped_content = file_content;
+    std::replace(escaped_content.begin(), escaped_content.end(), '"', '\\');
+ json_response += escaped_content;
+ json_response += "\"}";
+    return json_response;
+}
+
+// Function to format the file content as an XML response
+std::string to_xml(const std::string& file_content) {
+    std::string xml_response = "<?xml version=\"1.0\"?>\n<file>\n";
+ xml_response += "<content>";
+ xml_response += file_content;
+ xml_response += "</content>\n</file>";
+    return xml_response;
+}
+
+// Function to send the file content as JSON or XML based on the Accept header
+void send_response(beast::tcp_stream& stream, const std::string& file_path, http::request<http::string_body>& req) {
+ // Read the raw file content
+    std::string file_content = read_file(file_path);
+
+ // Prepare the response based on the "Accept" header
+    std::string accept = std::string(req[http::field::accept]); // Convert boost::string_view to std::string
+
+    http::response<http::string_body> res;
+    if (accept == "application/json") {
+        std::string json_data = to_json(file_content);
+ res = http::response<http::string_body>(http::status::ok, req.version());
+ res.set(http::field::server, "Boost.Beast");
+ res.set(http::field::content_type, "application/json");
+ res.body() = json_data;
+ } else if (accept == "application/xml") {
+        std::string xml_data = to_xml(file_content);
+ res = http::response<http::string_body>(http::status::ok, req.version());
+ res.set(http::field::server, "Boost.Beast");
+ res.set(http::field::content_type, "application/xml");
+ res.body() = xml_data;
+ } else {
+ // Default to JSON if no acceptable format is specified
+        std::string json_data = to_json(file_content);
+ res = http::response<http::string_body>(http::status::ok, req.version());
+ res.set(http::field::server, "Boost.Beast");
+ res.set(http::field::content_type, "application/json");
+ res.body() = json_data;
+ }
+
+ res.prepare_payload();
+    http::write(stream, res);
+}
+
+int main() {
+    try {
+        const std::string file_path = "USA-roads.csv";
+
+        net::io_context ioc;
+        net::ip::tcp::acceptor acceptor(ioc, {net::ip::tcp::v4(), 8080});
+ acceptor.set_option(net::socket_base::reuse_address(true));
+
+        std::cout << "Server listening on port 8080...\n";
+
+        while (true) {
+ // Create a new socket for each connection
+            net::ip::tcp::socket socket(ioc);
+
+ // Accept a connection
+ acceptor.accept(socket);
+
+            try {
+ // Convert the socket to a tcp_stream
+                beast::tcp_stream stream(std::move(socket));
+
+ // Read the request
+                beast::flat_buffer buffer;
+                http::request<http::string_body> req;
+                http::read(stream, buffer, req);
+
+                std::cout << "Received request: " << req << "\n";
+
+ // Send the file content as JSON or XML based on the Accept header
+                send_response(stream, file_path, req);
+ } catch (const std::exception& e) {
+                std::cerr << "Error handling request: " << e.what() << "\n";
+ }
+
+ // Ensure the socket is open before calling shutdown
+            if (socket.is_open()) {
+                beast::error_code ec;
+ socket.shutdown(net::ip::tcp::socket::shutdown_send, ec);
+                if (ec && ec != beast::errc::not_connected) {
+                    std::cerr << "Socket shutdown error: " << ec.message() << "\n";
+ }
+ }
+ }
+ } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+ }
+}
+```
+
+This snippet above stores the Data-Road.csv file on the server locally, the server then listens for a GET request with a specific header either "application/json" to send a json format, or "application/xml" for an XML format, the user will prompt it to the server.
+
+**Data Retrieval**
+
+To retrieve the data, we can execute the commands:
+
+```bash
+curl -H "Accept: application/xml" http://192.168.15.115:8080
+```
+
+OR
+
+```
+curl -H "Accept: application/json" http://192.168.15.115:8080
+```
 
 ##### API Flow
 
@@ -333,7 +462,7 @@ The client provided the dataset as a `.csv` file containing approximately 24 mil
 Here:
 
 - Landmark_A_ID and Landmark_B_ID are unique identifiers for landmarks.
-- Time represents the travel time between the two landmarks in an unspecified unit, time being an unit of time itself.
+- Time represents the travel time between the two landmarks in an unspecified unit, time being a unit of time itself.
 
 These connections can be visualized as edges in a graph, where landmarks serve as nodes, and the Time represents the edge weights.
 
@@ -347,25 +476,25 @@ Below is the improved explanation along with pseudocode to parse the data:
 
 ```pseudocode
 function parseCSV(file_path):
-    graph = empty adjacency_matrix[]
+ graph = empty adjacency_matrix[]
 
-    open file at file_path
-    for each line in file:
-        data = split(line, ",")
-        landmark_A = int(data[0])
-        landmark_B = int(data[1])
-        time = float(data[2])
+ open file at file_path
+ for each line in the file:
+  data = split(line, ",")
+  landmark_A = int(data[0])
+  landmark_B = int(data[1])
+  time = float(data[2])
 
-        if landmark_A not in graph:
-            graph[landmark_A] = empty list()
-        if landmark_B not in graph:
-            graph[landmark_B] = empty list()
+ if landmark_A not in graph:
+  graph[landmark_A] = empty list()
+ if landmark_B not in graph:
+  graph[landmark_B] = empty list()
 
-        graph[landmark_A].append((landmark_B, time))
-        graph[landmark_B].append((landmark_A, time))  # if the graph is undirected
+ graph[landmark_A].append((landmark_B, time))
+ graph[landmark_B].append((landmark_A, time))  # if the graph is undirected
 
-    close file
-    return graph
+ close file
+ return graph
 ```
 
 ### Data Integrity Verification

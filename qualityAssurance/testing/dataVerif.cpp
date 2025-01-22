@@ -6,8 +6,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <queue>
-#include <algorithm>  // for std::sort
-
+#include <algorithm>
 
 struct WeightedEdge {
     int A;
@@ -15,106 +14,223 @@ struct WeightedEdge {
     int time;
 };
 
+using WeightedAdjList = std::unordered_map<int, std::vector<std::pair<int, int>>>;
 
-// Weighted adjacency type: node -> list of (neighbor, time)
-using WeightedAdjList = std::unordered_map<int, std::vector<std::pair<int,int>>>;
+// Function prototypes
+bool buildWeightedAdjList(const std::string &csvFile, WeightedAdjList &adj, std::vector<WeightedEdge> &allEdges, std::vector<std::pair<int, int>> &selfLoops, std::unordered_set<int> &allNodes);
+size_t bfsConnectivity(const WeightedAdjList &adj);
+bool hasCycleUndirected(const WeightedAdjList &adj);
+std::vector<int> findIsolatedNodes(const WeightedAdjList &adj, const std::unordered_set<int> &allNodes);
+std::vector<WeightedEdge> findIsolatedEdges(const WeightedAdjList &adj, const std::vector<WeightedEdge> &allEdges);
+void writeJsonFormat(const WeightedAdjList &adj, const std::string &filename);
 
-//
-// 2) Build Weighted Adjacency (Reading CSV)
-//
+void printSeparator() {
+    std::cout << "\n=======================================\n";
+}
 
-/**
- * Reads a CSV file of edges in the form:  A,B,Time
- * and stores them in a vector<WeightedEdge>.
- * Then builds an undirected WeightedAdjList:
- *    adj[A].push_back({B, time});
- *    adj[B].push_back({A, time});
- *
- * Also collects self-loops (A == B) if encountered, so you can handle them separately.
- */
-bool buildWeightedAdjList(
-    const std::string &csvFile,
-    WeightedAdjList &adj,
-    std::vector<WeightedEdge> &allEdges,
-    std::vector<std::pair<int,int>> &selfLoops
-)
-{
+bool isFileEmpty(const std::string& filename) {
+    std::ifstream file(filename);
+    return file.peek() == std::ifstream::traits_type::eof();
+}
+
+// Function to remove duplicate rows from the CSV file and identify duplicates
+bool removeDuplicateRows(const std::string& filename, std::vector<std::tuple<int, int, int>>& edges, std::unordered_map<std::string, std::vector<int>>& duplicateRows) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Cannot open CSV file: " << filename << "\n";
+        return false;
+    }
+
+    std::unordered_map<std::string, int> uniqueRows;
+    std::string line;
+    int lineNumber = 0;
+    while (std::getline(file, line)) {
+        ++lineNumber;
+        if (uniqueRows.find(line) == uniqueRows.end()) {
+            uniqueRows[line] = lineNumber;
+            std::istringstream ss(line);
+            int node1, node2, time;
+            char comma;
+            ss >> node1 >> comma >> node2 >> comma >> time;
+            edges.emplace_back(node1, node2, time);
+        } else {
+            duplicateRows[line].push_back(uniqueRows[line]);
+            duplicateRows[line].push_back(lineNumber);
+        }
+    }
+
+    file.close();
+    return true;
+}
+
+int main(int argc, char **argv) {
+    
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <csv_file>\n";
+        return 1;
+    }
+
+    printSeparator();
+
+    std::string csvFile = argv[1];
+
+    if (isFileEmpty(csvFile)) {
+        std::cout << "CSV file is empty. No processing will be done.\n";
+        printSeparator();
+        return 0;
+    }
+
+    // Data structures
+    WeightedAdjList adj;
+    std::vector<WeightedEdge> allEdges;
+    std::vector<std::pair<int, int>> selfLoops;
+    std::unordered_set<int> allNodes;
+
+    // Remove duplicate rows and build edges
+    std::vector<std::tuple<int, int, int>> edges;
+    std::unordered_map<std::string, std::vector<int>> duplicateRows;
+    if (!removeDuplicateRows(csvFile, edges, duplicateRows)) {
+        return 1;
+    }
+
+    // Print duplicate rows
+    if (!duplicateRows.empty()) {
+        std::cout << "Duplicate rows found:\n";
+        for (const auto& entry : duplicateRows) {
+            std::cout << "Duplicate row found => \"" << entry.first << "\" (lines ";
+            for (size_t i = 0; i < entry.second.size(); ++i) {
+                std::cout << entry.second[i];
+                if (i + 1 < entry.second.size()) {
+                    std::cout << " and ";
+                }
+            }
+            std::cout << ")\n";
+        }
+    }
+
+    // Build adjacency list and parse CSV
+    if (!buildWeightedAdjList(csvFile, adj, allEdges, selfLoops, allNodes)) {
+        return 1;
+    }
+
+    printSeparator();
+
+    // Write adjacency list to JSON
+    writeJsonFormat(adj, "adjaAndNode.json");
+
+    printSeparator();
+
+    // Basic stats
+    std::cout << "Number of distinct nodes in adjacency: " << allNodes.size() << "\n";
+    std::cout << "Number of edges read (excluding self-loops): " << allEdges.size() << "\n";
+    std::cout << "Number of self-loops found: " << selfLoops.size() << "\n";
+
+    printSeparator();
+
+    // BFS connectivity check
+    size_t visitedCount = bfsConnectivity(adj);
+    if (visitedCount == allNodes.size()) {
+        std::cout << "Graph is fully connected.\n";
+    } else {
+        std::cout << "Graph is NOT fully connected: visited only " << visitedCount << " of " << allNodes.size() << " nodes.\n";
+    }
+
+    printSeparator();
+
+    // Cycle detection
+    if (hasCycleUndirected(adj)) {
+        std::cout << "Cycle found => Graph is not acyclic.\n";
+    } else {
+        std::cout << "No cycle found => Graph is acyclic.\n";
+    }
+
+    printSeparator();
+
+    // Isolated nodes
+    auto isolatedNodes = findIsolatedNodes(adj, allNodes);
+    std::cout << "Number of isolated nodes (degree=0): " << isolatedNodes.size() << "\n";
+
+    printSeparator();
+
+    // Isolated edges
+    auto isolatedEdges = findIsolatedEdges(adj, allEdges);
+    std::cout << "Number of edges whose endpoints each have degree=1: " << isolatedEdges.size() << "\n";
+
+    return 0;
+}
+
+bool buildWeightedAdjList(const std::string &csvFile, WeightedAdjList &adj, std::vector<WeightedEdge> &allEdges, std::vector<std::pair<int, int>> &selfLoops, std::unordered_set<int> &allNodes) {
     std::ifstream in(csvFile);
     if (!in.is_open()) {
         std::cerr << "Error opening file: " << csvFile << std::endl;
         return false;
     }
 
-    long long lineCount = 0;
     std::string line;
-
-    while (true) {
-        if (!std::getline(in, line)) break;
-        lineCount++;
-        if (line.empty()) continue; // skip empty lines
+    while (std::getline(in, line)) {
+        if (line.empty()) continue;
 
         std::stringstream ss(line);
         std::string tokenA, tokenB, tokenTime;
-        if (!std::getline(ss, tokenA, ',')) continue;
-        if (!std::getline(ss, tokenB, ',')) continue;
-        if (!std::getline(ss, tokenTime, ',')) continue;
 
-        int A = std::stoi(tokenA);
-        int B = std::stoi(tokenB);
-        int t = std::stoi(tokenTime);
-
-        // Check for self-loop
-        if (A == B) {
-            selfLoops.push_back({A, t});
-            continue;  // skip adding to adjacency if you don't want them
+        // Token validation
+        if (!std::getline(ss, tokenA, ',') || !std::getline(ss, tokenB, ',') || !std::getline(ss, tokenTime, ',')) {
+            std::cerr << "Error: Malformed row (missing fields) => " << line << std::endl;
+            continue;
         }
 
-        // Store in allEdges
-        allEdges.push_back({A, B, t});
+        // Check for extra columns
+        std::string extraToken;
+        if (std::getline(ss, extraToken, ',')) {
+            std::cerr << "Error: Extra columns detected => " << line << std::endl;
+            continue;
+        }
 
-        // Insert into adjacency, undirected => both directions
-        adj[A].push_back({B, t});
-        adj[B].push_back({A, t});
+        try {
+            int A = std::stoi(tokenA);
+            int B = std::stoi(tokenB);
+            int t = std::stoi(tokenTime);
+
+            // Add to all nodes
+            allNodes.insert(A);
+            allNodes.insert(B);
+
+            if (A == B) {
+                selfLoops.push_back({A, t});
+                continue;
+            }
+
+            allEdges.push_back({A, B, t});
+            adj[A].push_back({B, t});
+            adj[B].push_back({A, t});
+        } catch (const std::invalid_argument &e) {
+            std::cerr << "Error: Invalid value in row => " << line << "\n";
+            continue;
+        } catch (const std::out_of_range &e) {
+            std::cerr << "Error: Value out of range in row => " << line << "\n";
+            continue;
+        }
     }
 
-    std::cout << "Finished reading " << lineCount << " lines.\n";
     return true;
 }
 
-//
-// 3) BFS Connectivity
-//
-
-/**
- * BFS to count how many nodes are reachable from an arbitrary start node.
- * If the visited count < total number of nodes, the graph is disconnected.
- */
-size_t bfsConnectivity(const WeightedAdjList &adj)
-{
-    if (adj.empty()) {
-        return 0;
-    }
-
-    // Pick an arbitrary start node
-    int startNode = adj.begin()->first;
+size_t bfsConnectivity(const WeightedAdjList &adj) {
+    if (adj.empty()) return 0;
 
     std::unordered_set<int> visited;
     std::queue<int> Q;
-
-    visited.insert(startNode);
-    Q.push(startNode);
+    Q.push(adj.begin()->first);
+    visited.insert(adj.begin()->first);
 
     while (!Q.empty()) {
-        int current = Q.front();
+        int node = Q.front();
         Q.pop();
 
-        // check neighbors
-        const auto &nbrList = adj.at(current);
-        for (auto &p : nbrList) {
-            int nbr = p.first; // ignoring time for connectivity
-            if (!visited.count(nbr)) {
-                visited.insert(nbr);
-                Q.push(nbr);
+        for (const auto &nbr : adj.at(node)) {
+            if (visited.find(nbr.first) == visited.end()) {
+                visited.insert(nbr.first);
+                Q.push(nbr.first);
             }
         }
     }
@@ -122,243 +238,77 @@ size_t bfsConnectivity(const WeightedAdjList &adj)
     return visited.size();
 }
 
-//
-// 4) Cycle Detection (DFS) in Undirected Graph
-//
-
-bool hasCycleUtil(
-    int node,
-    int parent,
-    const WeightedAdjList &adj,
-    std::unordered_set<int> &visited
-)
-{
-    visited.insert(node);
-
-    // for each neighbor
-    for (auto &nbrPair : adj.at(node)) {
-        int nbr = nbrPair.first;
-        if (!visited.count(nbr)) {
-            if (hasCycleUtil(nbr, node, adj, visited)) {
-                return true;  // cycle found
-            }
-        }
-        else if (nbr != parent) {
-            // visited neighbor that isn't our parent => cycle
-            return true;
-        }
-    }
-    return false;
-}
-
-bool hasCycleUndirected(const WeightedAdjList &adj)
-{
+bool hasCycleUndirected(const WeightedAdjList &adj) {
     std::unordered_set<int> visited;
-    // We must check each connected component
-    for (auto &kv : adj) {
-        int node = kv.first;
-        if (!visited.count(node)) {
-            if (hasCycleUtil(node, -1, adj, visited)) {
-                return true; // cycle found
+
+    std::function<bool(int, int)> dfs = [&](int node, int parent) {
+        visited.insert(node);
+        for (const auto &nbr : adj.at(node)) {
+            if (visited.find(nbr.first) == visited.end()) {
+                if (dfs(nbr.first, node)) return true;
+            } else if (nbr.first != parent) {
+                return true;
             }
         }
+        return false;
+    };
+
+    for (const auto &node : adj) {
+        if (visited.find(node.first) == visited.end()) {
+            if (dfs(node.first, -1)) return true;
+        }
     }
+
     return false;
 }
 
-//
-// 5) Find Isolated Nodes
-//
-
-/**
- * A node is isolated (degree=0) if it has no neighbors.
- */
-std::vector<int> findIsolatedNodes(const WeightedAdjList &adj)
-{
+std::vector<int> findIsolatedNodes(const WeightedAdjList &adj, const std::unordered_set<int> &allNodes) {
     std::vector<int> isolated;
-    isolated.reserve(adj.size());
-
-    for (auto &kv : adj) {
-        int node = kv.first;
-        const auto &nbrs = kv.second;
-        if (nbrs.empty()) {
+    for (const int node : allNodes) {
+        if (adj.find(node) == adj.end() || adj.at(node).empty()) {
             isolated.push_back(node);
         }
     }
     return isolated;
 }
 
-//
-// 6) Find "Isolated Edges" => edges where both endpoints have degree=1
-//
-
-/*!
-    /brief Find isolated edges in a graph.
-    /param adj The adjacency list of the graph.
-    /param allEdges The list of all edges in the graph.
-*/
-std::vector<WeightedEdge> findIsolatedEdges(
-    const WeightedAdjList &adj,
-    const std::vector<WeightedEdge> &allEdges
-)
-{
+std::vector<WeightedEdge> findIsolatedEdges(const WeightedAdjList &adj, const std::vector<WeightedEdge> &allEdges) {
     std::vector<WeightedEdge> isolatedEdges;
-    isolatedEdges.reserve(allEdges.size());
+    std::unordered_map<int, int> degree;
 
-    // compute degree (i.e., number of neighbors) for each node
-    std::unordered_map<int,int> degree;
-    degree.reserve(adj.size());
-    for (auto &kv : adj) {
-        degree[kv.first] = kv.second.size();        
+    for (const auto &kv : adj) {
+        degree[kv.first] = kv.second.size();
     }
 
-    // check each edge
-    for (auto &e : allEdges) {
-        if (degree[e.A] == 1 && degree[e.B] == 1) {
-            // both endpoints are degree=1 => isolated edge
-            isolatedEdges.push_back(e);
+    for (const auto &edge : allEdges) {
+        if (degree[edge.A] == 1 && degree[edge.B] == 1) {
+            isolatedEdges.push_back(edge);
         }
     }
+
     return isolatedEdges;
 }
 
-
-/**
- * For each node, we print:
- *   "X":[[nbr1,time1],[nbr2,time2],...],
- */
-void writeJsonFormat(
-    const WeightedAdjList &adj,
-    const std::string &filename
-)
-{
+void writeJsonFormat(const WeightedAdjList &adj, const std::string &filename) {
     std::ofstream out(filename);
     if (!out.is_open()) {
-        std::cerr << "Error: cannot open " << filename << " for writing.\n";
+        std::cerr << "Error opening file: " << filename << std::endl;
         return;
     }
 
-    // Gather nodes and sort them
-    std::vector<int> nodes;
-    nodes.reserve(adj.size());
-    for (auto &kv : adj) {
-        nodes.push_back(kv.first);
-    }
-    std::sort(nodes.begin(), nodes.end());
-
     out << "{\n";
-
-    // Iterate each node in ascending order
-    for (size_t i = 0; i < nodes.size(); i++) {
-        int node = nodes[i];
-        out << "  \"" << node << "\":[";   // "1":[
-
-        // Get the neighbor list
-        const auto &nbrList = adj.at(node);
-
-        // Optional: sort neighbors by ID
-        std::vector<std::pair<int, int>> sortedNbrs(nbrList.begin(), nbrList.end());
-        std::sort(sortedNbrs.begin(), sortedNbrs.end(),
-                  [](auto &a, auto &b) {
-                      return a.first < b.first; 
-                  });
-
-        // Print array of [nbr,time,degree] triples
-        out << "["; 
-        for (size_t j = 0; j < sortedNbrs.size(); j++) {
-            int nbr  = sortedNbrs[j].first;
-            int time = sortedNbrs[j].second;
-            int degree = adj.at(nbr).size(); // Get degree of connected node
-
-            out << nbr << "," << time << "," << degree;
-            if (j + 1 < sortedNbrs.size()) {
-                out << "],[";
-            }
+    for (auto it = adj.begin(); it != adj.end(); ++it) {
+        out << "  \"" << it->first << "\": [";
+        for (size_t i = 0; i < it->second.size(); ++i) {
+            out << "[" << it->second[i].first << ", " << it->second[i].second << "]";
+            if (i + 1 < it->second.size()) out << ", ";
         }
-        out << "]"; // Close last triple
-
-        out << "]"; // Close this node's array
-
-        // If not the last node, put a comma
-        if (i + 1 < nodes.size()) {
-            out << ",";
-        }
+        out << "]";
+        if (std::next(it) != adj.end()) out << ",";
         out << "\n";
     }
-
     out << "}\n";
-    out.close();
 
-    std::cout << "Wrote adjacency to " << filename 
-              << " in JSON-like format with degrees.\n";
-}
+    std::cout << "Wrote adjacency to " << filename << " in JSON-like format.\n";
 
-
-
-//
-// 8) Main
-//
-
-int main(int argc, char** argv)
-{
-    if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " edges.csv\n";
-        return 1;
-    }
-
-    std::string csvFile = argv[1];
-
-    // Weighted adjacency
-    WeightedAdjList adj;
-    adj.reserve(10000000); // optional
-
-    // Store all edges
-    std::vector<WeightedEdge> allEdges;
-    allEdges.reserve(24000000);
-
-    // Self-loops
-    std::vector<std::pair<int,int>> selfLoops;
-
-    // 1) Build adjacency from CSV
-    if (!buildWeightedAdjList(csvFile, adj, allEdges, selfLoops)) {
-        return 1; // error reading
-    }
-
-    // 2) Write adjacency in the JSON-like format 
-    writeJsonFormat(adj, "adjaAndNode.json");
-
-    // 3) Basic stats
-    std::cout << "Number of distinct nodes in adjacency: " << adj.size() << "\n";
-    std::cout << "Number of edges read (excluding self-loops): " << allEdges.size() << "\n";
-    std::cout << "Number of self-loops found: " << selfLoops.size() << "\n\n";
-
-    // 4) BFS connectivity
-    size_t visitedCount = bfsConnectivity(adj);
-    if (visitedCount == adj.size()) {
-        std::cout << "Graph is fully connected.\n";
-    } else {
-        std::cout << "Graph is NOT fully connected: visited only "
-                  << visitedCount << " of " << adj.size() << " nodes.\n";
-    }
-
-    // 5) Cycle detection
-    bool cycleFound = hasCycleUndirected(adj);
-    if (cycleFound) {
-        std::cout << "Cycle found => Graph is not acyclic.\n";
-    } else {
-        std::cout << "No cycle found => Graph is acyclic (a tree if connected).\n";
-    }
-
-    // 6) Isolated nodes
-    auto isolatedNodes = findIsolatedNodes(adj);
-    std::cout << "Number of isolated nodes (degree=0): " 
-              << isolatedNodes.size() << "\n";
-
-    // 7) Isolated edges
-    auto isolatedEdges = findIsolatedEdges(adj, allEdges);
-    std::cout << "Number of edges whose endpoints each have degree=1: "
-              << isolatedEdges.size() << "\n";
-
-    // Done
-    return 0;
 }

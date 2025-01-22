@@ -118,12 +118,12 @@ Checks can be done using a programming language other than C++, though to stay u
 ### Expected Deliverables
 
 1. C++ Source Code: Including comments and clear documentation. The code should not use libraries besides STL and what is required for the
-Web server.
+   Web server.
 2. Time and Space Complexity: Big O notation for the main algorithms.
 3. REST API Implementation: Demonstrating the ability to handle multiple formats (XML and
-JSON).
+   JSON).
 4. Test Suite: Tests to validate correctness, performance, and compliance with the 10%
-approximation rule.
+   approximation rule.
 5. Data Validation Tool: A utility to verify the integrity of the provided CSV file.
 
 ## Development Environment
@@ -168,7 +168,7 @@ For C++'s documentation: [C++ Reference](https://cplusplus.com/reference/)
 │   │   └─── server.cpp
 │   │   └─── server.bin
 │   └─── testing
-│       
+│   
 ├─── 
 └─── 
 ```
@@ -185,35 +185,36 @@ For this project, where performance and scalability are critical, STL plays a vi
 
 Standard Template Library are C++ libraries offering a wide range, which are the data structures used to store objects and data. Here are the most important for this project:
 
-- ```<iostream>```
+- ``<iostream>``
+
   - Purpose: Provides input and output functionality for the project.
   - Usage: Used for logging messages, displaying debug information, and handling input/output operations during development and testing.
+- ``<string>``
 
-- ```<string>```
   - Purpose: Provides a robust way to handle strings in C++.
   - Usage: Used to manage API request/response data, handle file paths, and process input/output strings in the program.
+- ``<vector>``
 
-- ```<vector>```
   - Purpose: A dynamic array that allows for efficient storage and manipulation of elements.
   - Usage: Represents adjacency lists in graph representations, where each node’s connections are stored in a dynamic array.
+- ``<fstream>``
 
-- ```<fstream>```
   - Purpose: Provides file input/output functionality.
   - Usage: Reads the .csv file containing graph data, parsing and storing connections for graph construction.
+- ``<queue>``
 
-- ```<queue>```
   - Purpose: Implements a FIFO (First-In-First-Out) data structure, including priority queues.
   - Usage: A priority queue is utilized in Dijkstra's algorithm to process nodes based on their shortest path distances.
+- ``<unordered_map>``
 
-- ```<unordered_map>```
   - Purpose: Implements a hash table-based associative container for fast key-value pair access.
   - Usage: Maps landmark IDs to their respective neighbors and weights, enabling efficient graph traversal and data retrieval.
+- ``<chrono>``
 
-- ```<chrono>```
   - Purpose: Provides tools for measuring time intervals and system clocks.
   - Usage: Used to benchmark algorithm performance, ensuring compliance with the <1-second query response goal.
+- ``<algorithm>``
 
-- ```<algorithm>```
   - Purpose: Provides a collection of utility functions for operations like sorting, searching, and manipulating data.
   - Usage: Helps implement sorting or binary search operations required in graph construction and validation.
 
@@ -226,13 +227,9 @@ REST APIs provide a flexible, lightweight way to integrate applications and conn
 Rest APIs have to follow 5 principles:
 
 - Uniform interface: All API requests for the same resource should look the same, no matter where the request comes from.
-
 - Client-server decoupling: In REST API design, client and server applications must be completely independent of each other.
-
 - Statelessness: REST APIs are stateless, meaning that each request needs to include all the information necessary for processing it.
-
 - Cacheability: When possible, resources should be cacheable on the client or server side. Server responses also need to contain information about whether caching is allowed for the delivered resource.
-
 - Layered system architecture: In REST APIs, the calls and responses go through different layers. Don’t assume that the client, and server applications connect directly to each other.
 
 For this project, we have to include a single GET endpoint. The endpoint shows where the resource is located. It typically includes a Uniform Resource Identifier (URI). In our case, the URI is located on a local-hosted server.
@@ -299,7 +296,7 @@ int main() {
 }
 ```
 
-Execute this program using: `g++ -std=c++17 -Iboost_1_82_0  main.cpp -o beast_example -lpthread` \
+Execute this program using: `g++ -std=c++17 -Iboost_1_82_0  main.cpp -o beast_example -lpthread`
 You can use this starting point to set up the initial server for the project.
 
 ##### Localhost
@@ -309,9 +306,7 @@ Localhost refers to the local computer where the server is running. By default, 
 Purpose of the Project:
 
 - Enables the development and debugging of the REST API without needing external servers.
-
 - Facilitates testing and validation of the algorithm's performance and correctness.
-
 - Ensures secure, isolated testing by restricting external access during development.
 
 **How It Works:**
@@ -327,12 +322,12 @@ It will process the request and respond with the shortest path data in either JS
 To set up localhost on port 8080 for this project:
 
 1. Server Initialization:
-Use the Boost.Beast library to create an HTTP server.
-Bind the server to 192.168.15.115:8080.
+   Use the Boost.Beast library to create an HTTP server.
+   Bind the server to 192.168.15.115:8080.
 2. Handling Requests:
-The server listens for incoming GET requests.
-It parses the input parameters (source and destination landmark IDs) and passes them to the shortest path algorithm.
-The result is formatted into the requested response format (JSON or XML) and sent back to the client.
+   The server listens for incoming GET requests.
+   It parses the input parameters (source and destination landmark IDs) and passes them to the shortest path algorithm.
+   The result is formatted into the requested response format (JSON or XML) and sent back to the client.
 
 **Storing Data on the localhost server**
 
@@ -561,12 +556,12 @@ curl -H "Accept: application/json" "http://192.168.15.115:8080?source=1&destinat
 
 #### Common HTTP Status Code
 
-| HTTP Status Code | Meaning                                      |
-|------------------|----------------------------------------------|
-| 200              | OK - The request was successful.            |
+| HTTP Status Code | Meaning                                                                          |
+| ---------------- | -------------------------------------------------------------------------------- |
+| 200              | OK - The request was successful.                                                 |
 | 400              | Bad Request - The server could not understand the request due to invalid syntax. |
-| 404              | Not Found - The requested resource could not be found. |
-| 500              | Internal Server Error - The server encountered an unexpected condition. |
+| 404              | Not Found - The requested resource could not be found.                           |
+| 500              | Internal Server Error - The server encountered an unexpected condition.          |
 
 ##### API Flow
 
@@ -580,13 +575,13 @@ graph TD
  E[CSV Data Source] -->|Populates| C
 ```
 
-| Element                     | Description                                                                 |
-|-----------------------------|-----------------------------------------------------------------------------|
-| User                    | Represents the end-user who interacts with the API.                        |
-| API Server              | The server that processes requests and sends responses.                    |
+| Element                 | Description                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| User                    | Represents the end-user who interacts with the API.                                  |
+| API Server              | The server that processes requests and sends responses.                              |
 | Graph Data Structure    | The data structure that holds the graph representation of landmarks and connections. |
-| Shortest Path Algorithm | The algorithm used to calculate the shortest path between landmarks.       |
-| CSV Data Source         | The source of the data used to populate the graph.                         |
+| Shortest Path Algorithm | The algorithm used to calculate the shortest path between landmarks.                 |
+| CSV Data Source         | The source of the data used to populate the graph.                                   |
 
 ### System Architecture
 
@@ -602,18 +597,20 @@ We opted against using the A*(A star) algorithm due to the absence of a suitable
 
 The bidirectional Dijkstra's algorithm, on the other hand, is well-suited for our needs as it does not require heuristics and can efficiently handle graphs with non-negative weights. By leveraging this algorithm, we can ensure accurate and reliable calculations of the shortest paths based solely on the travel times provided in our dataset.
 
-[Dijkstra's gif](./image/technicalSpecifications/Dijkstra_Animation.gif)
+Below, you can find a nice made youtube video that shows the speed difference between the original Dijkstra's algorithm and the bidirectional one when it comes to calculating the distance from point A to B using the US road network:
+
+[Dijkstra vs Bi-directional Dijkstra Algorithm on US Road Network](https://youtu.be/1oVuQsxkhY0?si=m3aMwhhYETNz2u8m)
 
 #### Definition
 
 These terms are crucial for the subsequent section. Kindly refer to the table below to ensure a comprehensive understanding of the material that follows.
 
-| Term            | Definition                                                                                     |
-|------------------|------------------------------------------------------------------------------------------------|
-| **Nodes**        | The fundamental units in a graph that represent entities or points. In the context of a graph, nodes are often referred to as vertices. |
-| **Weighted Graph** | A graph in which each edge has an associated numerical value (weight) that represents the cost, distance, or time to traverse that edge. |
-| **Heuristic**    | A problem-solving approach that employs a practical method or various shortcuts to produce solutions that may not be optimal but are sufficient for reaching an immediate goal. In pathfinding, heuristics help estimate the cost to reach the goal from a given node. |
-| **Edges**        | The connections between nodes in a graph. Edges can be directed (one-way) or undirected (two-way) and may have weights in a weighted graph. |
+| Term                     | Definition                                                                                                                                                                                                                                                                                               |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Nodes**          | The fundamental units in a graph that represent entities or points. In the context of a graph, nodes are often referred to as vertices.                                                                                                                                                                  |
+| **Weighted Graph** | A graph in which each edge has an associated numerical value (weight) that represents the cost, distance, or time to traverse that edge.                                                                                                                                                                 |
+| **Heuristic**      | A problem-solving approach that employs a practical method or various shortcuts to produce solutions that may not be optimal but are sufficient for reaching an immediate goal. In pathfinding, heuristics help estimate the cost to reach the goal from a given node.                                   |
+| **Edges**          | The connections between nodes in a graph. Edges can be directed (one-way) or undirected (two-way) and may have weights in a weighted graph.                                                                                                                                                              |
 | **Priority Queue** | A data structure that stores elements in such a way that the element with the highest priority is served before other elements with lower priority. In the context of graph algorithms, it is often used to efficiently retrieve the next node to process based on the shortest distance or lowest cost. |
 
 ### Overview of Bidirectional Dijkstra's Algorithm
@@ -623,22 +620,23 @@ Bidirectional Dijkstra's algorithm simultaneously searches from both the source 
 #### How it works
 
 1. Initialization:
+
    - Two sets of distances are maintained: one for the forward search (from the source) and one for the backward search (from the target).
    - Two priority queues are used to manage the nodes being explored in both directions.
-
 2. Forward Search:
+
    - Starting from the source node, the algorithm explores neighboring nodes and updates their distances based on the weights of the edges.
    - Each time a node is processed, it is added to the forward priority queue.
-
 3. Backward Search:
+
    - Simultaneously, the algorithm starts from the target node and explores its neighbors, updating distances in the backward direction.
    - Nodes are added to the backward priority queue as they are processed.
-
 4. Meeting Point:
+
    - The algorithm continues to expand both searches until the two searches meet at a common node.
    - When a node is found that has been processed by both the forward and backward searches, the algorithm can determine the shortest path by combining the distances from both searches.
-
 5. Path Reconstruction:
+
    - Once the meeting point is identified, the shortest path can be reconstructed by tracing back from the meeting point to the source and from the meeting point to the target.
 
 #### Advantages
@@ -695,7 +693,7 @@ function BidirectionalDijkstra(graph, source, target):
 
 ### Data Source
 
-The client provided the dataset as a `.csv` file containing approximately 24 million nodes. Each row in the file represents a connection between two landmarks and is formatted as follows: \
+The client provided the dataset as a `.csv` file containing approximately 24 million nodes. Each row in the file represents a connection between two landmarks and is formatted as follows:
 `Landmark_A_ID,Landmark_B_ID,Time`
 
 Here:

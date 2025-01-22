@@ -19,7 +19,7 @@ Here is a graph representing the team's satisfaction for the second week. (I am 
 1. **Functional specifications**
  - The functional specifications are not finished.
 2. **Direction**
- - After thoroughly examining the call for tender, we realized that we are allowed to do a huge amount of preprocessing. Preprocessing would make the project significantly easier. After a group meeting, we decided to try to make the preprocessing version of the algorithm work and then try to complete the Dijkstra version. Even though the team really dislikes the preprocessing solution, it is better to be safe than sorry.
+ - After thoroughly examining the call for tender, we realized that we are allowed to do a huge amount of preprocessing. Preprocessing would make the project significantly easier. Even though the team really dislikes preprocessing, it is a required step if we want to complete the project on time while still following the call for tender.
 3. **Code**
  - We have some code that we were able to test.
 
@@ -35,7 +35,7 @@ Here is a graph representing the team's satisfaction for the second week. (I am 
 1. **Complete Techincal Specifications**
  - We aim to finalize the Technical Specifications promptly so the technical leader can resume assisting the team with coding.
 2. **Finish the preprocessing version of the algorithm**
- - Before the end of next week, it is imperative that we finish the preprocessing version of the algorithm, which would allow us to complete the REST API and start working on the version of the algorithm that we want in the long run.
+ - Before the end of next week, it is imperative that we finish a working version of the algorithm with preprocessing, which would allow us to complete the REST API and start working on finishing the algorithm with no distractions.
 
 ## Conclusion
 

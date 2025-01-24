@@ -49,16 +49,25 @@
     - [Data Source](#data-source-1)
     - [Data Integrity Verification](#data-integrity-verification-1)
       - [Functional Specifications](#functional-specifications)
+      - [Breadth-First Search](#breadth-first-search)
+        - [Why do we use BFS?](#why-do-we-use-bfs)
       - [Graph Validation Verification](#graph-validation-verification)
       - [Connectivity Checks](#connectivity-checks)
     - [Data Flow](#data-flow)
     - [Performance](#performance)
+      - [Optimization](#optimization)
       - [Big-O Notation](#big-o-notation)
-    - [Data Integrity Verification \& Validation](#data-integrity-verification--validation)
+        - [Time Complexity](#time-complexity)
+        - [What Does This Time Complexity Mean?](#what-does-this-time-complexity-mean)
+        - [Space complexity](#space-complexity)
+          - [Space Complexity Calculation for Bidirectional Dijkstra's Algorithm](#space-complexity-calculation-for-bidirectional-dijkstras-algorithm)
+          - [Total Space Complexity](#total-space-complexity)
   - [Testing](#testing)
     - [Unit Tests](#unit-tests)
     - [Performance Test](#performance-test)
     - [CI/CD](#cicd)
+  - [Conclusion](#conclusion)
+  - [Glossary](#glossary)
 
 </details>
 
@@ -613,6 +622,7 @@ These terms are crucial for the subsequent section. Kindly refer to the table be
 | **Heuristic** | A problem-solving approach that employs a practical method or various shortcuts to produce solutions that may not be optimal but are sufficient for reaching an immediate goal. In pathfinding, heuristics help estimate the cost to reach the goal from a given node.                                   |
 | **Edges** | The connections between nodes in a graph. Edges can be directed (one-way) or undirected (two-way) and may have weights in a weighted graph.                                                                                                                                                              |
 | **Priority Queue** | A data structure that stores elements in such a way that the element with the highest priority is served before other elements with lower priority. In the context of graph algorithms, it is often used to efficiently retrieve the next node to process based on the shortest distance or lowest cost. |
+|**Breadth-First Search (BFS)** | An algorithm used to explore all the nodes in a graph level by level, starting from a given node and visiting all its neighbors before moving on to the next level of nodes.|
 
 ### Overview of Bidirectional Dijkstra's Algorithm
 
@@ -749,33 +759,420 @@ function parseCSV(file_path):
 
 #### Functional Specifications
 
+1. Directed Acyclic Graph (DAG) Verification: We need to verify that the graph is a Directed Acyclic Graph (DAG), meaning it should not contain any cycles. This is crucial for ensuring that there are no infinite loops during pathfinding operations.
+
+2. Graph Connectivity Verification: The graph must be fully connected, allowing navigation between any two landmarks. This means that there should be a path between every pair of nodes in the graph.
+
+3. Implementation in C++: Although these checks can be performed in various programming languages, we will implement them in C++ to maintain consistency with the rest of the project.
+
+#### Breadth-First Search
+
+Breadth-First Search (BFS) is an algorithm used to traverse or search through a graph or tree data structure. It starts at a specified node (the "source") and explores all of its neighbors at the present depth before moving on to nodes at the next depth level. This process continues until all nodes have been visited or the target node is found.
+
+##### Why do we use BFS?
+
+1. Level Order Traversal: BFS explores nodes level by level, ensuring that all nodes at the current depth are processed before moving deeper. This is useful for problems where the shortest path in terms of the number of edges is required.
+
+2. Finding Shortest Paths in Unweighted Graphs: BFS guarantees the shortest path in unweighted graphs because it explores all neighbors of a node before moving to the next level. This characteristic is essential when we need to find the quickest route between two points.
+
+3. Simplicity and Clarity: The BFS algorithm is straightforward to implement and understand. Its queue-based structure makes it easy to manage the nodes being explored, which simplifies debugging and maintenance.
+
+4. Guaranteed Completion: BFS ensures that if there is a path between the starting node and any other node, it will find it. This is crucial for connectivity checks, as it verifies that all nodes can be reached from a given starting point.
+
+5. Memory Efficiency: While BFS can consume more memory than Depth-First Search (DFS) due to storing all nodes at the current level in the queue, it is still efficient for many applications, especially when the graph is wide and shallow.
+
 #### Graph Validation Verification
+
+Pseudocode for cycle detection in a directed graph using Depth-First Search (DFS):
+
+```c++
+function isDAG(graph):
+ visited = set() // To keep track of visited nodes
+ recStack = set() // To keep track of nodes in the current path
+
+    for each vertex v in graph:
+        if v not in visited:
+            if isCyclicUtil(graph, v, visited, recStack):
+                return false // Cycle detected
+    return true // No cycles found
+
+function isCyclicUtil(graph, v, visited, recStack):
+    if v in recStack:
+        return true // Cycle detected
+
+    if v in visited:
+        return false // Already visited
+
+ visited.add(v)
+ recStack.add(v)
+
+    for each neighbor in graph[v]:
+        if isCyclicUtil(graph, neighbor, visited, recStack):
+            return true // Cycle detected
+
+ recStack.remove(v)
+    return false // No cycle found
+
+```
 
 #### Connectivity Checks
 
+Pseudocode for checking if the graph is fully connected using Breadth-First Search (BFS):
+
+```c++
+function isConnected(graph):
+ visited = array of size |graph| initialized to false
+ startNode = 0 // Start from the first node
+    bfs(graph, startNode, visited)
+
+ // Check if all nodes are visited
+    for each node in visited:
+        if node is false:
+            return false // Not all nodes are reachable
+    return true // All nodes are reachable
+
+function bfs(graph, start, visited):
+ queue = new Queue()
+ queue.enqueue(start)
+ visited[start] = true
+
+    while not queue.isEmpty():
+ node = queue.dequeue()
+
+        for each neighbor in graph[node]:
+            if not visited[neighbor]:
+ visited[neighbor] = true
+ queue.enqueue(neighbor)
+```
+
 ### Data Flow
 
-How data moves through the system from input to processing and output.
+The data flow graph provides a visual representation of how data moves through our software system, illustrating the interactions between various components involved in processing user requests.
+
+It outlines the sequence of operations, starting from the user input, through the API server, and into the graph data structure, where the shortest path algorithm is applied. This graph serves as a blueprint for understanding the flow of information, highlighting the critical steps taken to calculate the shortest travel path between landmarks.
 
 ![I/O Diagram](image/technicalSpecifications/ioDiagram.png)
 
+| Component                   | Description                                                                                                 |
+|-----------------------------|-------------------------------------------------------------------------------------------------------------|
+| User Input                  | Represents the initial request made by the user, which includes the source and destination landmark IDs.    |
+| API Server                  | The server that receives the request and processes it.                                                     |
+| Parses Input Parameters      | The server extracts the necessary parameters from the request.                                            |
+| Graph Data Structure        | The data structure that holds the graph representation of landmarks and connections.                       |
+| Retrieves Data              | The server retrieves the relevant data from the graph based on the input parameters.                      |
+| Shortest Path Algorithm     | The algorithm that calculates the shortest path between the specified landmarks.                          |
+| Calculates Path             | The algorithm processes the data to determine the shortest route.                                         |
+| Returns Data                | The graph structure returns the calculated path and travel time to the server.                       |
+| Sends Response              | The server sends the final response back to the user, which includes the travel time and the ordered list of landmarks in the path. |
+
 ### Performance
+
+#### Optimization
+
+To enhance the performance and efficiency of the shortest path algorithm, the following optimization techniques have been implemented:
+
+- Dead-End Node Removal: Approximately 17% of the nodes in the graph are identified as dead ends, which do not contribute to any valid paths between landmarks. By removing these nodes from the graph, we reduce the overall size of the dataset, leading to faster processing times and lower memory consumption. Dead ends are only retained if they are the start or end points of a path.
+
+- Efficient Data Structures:
+The use of appropriate data structures, such as adjacency lists for graph representation, allows for efficient storage and retrieval of connections between landmarks. This choice minimizes the overhead associated with traversing the graph and accessing edge weights.
+
+- Priority Queue Optimization: The algorithm utilizes a priority queue (implemented as a binary heap) to manage the nodes being explored. This data structure allows for efficient retrieval of the next node with the shortest distance, significantly speeding up the pathfinding process compared to simpler data structures like arrays or linked lists.
+
+- Bidirectional Search: By simultaneously searching from both the source and target nodes, the bidirectional Dijkstra's algorithm reduces the number of nodes explored. This approach effectively halves the search space, leading to faster execution times, especially in large graphs.
+
+By employing these optimization techniques, the project aims to achieve a high-performance solution capable of handling large datasets and delivering quick responses to user queries.
 
 #### Big-O Notation
 
-O((V+E)⋅logV)
-where 𝑉
-V is the number of nodes
+##### Time Complexity
 
-𝐸
-E is the number of edges.
+To calculate the Big-O notation of this algorithm, considering it uses a priority queue, the formula is:  
+**O((V + E) * log(V))**, where:
 
-### Data Integrity Verification & Validation
+- **V** is the number of nodes (excluding dead-end nodes except for start or endpoints).
+- **E** is the number of edges.
+
+**1. Adjusted Number of Nodes (V)**
+
+We calculated that around **17% of the nodes are dead ends**, resulting in:
+
+```math
+V = 23,947,347 − (0.17 × 23,947,347) ≈ 19,875,902
+```
+
+---
+**2. Total V + E**
+
+The adjusted total number of nodes and edges:
+
+```math
+V + E = 19,875,902+28,854,312=48,730,214
+```
+
+---
+**3. Logarithmic Component (log(V))**
+
+```math
+log(V)≈log(19,875,902)≈7.297
+```
+
+---
+
+4. Big-O Notation
+The Big-O notation for the algorithm is:
+
+```math
+O((V+E)∗log(V))≈O(48,730,214×7.297)≈O(355,358,147)
+```
+
+---
+
+The current time complexity of the algorithm is approximately O(355,358,147).
+
+The time complexity provides a quantitative measure of the algorithm's performance, helping us evaluate its scalability and identify areas for optimization. While O(355,358,147) is the current estimate, ongoing improvements will likely reduce this number as the project progresses.
+
+##### What Does This Time Complexity Mean?
+
+The time complexity O(355,358,147) represents the worst-case number of operations the algorithm performs as it processes the graph. Here's what it tells us:
+
+Input Size Dependency:
+The time complexity is influenced by the total number of nodes (𝑉) and edges (E) in the graph. More nodes or edges increase the total computational effort.
+
+Logarithmic Factor:
+The log(V) factor arises from the use of a priority queue in the algorithm, which optimizes operations like insertion and retrieval of the smallest element. This makes the algorithm efficient for large graphs, compared to a purely linear or quadratic approach.
+
+Scalability:
+While the value O(355,358,147) appears large, it is proportional to the size of the graph. Improvements to the algorithm—such as reducing unnecessary computations or further optimization—will decrease this complexity over time.
+
+Dynamic Nature of Complexity:
+As the project evolves and the algorithm is optimized, the time complexity may change.
+
+##### Space complexity
+
+To calculate the space complexity of an algorithm, you need to consider the amount of memory space required by the algorithm as a function of the input size. This includes the space needed for:
+
+- Input Data: The space required to store the input data.
+- Auxiliary Space: The additional space required for variables, data structures, and function call stacks used during the execution of the algorithm.
+
+###### Space Complexity Calculation for Bidirectional Dijkstra's Algorithm
+
+For the Bidirectional Dijkstra's algorithm, the space complexity can be analyzed as follows:
+
+- Graph Representation: If the graph is represented using an adjacency list, the space required is proportional to the number of vertices (V) and edges (E). The space complexity for the adjacency list is O(V + E).
+
+- Distance Arrays: Two arrays (or maps) are used to store the shortest distances from the source and target nodes. Each of these arrays will require O(V) space. Therefore, the total space for the distance arrays is O(V).
+
+- Priority Queues: Two priority queues are used to manage the nodes being explored from both the source and target. In the worst case, each priority queue can hold all the vertices, which requires O(V) space for each queue. Thus, the total space for the priority queues is O(V).
+
+- Visited Sets: Sets (or arrays) to keep track of visited nodes for both searches will also require O(V) space.
+
+- Auxiliary Variables: Any additional variables used in the algorithm (e.g., counters, temporary variables) will require a constant amount of space, which can be considered O(1).
+
+###### Total Space Complexity
+
+Combining all these components, the total space complexity of the Bidirectional Dijkstra's algorithm can be expressed as:
+
+```math
+Space Complexity = O(V + E) + O(V) + O(V) + O(V) + O(1) = O(V + E)
+```
+
+Summary
+
+The space complexity of the Bidirectional Dijkstra's algorithm is O(V + E), where:
+
+- V is the number of vertices (nodes) in the graph.
+- E is the number of edges in the graph.
+
+```math
+O(V + E) = 23,947,347 + 28,854,312 = 52,801,659
+```
+
+This indicates that the memory required by the algorithm grows linearly with the size of the graph, making it efficient for large datasets.
 
 ## Testing
 
+Testing is a crucial aspect of software development that ensures the reliability, correctness, and performance of the application.
+
+In this project, we implement several testing strategies to validate the functionality of the shortest path algorithm and the overall system.
+
+The following sections have been detailed with our quality assurance leader to detail the types of tests that need to be conducted:
+
 ### Unit Tests
+
+Unit tests are designed to validate the functionality of individual components or functions within the software. For this project, unit tests will focus on the following areas:
+
+1. **Graph Construction:**
+   - Tests to ensure that the graph is constructed correctly from the CSV data, including verifying that all nodes and edges are represented accurately.
+
+Pseudocode example:
+
+``` c++
+function testGraphConstruction():
+ graph = parseCSV("USA-Roads.csv")
+ assert graph.getNodeCount() == expectedNodeCount // Replace with expected count
+ assert graph.getEdgeCount() == expectedEdgeCount // Replace with expected count
+ assert graph.hasEdge(1, 2) // Check if edge exists
+ assert graph.hasEdge(2, 1) // Check if edge is bidirectional
+```
+
+2. **Shortest Path Algorithm:**
+   - Tests to validate the correctness of the bidirectional Dijkstra algorithm. This includes checking that the algorithm returns the expected shortest path and travel time for various source and destination pairs.
+
+Pseudocode example:
+
+```c++
+function testShortestPathAlgorithm():
+ graph = parseCSV("USA-Roads.csv")
+ result = BidirectionalDijkstra(graph, 1, 10)
+ assert result.travel_time == expectedTravelTime // Replace with expected time
+ assert result.path == expectedPath // Replace with expected path
+```
+
+3. **Data Integrity Verification:**
+   - Tests to ensure that the graph validation checks (DAG verification and connectivity checks) function correctly. This includes testing scenarios with cycles and disconnected components.
+
+Pseudocode example:
+
+```c++
+function testDataIntegrity():
+ graph = createGraphWithCycle() // Create a graph with a cycle
+ assert not graph.isDAG() // Should return false
+
+ acyclicGraph = createAcyclicGraph() // Create a valid DAG
+ assert graph.isDAG() // Should return true
+```
+
+4. **Input Handling:**
+   - Tests to verify that the API correctly handles various input scenarios, including valid and invalid landmark IDs, missing parameters, and edge cases.
+
+Pseudocode example:
+
+```c++
+function testInvalidLandmarkID():
+ response = apiRequest("GET", "/shortest-path?source=99999&destination=10")
+ assert response.status_code == 400 // Bad Request
+ assert response.body == "{\"error\": \"Invalid landmark ID: 99999\"}"
+
+function testMissingParameters():
+ response = apiRequest("GET", "/shortest-path")
+ assert response.status_code == 400 // Bad Request
+ assert response.body == "{\"error\": \"Missing required parameters: source and destination\"}"
+```
+
+5. **Response Formatting:**
+   - Tests to ensure that the API returns responses in the correct format (JSON or XML) and that the data structure of the response matches the expected schema.
+
+Pseudocode example:
+
+```c++
+function testJSONResponseFormat():
+ response = apiRequest("GET", "/shortest-path?source=1&destination=10")
+ assert response.content_type == "application/json"
+    assert isValidJSON(response.body) // Function to validate JSON structure
+
+function testXMLResponseFormat():
+ response = apiRequest("GET", "/shortest-path?source=1&destination=10&format=xml")
+ assert response.content_type == "application/xml"
+    assert isValidXML(response.body) // Function to validate XML structure
+```
 
 ### Performance Test
 
+Performance testing is essential to ensure that the application meets its performance goals, particularly under load. For this project, the following performance tests will be conducted:
+
+1. **Response Time Measurement:** Tests to measure the response time of the API for various query sizes and complexities. The goal is to ensure that all queries are processed within the target of 1 second on a typical laptop.
+
+Pseudocode example:
+
+```c++
+function testResponseTimeUnderLoad():
+ start = currentTime()
+    for i from 1 to 1000: // Simulate 1000 requests
+        apiRequest("GET", "/shortest-path?source=1&destination=10")
+ end = currentTime()
+ duration = end - start
+ assert duration <= 1000 // Ensure total time is under 1 second
+```
+
+2. **Load Testing:** Simulating multiple concurrent requests to the API to evaluate how the system performs under high load. This will help identify any bottlenecks or performance degradation.
+
+Pseudocode example:
+
+```c++
+function testConcurrentRequests():
+ threads = []
+ for i from 1 to 100: // Simulate 100 concurrent requests
+ threads.append(createThread(apiRequest, "GET", "/shortest-path?source=1&destination=10"))
+ for thread in threads:
+ thread.join() // Wait for all threads to complete
+```
+
+3. **Stress Testing:** Pushing the system beyond its limits to determine how it behaves under extreme conditions. This includes testing with a large number of nodes and edges in the graph.
+
+Pseudocode example:
+
+```c++
+function testStressConditions():
+ // Create a large graph with maximum nodes and edges
+ largeGraph = createLargeGraph(maxNodes, maxEdges) // Function to create a graph with specified limits
+ response = apiRequest("GET", "/shortest-path?source=1&destination=100000") // Request a path in the large graph
+ assert response.status_code == 200 // Ensure the response is successful
+    assert isValidPath(response.body) // Validate the returned path
+```
+
+4. **Memory Usage Analysis:** Monitoring memory consumption during the execution of the algorithm to ensure that it remains within acceptable limits, especially when handling large datasets.
+
+Pseudocode example:
+
+```c++
+function testMemoryUsage():
+ initialMemory = getCurrentMemoryUsage() // Function to get the current memory usage
+ response = apiRequest("GET", "/shortest-path?source=1&destination=10") // Execute a request
+ finalMemory = getCurrentMemoryUsage() // Get memory usage after the request
+ memoryUsed = finalMemory - initialMemory // Calculate memory used during the request
+ assert memoryUsed <= maxAllowedMemory // Ensure memory usage is within acceptable limits
+```
+
 ### CI/CD
+
+Continuous Integration and Continuous Deployment (CI/CD) practices are implemented to streamline the development process and ensure that code changes are tested and deployed efficiently.
+
+The following CI/CD practices are in place:
+
+1. **Automated Testing:** Unit tests and performance tests are integrated into the CI pipeline. Every time code is pushed to the repository, the tests are automatically executed to ensure that new changes do not introduce regressions.
+
+2. **Code Quality Checks:** Static code analysis tools are used to enforce coding standards and identify potential issues in the codebase before deployment.
+
+3. **Deployment Automation:** The deployment process is automated to ensure that the latest version of the application is deployed to the production environment seamlessly, reducing the risk of human error.
+
+## Conclusion
+
+Thank you for taking the time to review the technical specifications for the Shortest Path Algorithm project.
+
+We hope this document has provided you with a comprehensive understanding of the system's architecture, performance goals, and the methodologies employed to achieve efficient pathfinding between landmarks.
+
+We value your feedback and encourage you to reach out if you notice any mistakes or have suggestions for improvement. Please feel free to open an issue in the GitHub repository's issue section, and our team will address it promptly.
+
+Your contributions are essential to the success of this project, and we appreciate your involvement.
+
+## Glossary
+
+1. Nodes: In graph theory, nodes are the individual points or vertices that make up the graph. Each node can represent an entity, such as a landmark in this project.
+
+2. Weighted Graph: A graph where edges have weights assigned to them, indicating the cost or distance associated with traversing that edge. This is crucial for algorithms that calculate shortest paths.
+
+3. Heuristic: A technique used to speed up the process of finding a satisfactory solution, where an exact solution is not feasible. In pathfinding, heuristics can help prioritize which paths to explore based on estimated costs.
+
+4. Edges: The connections between nodes in a graph. They can represent various relationships, such as roads between landmarks in this project.
+
+5. Priority Queue: A specialized data structure that allows for efficient retrieval of the highest (or lowest) priority element. It is commonly used in algorithms like Dijkstra's to manage nodes based on their distance from the source.
+
+6. Breadth-First Search (BFS): An algorithm for traversing or searching tree or graph data structures. It explores all neighbor nodes at the present depth prior to moving on to nodes at the next depth level.
+
+7. Bidirectional Dijkstra's Algorithm: An optimization of Dijkstra's algorithm that searches from both the source and target nodes simultaneously, reducing the number of nodes explored.
+
+8. Graph Data Structure: The way in which a graph is represented in memory, typically using adjacency lists or matrices.
+
+9. API (Application Programming Interface): A set of functions and procedures that allow the creation of applications that access the features or data of an operating system, application, or other services.
+
+10. CSV (Comma-Separated Values): A simple file format used to store tabular data, such as a spreadsheet or database, in plain text.

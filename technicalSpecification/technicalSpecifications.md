@@ -44,6 +44,7 @@
     - [Overview of Bidirectional Dijkstra's Algorithm](#overview-of-bidirectional-dijkstras-algorithm)
       - [How it works](#how-it-works)
       - [Advantages](#advantages)
+      - [Multi-Threading](#multi-threading)
       - [Pseudocode](#pseudocode)
     - [Data Source](#data-source-1)
     - [Data Integrity Verification](#data-integrity-verification-1)
@@ -118,12 +119,12 @@ Checks can be done using a programming language other than C++, though to stay u
 ### Expected Deliverables
 
 1. C++ Source Code: Including comments and clear documentation. The code should not use libraries besides STL and what is required for the
-   Web server.
+ Web server.
 2. Time and Space Complexity: Big O notation for the main algorithms.
 3. REST API Implementation: Demonstrating the ability to handle multiple formats (XML and
-   JSON).
+ JSON).
 4. Test Suite: Tests to validate correctness, performance, and compliance with the 10%
-   approximation rule.
+ approximation rule.
 5. Data Validation Tool: A utility to verify the integrity of the provided CSV file.
 
 ## Development Environment
@@ -177,13 +178,13 @@ For C++'s documentation: [C++ Reference](https://cplusplus.com/reference/)
 
 #### STL
 
-The Standard Template Library (STL) is a powerful library in C++ that provides a collection of ready-to-use classes and functions for common data structures and algorithms. These include dynamic arrays, linked lists, stacks, queues, hash tables, and sorting or searching algorithms. STL helps simplify code, increase efficiency, and maintain consistency.
+The Standard Template Library (STL) is a powerful C++ library that provides a collection of ready-to-use classes and functions for common data structures and algorithms. These include dynamic arrays, linked lists, stacks, queues, hash tables, and sorting or searching algorithms. STL helps simplify code, increase efficiency, and maintain consistency.
 
 For this project, where performance and scalability are critical, STL plays a vital role by offering optimized implementations of data structures and algorithms. Below is a breakdown of the selected STL components and how they are used in this project:
 
 ##### Usage of STL
 
-Standard Template Library are C++ libraries offering a wide range, which are the data structures used to store objects and data. Here are the most important for this project:
+Standard Template Library is a C++ library offering a wide range of data structures used to store objects and data. Here are the most important for this project:
 
 - ``<iostream>``
 
@@ -322,12 +323,12 @@ It will process the request and respond with the shortest path data in either JS
 To set up localhost on port 8080 for this project:
 
 1. Server Initialization:
-   Use the Boost.Beast library to create an HTTP server.
-   Bind the server to 192.168.15.115:8080.
+ Use the Boost.Beast library to create an HTTP server.
+ Bind the server to 192.168.15.115:8080.
 2. Handling Requests:
-   The server listens for incoming GET requests.
-   It parses the input parameters (source and destination landmark IDs) and passes them to the shortest path algorithm.
-   The result is formatted into the requested response format (JSON or XML) and sent back to the client.
+ The server listens for incoming GET requests.
+ It parses the input parameters (source and destination landmark IDs) and passes them to the shortest path algorithm.
+ The result is formatted into the requested response format (JSON or XML) and sent back to the client.
 
 **Storing Data on the localhost server**
 
@@ -589,7 +590,7 @@ graph TD
 
 ### Algorithm Description
 
-For this project, we have chosen to implement a bidirectional Dijkstra's algorithm as our primary method for calculating the shortest path between landmarks. This variant of Dijkstra's algorithm is a well-established approach used for finding the shortest paths from a source node to a target node in a weighted graph. It operates by simultaneously exploring the graph from both the source and the target nodes, effectively reducing the search space and improving efficiency.
+For this project, we have chosen to implement a bidirectional Dijkstra algorithm as our primary method for calculating the shortest path between landmarks. This variant of Dijkstra's algorithm is a well-established approach used for finding the shortest paths from a source node to a target node in a weighted graph. It operates by simultaneously exploring the graph from both the source and the target nodes, effectively reducing the search space and improving efficiency.
 
 The bidirectional Dijkstra's algorithm works by maintaining two sets of distances: one from the source node and another from the target node. Each search proceeds until the two searches meet, at which point the shortest path can be determined. This method is particularly advantageous in large graphs, as it can significantly decrease the time complexity compared to a unidirectional search.
 
@@ -597,7 +598,7 @@ We opted against using the A*(A star) algorithm due to the absence of a suitable
 
 The bidirectional Dijkstra's algorithm, on the other hand, is well-suited for our needs as it does not require heuristics and can efficiently handle graphs with non-negative weights. By leveraging this algorithm, we can ensure accurate and reliable calculations of the shortest paths based solely on the travel times provided in our dataset.
 
-Below, you can find a nice made youtube video that shows the speed difference between the original Dijkstra's algorithm and the bidirectional one when it comes to calculating the distance from point A to B using the US road network:
+Below, you can find a nicely made YouTube video that shows the speed difference between the original Dijkstra's algorithm and the bidirectional one when it comes to calculating the distance from point A to B using the US road network:
 
 [Dijkstra vs Bi-directional Dijkstra Algorithm on US Road Network](https://youtu.be/1oVuQsxkhY0?si=m3aMwhhYETNz2u8m)
 
@@ -607,10 +608,10 @@ These terms are crucial for the subsequent section. Kindly refer to the table be
 
 | Term                     | Definition                                                                                                                                                                                                                                                                                               |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Nodes**          | The fundamental units in a graph that represent entities or points. In the context of a graph, nodes are often referred to as vertices.                                                                                                                                                                  |
+| **Nodes** | The fundamental units in a graph that represent entities or points. In the context of a graph, nodes are often referred to as vertices.                                                                                                                                                                  |
 | **Weighted Graph** | A graph in which each edge has an associated numerical value (weight) that represents the cost, distance, or time to traverse that edge.                                                                                                                                                                 |
-| **Heuristic**      | A problem-solving approach that employs a practical method or various shortcuts to produce solutions that may not be optimal but are sufficient for reaching an immediate goal. In pathfinding, heuristics help estimate the cost to reach the goal from a given node.                                   |
-| **Edges**          | The connections between nodes in a graph. Edges can be directed (one-way) or undirected (two-way) and may have weights in a weighted graph.                                                                                                                                                              |
+| **Heuristic** | A problem-solving approach that employs a practical method or various shortcuts to produce solutions that may not be optimal but are sufficient for reaching an immediate goal. In pathfinding, heuristics help estimate the cost to reach the goal from a given node.                                   |
+| **Edges** | The connections between nodes in a graph. Edges can be directed (one-way) or undirected (two-way) and may have weights in a weighted graph.                                                                                                                                                              |
 | **Priority Queue** | A data structure that stores elements in such a way that the element with the highest priority is served before other elements with lower priority. In the context of graph algorithms, it is often used to efficiently retrieve the next node to process based on the shortest distance or lowest cost. |
 
 ### Overview of Bidirectional Dijkstra's Algorithm
@@ -644,47 +645,57 @@ Bidirectional Dijkstra's algorithm simultaneously searches from both the source 
 - Efficiency: By searching from both ends, the algorithm can significantly reduce the number of nodes explored, leading to faster execution times, especially in large graphs.
 - Reduced Memory Usage: Since fewer nodes are stored in memory at any given time compared to a unidirectional search, it can be more memory-efficient.
 
+#### Multi-Threading
+
+In the context of our project, we have decided not to implement multi-threading for the following reasons:
+
+1. Resource Intensive: Implementing multi-threading can significantly increase the computational power required to run the algorithm. Given that our primary goal is to ensure that the API responds in less than one second on typical computers, the overhead associated with managing multiple threads could hinder our ability to meet this performance requirement. The additional context switching and synchronization between threads may lead to increased latency, which is counterproductive to our objectives.
+
+2. Nature of Dijkstra's Bidirectional Algorithm: The bidirectional Dijkstra's algorithm inherently operates in a step-by-step manner, alternating between searches from the source and the target. This back-and-forth approach does not lend itself well to parallelization, as each step depends on the results of the previous one. Introducing multi-threading in this scenario would not provide significant performance benefits and could complicate the implementation unnecessarily.
+
+By focusing on optimizing the existing single-threaded implementation of the bidirectional Dijkstra algorithm, we can ensure that we meet our performance goals while maintaining code simplicity and clarity.
+
 #### Pseudocode
 
 Below is the pseudocode representation of the Dijkstra's algorithm:
 
 ```c++
 function BidirectionalDijkstra(graph, source, target):
-    // Initialize distances and priority queues
-    distFromSource = array of size |V| initialized to infinity
-    distFromTarget = array of size |V| initialized to infinity
-    distFromSource[source] = 0
-    distFromTarget[target] = 0
+ // Initialize distances and priority queues
+ distFromSource = array of size |V| initialized to infinity
+ distFromTarget = array of size |V| initialized to infinity
+ distFromSource[source] = 0
+ distFromTarget[target] = 0
 
-    forwardQueue = empty priority queue
-    backwardQueue = empty priority queue
-    forwardQueue.push((0, source)) // (distance, vertex)
-    backwardQueue.push((0, target)) // (distance, vertex)
+ forwardQueue = empty priority queue
+ backwardQueue = empty priority queue
+ forwardQueue.push((0, source)) // (distance, vertex)
+ backwardQueue.push((0, target)) // (distance, vertex)
 
     while forwardQueue is not empty and backwardQueue is not empty:
-        // Expand the forward search
-        (currentDistance, currentVertex) = forwardQueue.pop()
+ // Expand the forward search
+ (currentDistance, currentVertex) = forwardQueue.pop()
         if currentDistance > distFromSource[currentVertex]:
             continue
-        // Process neighbors
+ // Process neighbors
         for each neighbor in graph[currentVertex]:
-            distance = currentDistance + weight(currentVertex, neighbor)
+ distance = currentDistance + weight(currentVertex, neighbor)
             if distance < distFromSource[neighbor]:
-                distFromSource[neighbor] = distance
-                forwardQueue.push((distance, neighbor))
+ distFromSource[neighbor] = distance
+ forwardQueue.push((distance, neighbor))
 
-        // Expand the backward search
-        (currentDistance, currentVertex) = backwardQueue.pop()
+ // Expand the backward search
+ (currentDistance, currentVertex) = backwardQueue.pop()
         if currentDistance > distFromTarget[currentVertex]:
             continue
-        // Process neighbors
+ // Process neighbors
         for each neighbor in graph[currentVertex]:
-            distance = currentDistance + weight(currentVertex, neighbor)
+ distance = currentDistance + weight(currentVertex, neighbor)
             if distance < distFromTarget[neighbor]:
-                distFromTarget[neighbor] = distance
-                backwardQueue.push((distance, neighbor))
+ distFromTarget[neighbor] = distance
+ backwardQueue.push((distance, neighbor))
 
-        // Check for meeting point
+ // Check for meeting point
         if a common node is found in both searches:
             return combine distances to find the shortest path
 

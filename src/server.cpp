@@ -19,6 +19,7 @@ std::string read_file(const std::string& file_path) {
         throw std::runtime_error("Failed to open file: " + file_path);
     }
 
+
     std::ostringstream ss;
     ss << file.rdbuf();
     return ss.str();

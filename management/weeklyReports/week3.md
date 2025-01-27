@@ -15,14 +15,14 @@ Here is a graph representing the team's satisfaction for the second week. (I am 
 ## Project advancements
 
 1. **Techincal Specifications**
- - The functional specifications are nearly finished. It needs a couple more details for the document to be complete.
+ - The technical specifications are nearly finished.
 2. **Finish the algorithm**
  - We have not been able to finish the algorithm as the software engineer was yet again not here. The software engineer has written no lines of code since the beginning of the project, which is angering the team.
 
 ## Challenges
 
 1. **Absences**
- - The team's morale hit an all-time low on Wednesday when the software engineer, who had left on Monday morning, came back to tell us he would not be there for the rest of the week and left again.
+ - The team's morale hit an all-time low on Wednesday when the software engineer, who had left on Monday morning, returned to tell us he would not be there for the rest of the week and left again.
 2. **Code**
  - The software engineer has not written any code. All the code we do have was written by other members. We are lagging as we need to take care of our documents. The team is fed up.
 

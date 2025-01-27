@@ -363,8 +363,8 @@ The test cases can be found in the [test cases](./testCases.md) document.
 | data verification | DV              | _totalNumber | DV_001  |
 | algorithm         | AL              | _totalNumber | AL_002  |
 | REST API          | RA              | _totalNumber | RA_003  |
-| unit tests        | UT              | _totalNumber | UT_004  |
-| CPP code          | CC              | _totalNumber | CC_005  |
+<!-- | unit tests        | UT              | _totalNumber | UT_004  |
+| CPP code          | CC              | _totalNumber | CC_005  | -->
 
 <h2>Title example [ID]</h2>
 

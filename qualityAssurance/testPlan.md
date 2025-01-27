@@ -71,17 +71,17 @@
 
 # Introduction
 
-This **test plan** provides a concise overview of the strategies, methods, and resources used to verify the functionality, performance, and reliability of the **2024–2025 Project 3: Call for Tender** software solution.
+This **test plan** provides a concise overview of the strategies, methods, and resources used to verify the functionality, performance, and reliability of the **Road Runner** software solution.
 
 Designed to calculate the quickest path between two landmarks in the United States, the solution combines a **C++** back-end and a **REST API**[^1] with support for **XML and JSON** outputs. Given the stringent requirement to respond within **1 second** for large-scale datasets, ensuring the chosen path is within **10%** of the absolute shortest route.
 
-This plan details how the testing team will validate data integrity, measure algorithmic efficiency, and confirm conformance with functional and technical specifications.
+This plan details how the quality assurance will validate data integrity, measure algorithmic efficiency, and confirm conformance with functional and technical specifications.
 
 # Test objectives
 
 ### Validate functional accuracy
 
-- Confirm that the algorithm reliability provides the quickest route between any two U.S. landmarks.
+- Confirm that the algorithm reliably provides the quickest route between any two U.S. landmarks.
 
 ### Ensure performance
 
@@ -133,7 +133,7 @@ This plan details how the testing team will validate data integrity, measure alg
 	- Check error/exception handling(e.g., invalid or missing parameters).
 - Robustness.
 	- Confirm the system maintains performance under typical and moderate stress conditions.
-	- Ensure the handling of the degradation in case of partial system failures.
+	<!-- - Ensure the handling of the degradation in case of partial system failures. -->
 
 ### Code
 
@@ -241,7 +241,7 @@ This program analyses the CSV input to confirm that the graph meets the fundamen
 	- A count of disconnected elements.
 
 <!-- link to the data verif -->
-Refer to the [GitHub repository](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/tree/main) for the full source code of the data integrity program.
+Refer to the [GitHub repository](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/tree/main/qualityAssurance/testing/dataVerif.cpp) for the full source code of the data integrity program.
 
 # The algorithm
 
@@ -274,12 +274,9 @@ Refer to the [GitHub repository](https://github.com/algosup/2024-2025-project-3-
 
 ## Success criteria
 
-- Accuracy.
-    The computed paths match the baseline shortest paths as determined by manual calculations or trusted benchmarks.
-- Speed.
-    The algorithm completes in under **1 second** (as applicable to the dataset size) on an average laptop or target hardware configuration.
-- Stability.  
-    No crashes or memory leaks occur, even under larger-scale testing or moderate concurrency.
+- Accuracy: The computed paths match the baseline shortest paths as determined by manual calculations or trusted benchmarks.
+- Speed: The algorithm completes in under **1 second** (as applicable to the dataset size) on an average laptop or target hardware configuration.
+- Stability: No crashes or memory leaks occur, even under larger-scale testing or moderate concurrency.
 
 # The REST API
 
@@ -358,34 +355,32 @@ The test cases can be found in the [test cases](./testCases.md) document.
 
 ## ID creation
 
-| If related to the | then start with | followed by  | Example |
-| ----------------- | --------------- | ------------ | ------- |
-| data verification | DV              | _totalNumber | DV_001  |
-| algorithm         | AL              | _totalNumber | AL_002  |
-| REST API          | RA              | _totalNumber | RA_003  |
-<!-- | unit tests        | UT              | _totalNumber | UT_004  |
-| CPP code          | CC              | _totalNumber | CC_005  | -->
+| If related to the | then start with | followed by  | Example      |
+| ----------------- | --------------- | ------------ | ------------ |
+| data verification | DV              | _totalNumber | DV_001       |
+| algorithm         | AL              | _totalNumber | AL_002       |
+| REST API          | RA              | _totalNumber | RA_003       |
 
 <h2>Title example [ID]</h2>
 
 **Test case ID:** Unique identifier
 
-**Test case description:** detailed description of what the test case is designed to evaluate.
+**Test case description:** Detailed description of what the test case is designed to evaluate.
 
-**Preconditions:** list any prerequisites that must be met before executing the test case.
+**Preconditions:** List any prerequisites that must be met before executing the test case.
 
-**Test steps:** outline the specific steps to be followed during the test execution.
+**Test steps:** Outline the specific steps to be followed during the test execution.
 
-| Steps | Instructions | Expected behaviour     | Working version                  |
-| ----- | ------------ | ---------------------- | -------------------------------- |
-| 01    | Do this      | This should appear     | The version were this is working |
-| 02    | Do that      | That should be display | 0.0.1 - 0.1.3 - 0.2.0            |
-| ...   | ...          | ...                    | ...                              |
+| Steps | Instructions | Expected behaviour       | Working version                   | Issues               |
+| ----- | ------------ | ------------------------ | --------------------------------- | -------------------- |
+| 01    | Do this      | This should appear       | The version where this is working | Link to GitHub issue |
+| 02    | Do that      | That should be displayed | 0.0.1 - 0.1.3 - 0.2.0             | #X                   |
+| ...   | ...          | ...                      | ...                               | ...                  |
 
 
-**Expected result:** clearly define the expected outcome at the end of those steps.
+**Expected result:** Clearly define the expected outcome at the end of those steps.
 
-**Postconditions:** note any conditions that should be verified after the test case execution.
+**Postconditions:** Note any conditions that should be verified after the test case execution.
 
  
 # Environments and tools
@@ -447,11 +442,11 @@ The test cases can be found in the [test cases](./testCases.md) document.
 | **Risk**                       | **Description**                                                                     | **Mitigation**                                                                                      |
 | ------------------------------ | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | **Performance bottlenecks**    | Algorithm may exceed the **1-second** response time for large datasets.             | Profile and optimize the algorithm or data structures. Perform scalability testing early.           |
-| **Resource constraints**       | Limited testing environments (macOS and Windows) may miss platform-specific issues. | Test across multiple configurations and ensure compatibility with standard libraries.               |
+| **OS constraints**       | Limited testing environments (macOS and Windows) may miss platform-specific issues. | Test across multiple configurations and ensure compatibility with standard libraries.               |
 | **Data integrity issues**      | Dataset may have missing nodes, duplicate edges, or other inconsistencies.          | Implement rigorous data validation and error-checking mechanisms before processing.                 |
 | **Error handling in REST API** | Malformed inputs or missing parameters may cause unhandled exceptions.              | Add comprehensive error handling and test for edge cases during API validation.                     |
 | **Team collaboration risks**   | Git conflicts or incomplete commits may result in delays.                           | Enforce clear Git workflows (e.g., pull request reviews) and CI/CD pipelines to catch issues early. |
-| **Hardware dependency**        | Algorithm performance may vary between macOS and Windows systems.                   | Benchmark on both platforms and optimize for the less performant hardware.                          |
+| **Hardware performance**        | Algorithm performance may vary between macOS and Windows systems.                   | Benchmark on both platforms and optimize for the less performant hardware.                          |
 | **Tool compatibility**         | Testing tools may not behave consistently across platforms.                         | Validate the functionality of tools (e.g., Postman, validators) on both macOS and Windows systems.  |
 | **Incomplete test coverage**   | Limited time and resources may prevent full coverage of all edge cases.             | Prioritize critical test scenarios and automate repetitive tests to save time.                      |
 
@@ -493,13 +488,13 @@ The test cases can be found in the [test cases](./testCases.md) document.
 
 ## Types of issues
 
-|**Type**|**Description**|
-|---|---|
-|**Bug**|Unexpected behavior in the algorithm, REST API, or system.|
-|**Enhancement**|Requests for new features or optimizations (e.g., improving algorithm speed).|
-|**Testing**|Tasks related to testing workflows or specific test cases.|
-|**Documentation**|Updates or corrections to documentation (e.g., README, technical specs).|
-|**Task**|General project-related tasks (e.g., setting up a testing environment).|
+| **Type**          | **Description**                                                               |
+| ----------------- | ----------------------------------------------------------------------------- |
+| **Bug**           | Unexpected behaviour in the algorithm, REST API, or system.                   |
+| **Enhancement**   | Requests for new features or optimizations (e.g., improving algorithm speed). |
+| **Testing**       | Tasks related to testing workflows or specific test cases.                    |
+| **Documentation** | Updates or corrections to documentation (e.g., README, technical specs).      |
+| **Task**          | General project-related tasks (e.g., setting up a testing environment).       |
 
 ## Example issue template
 
@@ -513,19 +508,19 @@ The test cases can be found in the [test cases](./testCases.md) document.
   2. Step 2
   3. Step 3
 
-- **Expected Behavior:**
+- **Expected behaviour:**
   [Describe what should happen]
 
-- **Actual Behavior:**
+- **Actual behaviour:**
   [Describe what actually happens]
 
 ### Priority:
 - [Low/Medium/High/Critical]
 
-### Linked Test Case:
+### Linked test case:
 - [ID from test cases document, if applicable]
 
-### Screenshots/Logs:
+### Screenshots/logs:
 - [Add any relevant screenshots or logs]
 ```
 
@@ -581,7 +576,7 @@ The test cases can be found in the [test cases](./testCases.md) document.
 
 | **Scenario**                            | **Potential impact**                                                             | **Immediate action**                                                                               | **Long-term resolution**                                                                                             |
 | --------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **Critical algorithm bugs**             | Incorrect or suboptimal shortest path results, impacting core functionality.     | - Escalate to the development team. - Create a GitHub issue labeled `critical`.                    | - Implement rigorous debugging and peer reviews. - Add targeted regression tests to prevent recurrence.              |
+| **Critical algorithm bugs**             | Incorrect or suboptimal shortest path results, impacting core functionality.     | - Escalate to the development team. - Create a GitHub issue labelled `critical`.                   | - Implement rigorous debugging and peer reviews. - Add targeted regression tests to prevent recurrence.              |
 | **Performance degradation**             | Failing to meet the 1-second response time requirement.                          | - Profile the system to identify bottlenecks. - Optimize specific areas (e.g., data structures).   | - Reassess hardware limitations and adjust requirements if necessary. - Regular performance benchmarking.            |
 | **API downtime**                        | REST API becomes unavailable, affecting client usability.                        | - Restart the local testing or server environment. - Notify stakeholders of downtime.              | - Add monitoring and alert systems for proactive detection. - Investigate root causes and resolve underlying issues. |
 | **Dataset integrity issues**            | Corrupted or invalid data disrupts testing and functionality.                    | - Validate the dataset with the integrity-checking tool. - Create a clean dataset backup.          | - Automate dataset validation for future uploads. - Document known dataset issues.                                   |
@@ -626,10 +621,10 @@ The test cases can be found in the [test cases](./testCases.md) document.
     - JSON validation tool: [JSOnlint](https://jsonlint.com/)
     - XML validation tool: [W3c XML validator](https://validator.w3.org/)
 6. **Version control and CI/CD**
-    - Github actions: [Github actions documentation](https://docs.github.com/en/actions)
+    - GitHub actions: [Github actions documentation](https://docs.github.com/en/actions)
     - Git best practices: [Pro git book](https://git-scm.com/book/en/v2)
 7. **Project management**
-    - Github issues: [Github issues guide](https://docs.github.com/en/issues)
+    - GitHub issues: [Github issues guide](https://docs.github.com/en/issues)
     - Markdown syntax: [Markdown guide](https://www.markdownguide.org/)
 8. **General references**
     - Graph theory: [Graph theory basics](https://en.wikipedia.org/wiki/Graph_theory)

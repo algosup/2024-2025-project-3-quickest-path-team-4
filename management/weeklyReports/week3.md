@@ -1,8 +1,8 @@
-# Weekly Report - Week 2
+# Weekly Report - Week 3
 
 ## Overview
 
-## Week 2 Objectives
+## Week 3 Objectives
 
 1. **Techincal Specifications**
  - We wanted to complete the technical specifications document.

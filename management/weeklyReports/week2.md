@@ -34,8 +34,8 @@ Here is a graph representing the team's satisfaction for the second week. (I am 
 
 1. **Complete Techincal Specifications**
  - We aim to finalize the Technical Specifications promptly so the technical leader can resume assisting the team with coding.
-2. **Finish the preprocessing version of the algorithm**
- - Before the end of next week, it is imperative that we finish a working version of the algorithm with preprocessing, which would allow us to complete the REST API and start working on finishing the algorithm with no distractions.
+2. **Finish the algorithm**
+ - Before the end of next week, it is imperative that we finish a working version of the algorithm with, which would allow us to complete the REST API.
 
 ## Conclusion
 

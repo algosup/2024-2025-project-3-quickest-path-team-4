@@ -76,7 +76,7 @@
 
 ### Project Introduction
 
-The objective of this project is to develop a high-performance software solution designed to calculate the shortest travel path between two specified landmarks within the United States. The software will utilize advanced algorithms to efficiently determine the quickest route, considering various travel times between landmarks. Given the scale of the dataset, which includes approximately 24 million nodes, the solution must be optimized for speed, reliability, and scalability.
+The objective of this project is to develop a high-performance software solution designed to calculate the shortest travel path between two specified landmarks within the United States. The software will utilize advanced algorithms to efficiently determine the quickest route by considering various travel times between landmarks. Given the scale of the dataset, which includes approximately 24 million nodes, the solution must be optimized for speed, reliability, and scalability.
 
 Such a project is particularly valuable in real-world applications such as logistics, navigation, and urban planning. Efficient route optimization can help businesses reduce fuel consumption, improve delivery times, and enhance overall operational efficiency. Moreover, this software can aid travelers and commuters in making more informed decisions, saving time, and minimizing travel-related uncertainties.
 
@@ -120,16 +120,15 @@ We prioritize speed over precision, meaning we may use heuristics (an approximat
 
 ### Data Integrity Verification
 
-Verify to check whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) free of loops.
+Verify whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) that is free of loops.
 
-Verify that the graph is fully connected and allows navigating between any two landmarks.
+Verify that the graph is fully connected and allows navigating between two landmarks.
 
-Checks can be performed using a programming language other than C++, though to stay uniform, we will use C++ as well.
+Checks can be performed using a programming language other than C++, though we will use C++ as well to stay uniform.
 
 ### Expected Deliverables
 
-1. C++ Source Code: Including comments and clear documentation. The code should not use libraries besides STL and what is required for the
- Web server.
+1. C++ Source Code: This should include comments and clear documentation. The code should only use libraries from the STL and those required for the web server.
 2. Time and Space Complexity: Big O notation for the main algorithms.
 3. REST API Implementation: Demonstrating the ability to handle multiple formats (XML and
  JSON).
@@ -147,7 +146,7 @@ Our team selected C++ as the programming language for this project due to its po
 
 - Performance: Direct memory management and low-level hardware access allow for optimized performance.
 - Scalability: Ideal for handling large datasets like the 24 million-node graph in this project.
-Standard Template Library (STL): This library provides efficient data structures (e.g., priority queues, and maps) critical for shortest path algorithms.
+- Standard Template Library (STL): This library provides efficient data structures (e.g., priority queues and maps) critical for shortest path algorithms.
 - Portability: Easily deployable across different operating systems with minimal changes.
 
 #### Compiler Recommendations
@@ -215,7 +214,7 @@ Standard Template Library is a C++ library offering a wide range of data structu
 - ``<queue>``
 
 - Purpose: Implements a FIFO (First-In-First-Out) data structure, including priority queues.
-  - Usage: A priority queue is utilized in Dijkstra's algorithm to process nodes based on their shortest path distances.
+ Usage: Dijkstra's algorithm uses a priority queue to process nodes based on their shortest path distances.
 - ``<unordered_map>``
 
 - Purpose: Implements a hash table-based associative container for fast key-value pair access.
@@ -248,16 +247,16 @@ The `Data-Roads.csv` file is stored using Git LFS due to GitHub's limitation of 
 3. **Fetch the Large Files**:
    - Run the command:
 
-     ```bash
+ ```bash
      git lfs fetch
-     ```
+ ```
 
 4. **Pull the Large Files**:
    - Execute the following command to download the actual file content:
 
-     ```bash
+ ```bash
      git lfs pull
-     ```
+ ```
 
 If you attempt to access the `Data-Roads.csv` file without pulling the data from Git LFS, for example, by executing a GET HTTP request like:
 
@@ -274,7 +273,7 @@ size 668512325
 ```
 
 This output indicates that the GET request only returns a pointer to the file's location rather than the actual file data itself. \
-To access the content of Data-Roads.csv, it is essential to perform the git lfs pull command, which retrieves the file from the remote storage.By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
+To access the content of Data-Roads.csv, it is essential to perform the git lfs pull command, which retrieves the file from the remote storage. By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
 
 #### REST API
 
@@ -638,7 +637,7 @@ graph TD
 | User                    | Represents the end-user who interacts with the API.                                  |
 | API Server              | The server that processes requests and sends responses.                              |
 | Graph Data Structure    | The data structure that holds the graph representation of landmarks and connections. |
-| Shortest Path Algorithm | The algorithm used to calculate the shortest path between landmarks.                 |
+| Shortest Path Algorithm | The algorithm is used to calculate the shortest path between landmarks.                 |
 | CSV Data Source         | The source of the data used to populate the graph.                                   |
 
 ### System Architecture
@@ -696,7 +695,7 @@ Bidirectional Dijkstra's algorithm simultaneously searches from both the source 
 4. Meeting Point:
 
 - The algorithm continues to expand both searches until the two searches meet at a common node.
-   - When a node is found that has been processed by both the forward and backward searches, the algorithm can determine the shortest path by combining the distances from both searches.
+- When a node is found that has been processed by both the forward and backward searches, the algorithm can determine the shortest path by combining the distances from both searches.
 
 5. Path Reconstruction:
 
@@ -932,7 +931,7 @@ The use of appropriate data structures, such as adjacency lists for graph repres
 
 - Bidirectional Search: By simultaneously searching from both the source and target nodes, the bidirectional Dijkstra's algorithm reduces the number of nodes explored. This approach effectively halves the search space, leading to faster execution times, especially in large graphs.
 
-By employing these optimization techniques, the project aims to achieve a high-performance solution capable of handling large datasets and delivering quick responses to user queries.
+By employing these optimization techniques, the project aims to achieve a high-performance solution that can handle large datasets and deliver quick responses to user queries.
 
 #### Big-O Notation
 
@@ -1043,7 +1042,7 @@ This indicates that the memory required by the algorithm grows linearly with the
 
 ## Testing
 
-Testing is a crucial aspect of software development that ensures the reliability, correctness, and performance of the application.
+Testing is a crucial aspect of software development that ensures the application's reliability, correctness, and performance.
 
 In this project, we implement several testing strategies to validate the functionality of the shortest path algorithm and the overall system.
 
@@ -1206,7 +1205,7 @@ The following CI/CD practices are in place:
 
 Thank you for taking the time to review the technical specifications for the Shortest Path Algorithm project.
 
-We hope this document has provided you with a comprehensive understanding of the system's architecture, performance goals, and the methodologies employed to achieve efficient pathfinding between landmarks.
+We hope this document provides you with a comprehensive understanding of the system's architecture, performance goals, and the methodologies employed to achieve efficient pathfinding between landmarks.
 
 We value your feedback and encourage you to reach out if you notice any mistakes or have suggestions for improvement. Please feel free to open an issue in the GitHub repository's issue section, and our team will address it promptly.
 
@@ -1224,11 +1223,11 @@ Your contributions are essential to the success of this project, and we apprecia
 
 5. Priority Queue: A specialized data structure that allows for efficient retrieval of the highest (or lowest) priority element. It is commonly used in algorithms like Dijkstra's to manage nodes based on their distance from the source.
 
-6. Breadth-First Search (BFS): An algorithm for traversing or searching tree or graph data structures. It explores all neighbor nodes at the present depth prior to moving on to nodes at the next depth level.
+6. Breadth-First Search (BFS): An algorithm for traversing or searching tree or graph data structures. It explores all neighbor nodes at the present depth before moving on to nodes at the next depth level.
 
 7. Bidirectional Dijkstra's Algorithm: An optimization of Dijkstra's algorithm that searches from both the source and target nodes simultaneously, reducing the number of nodes explored.
 
-8. Graph Data Structure: The way in which a graph is represented in memory, typically using adjacency lists or matrices.
+8. Graph Data Structure: How a graph is represented in memory, typically using adjacency lists or matrices.
 
 9. API (Application Programming Interface): A set of functions and procedures that allow the creation of applications that access the features or data of an operating system, application, or other services.
 

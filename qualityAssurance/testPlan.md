@@ -88,9 +88,8 @@ This plan details how the quality assurance will validate data integrity, measur
 - Verify that all valid requests receive a response in under one second, even when handling a dataset[^2] of approximately 24 million nodes.
 
 ### Check data integrity
-<!-- todo link to the csv -->
 
-- Validate the integrity of the CSV file (e.g., USA-roads.csv)
+- Validate the integrity of the CSV file (e.g., [USA-roads.csv]([QqnCZofEMkjw](https://www.dropbox.com/transfer/AAAAAOehAVYlkjxxZRCMqTskDm1obt66RxD2g8zqp0-QqnCZofEMkjw)))
 - Verifying graph structure, ensuring it's free of loops[^4], and confirming full connectivity[^5] between landmarks.
 
 ### Verify REST API compliance

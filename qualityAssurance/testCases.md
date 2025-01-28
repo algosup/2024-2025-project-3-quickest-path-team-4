@@ -197,8 +197,8 @@ Number of edges whose endpoints each have degree=1: 0
 | 01    | Place the `dataTest.csv` file in the program's working directory. | File is correctly placed in the directory where the program can access it. |||
 | 02    | Run the program with `dataTest.csv` as an argument. | The program successfully loads the file without errors. |||
 | 03    | Parse the CSV data.| All rows are parsed correctly: each row contains valid integers for source ID, destination ID, and travel time. |||
-| 04    | Compute the number of nodes.| The program calculates the total number of unique nodes in the graph (11). |||
-| 05    | Log the number of nodes.| Logs display the total number of distinct nodes as 11. |||
+| 04    | Compute the number of nodes.| The program calculates the total number of unique nodes in the graph (10). |||
+| 05    | Log the number of nodes.| Logs display the total number of distinct nodes as 10. |||
 
 **Additional checks**:
 
@@ -210,13 +210,13 @@ Number of edges whose endpoints each have degree=1: 0
 
 ```
 =======================================
-Finished reading 8 lines.
+Finished reading 14 lines.
 
 =======================================
 Wrote adjacency to adjaAndNode.json in JSON-like format.
 
 =======================================
-Number of distinct nodes in adjacency: 11
+Number of distinct nodes in adjacency: 10
 ```
 
 **Postconditions**:
@@ -405,8 +405,8 @@ Finished reading 6 lines.
 Wrote adjacency to adjaAndNode.json in JSON-like format.
 
 =======================================
-Number of distinct nodes in adjacency: 6
-Number of edges read (excluding self-loops): 6
+Number of distinct nodes in adjacency: 10
+Number of edges read (excluding self-loops): 14
 Number of self-loops found: 0
 
 =======================================
@@ -889,12 +889,12 @@ Error: Invalid negative travel time => 5,6,-30
 Wrote adjacency to adjaAndNode.json in JSON-like format.
 
 =======================================
-Number of distinct nodes in adjacency: 2
+Number of distinct nodes in adjacency: 6
 Number of edges read (excluding self-loops): 1
 Number of self-loops found: 0
 
 =======================================
-Graph is NOT fully connected: visited only 2 of 3 nodes.
+Graph is NOT fully connected: visited only 2 of 6 nodes.
 
 =======================================
 No cycle found => Graph is acyclic.

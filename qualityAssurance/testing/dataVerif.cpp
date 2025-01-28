@@ -8,6 +8,9 @@
 #include <queue>
 #include <algorithm>
 
+#include <chrono>
+using namespace std::chrono;
+
 struct WeightedEdge {
     int A;
     int B;
@@ -65,6 +68,8 @@ bool removeDuplicateRows(const std::string& filename, std::vector<std::tuple<int
 
 int main(int argc, char **argv) {
     
+    auto start = high_resolution_clock::now();
+
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <csv_file>\n";
         return 1;
@@ -116,7 +121,7 @@ int main(int argc, char **argv) {
     printSeparator();
 
     // Write adjacency list to JSON
-    writeJsonFormat(adj, "adjaAndNode.json");
+    // writeJsonFormat(adj, "adjaAndNode.json");
 
     printSeparator();
 
@@ -155,7 +160,10 @@ int main(int argc, char **argv) {
     // Isolated edges
     auto isolatedEdges = findIsolatedEdges(adj, allEdges);
     std::cout << "Number of edges whose endpoints each have degree=1: " << isolatedEdges.size() << "\n";
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
 
+    std::cout << "Process time: " << duration.count() << " microseconds" << std::endl;
     return 0;
 }
 

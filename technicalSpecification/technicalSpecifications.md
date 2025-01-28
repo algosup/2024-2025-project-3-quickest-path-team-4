@@ -12,6 +12,8 @@
     - [REST API](#rest-api)
     - [Data Source](#data-source)
     - [Performance Goals](#performance-goals)
+      - [Typical Laptop Specifications](#typical-laptop-specifications)
+      - [Heuristics](#heuristics)
     - [Data Integrity Verification](#data-integrity-verification)
     - [Expected Deliverables](#expected-deliverables)
   - [Development Environment](#development-environment)
@@ -76,7 +78,7 @@
 
 ### Project Introduction
 
-The objective of this project is to develop a high-performance software solution designed to calculate the shortest travel path between two specified landmarks within the United States. The software will utilize advanced algorithms to efficiently determine the quickest route by considering various travel times between landmarks. Given the scale of the dataset, which includes approximately 24 million nodes, the solution must be optimized for speed, reliability, and scalability.
+The objective of this project is to develop a high-performance software solution designed to calculate shortest travel paths between two specified landmarks within the United States. the software will utilize advanced algorithms to determine the quickest route based on various travel times between landmarks. Given the scale of the dataset, which includes approximately 24 million nodes, the solution must optimize speed, reliability, and scalability.
 
 Such a project is particularly valuable in real-world applications such as logistics, navigation, and urban planning. Efficient route optimization can help businesses reduce fuel consumption, improve delivery times, and enhance overall operational efficiency. Moreover, this software can aid travelers and commuters in making more informed decisions, saving time, and minimizing travel-related uncertainties.
 
@@ -84,7 +86,7 @@ The software will be developed in C++ to fully exploit the language's performanc
 
 ### Document Purpose
 
-This document outlines the code guidelines, technologies, algorithms used, and dependencies required for the project. It provides a clear understanding of the system's architecture, performance goals, and data handling, ensuring consistency and quality in development.
+This document outlines the code guidelines, technologies, algorithms, and dependencies for the project. It provides a clear understanding of the system's architecture, performance goals, and data handling, ensuring consistency and quality in development.
 
 It sets standards for coding practices and collaboration between internal developers and external contributors. For the client, it offers insight into the technical specifications and how the solution meets their needs for calculating the shortest path between landmarks.
 
@@ -96,7 +98,7 @@ The software must be implemented in C++ to achieve optimal performance.
 
 ### REST API
 
-The software exposes its functionality through a Representational State Transfer (REST) application programming interface (API) running on a Hypertext Transfer Protocol (HTTP) localhost server. It includes a single get endpoint with the following features:
+The software exposes its functionality through a Representational State Transfer (REST) application programming interface (API) running on a Hypertext Transfer Protocol (HTTP) localhost server. It includes a single GET endpoint with the following features:
 
 - Input: Accept IDs of both the source and destination landmarks.
 - Output: Travel time and the ordered list of landmarks in the path.
@@ -104,7 +106,7 @@ The software exposes its functionality through a Representational State Transfer
 
 ### Data Source
 
-The software uses a .csv file named USA-Roads.csv, containing approximately 24 million nodes, each representing a landmark in the USA. Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
+the software uses a .csv file named 'USA-Roads.csv', containing approximately 24 million nodes (landmarks). Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
 
 Each line is as follows:
 
@@ -115,6 +117,17 @@ Landmark_A_ID,Landmark_B_ID,Time
 ### Performance Goals
 
 The API must handle all queries within 1 second on a typical laptop.
+
+#### Typical Laptop Specifications
+
+A typical laptop refers to a mid-range consumer laptop with the following likely specifications:
+
+- **Processor**: Dual or quad-core CPU (e.g., Intel Core i5/i7 or AMD Ryzen 5/7)
+- **RAM**: 8GB
+- **Storage**: SSD for faster read/write speeds (256GB to 500GB)
+- **Clock Speed**: Around 2.5–4 GHz (boost frequencies included)
+
+#### Heuristics
 
 We prioritize speed over precision, meaning we may use heuristics (an approximation of calculus that can be interpreted as "good enough"). However, the returned path should not exceed the shortest path duration by more than 10%.
 
@@ -291,7 +304,7 @@ Rest APIs have to follow 5 principles:
 
 For this project, we have to include a single GET endpoint. The endpoint shows where the resource is located. It typically includes a Uniform Resource Identifier (URI). In our case, the URI is located on a local-hosted server.
 
-The sequence diagram below explains how the user, server, and algorithm communicate.
+The sequence diagram below visually represents how the user, server, and algorithm communicate.
 ![alt text](./image/technicalSpecifications/sequenceDiagramAPI.png)
 
 ##### Boost.Beast
@@ -304,7 +317,7 @@ We decided to use Boost.Beast as it is tailored to our project, is fast and resi
 
 To implement and set up Boost.Beast in our project:
 
-1. Download the [the latest Boost.Beast version](https://www.boost.org/users/history/).
+1. Download the [the 1.82.0 Boost.Beast version](https://www.boost.org/users/history/).
 2. Extract the files into your project's source folder.
 3. Navigate to the extracted folder using your terminal.
 4. Execute the command: `tar --bzip2 -xf /path/to/boost_1_82_0.tar.bz2`
@@ -324,33 +337,34 @@ namespace http = beast::http;
 namespace net = boost::asio;
 
 int main() {
- try {
- net::io_context ioc;
- net::ip::tcp::acceptor acceptor(ioc, {net::ip::tcp::v4(), 8080});
- net::ip::tcp::socket socket(ioc);
+    try {
+        net::io_context ioc;
+        net::ip::tcp::acceptor acceptor(ioc, {net::ip::tcp::v4(), 8080});
+        net::ip::tcp::socket socket(ioc);
 
- std::cout << "Server listening on port 8080...\n";
+        std::cout << "Server listening on port 8080...\n";
 
- acceptor.accept(socket);
+        acceptor.accept(socket);
 
- beast::flat_buffer buffer;
- http::request<http::string_body> req;
- http::read(socket, buffer, req);
+        beast::flat_buffer buffer;
+        http::request<http::string_body> req;
+        http::read(socket, buffer, req);
 
- std::cout << "Received request: " << req << "\n";
+        std::cout << "Received request: " << req << "\n";
 
- http::response<http::string_body> res{
- http::status::ok, req.version()};
- res.set(http::field::server, "Boost.Beast");
- res.set(http::field::content_type, "text/plain");
- res.body() = "Hello, world!";
- res.prepare_payload();
+        http::response<http::string_body> res{
+            http::status::ok, req.version()};
+        res.set(http::field::server, "Boost.Beast");
+        res.set(http::field::content_type, "text/plain");
+        res.body() = "Hello, world!";
+        res.prepare_payload();
 
- http::write(socket, res);
- } catch (const std::exception& e) {
- std::cerr << "Error: " << e.what() << "\n";
- }
+        http::write(socket, res);
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+    }
 }
+
 ```
 
 Execute this program using: `g++ -std=c++17 -Iboost_1_82_0  main.cpp -o beast_example -lpthread`
@@ -393,116 +407,68 @@ The following code sample shows how to store a file on the server and then how t
 ```c++
 // Function to read the entire file content as a string
 std::string read_file(const std::string& file_path) {
- std::ifstream file(file_path);
- if (!file.is_open()) {
- throw std::runtime_error("Failed to open file: " + file_path);
- }
+    std::ifstream file(file_path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open file: " + file_path);
+    }
 
- std::ostringstream ss;
- ss << file.rdbuf();
- return ss.str();
+    std::ostringstream ss;
+    ss << file.rdbuf();
+    return ss.str();
 }
 
 // Function to format the file content as a JSON response
 std::string to_json(const std::string& file_content) {
- std::string json_response = "{\"file_content\": \"";
- // Escape double quotes in the file content
- std::string escaped_content = file_content;
- std::replace(escaped_content.begin(), escaped_content.end(), '"', '\\');
- json_response += escaped_content;
- json_response += "\"}";
- return json_response;
+    std::string json_response = "{\"file_content\": \"";
+    // Escape double quotes in the file content
+    std::string escaped_content = file_content;
+    std::replace(escaped_content.begin(), escaped_content.end(), '"', '\\');
+    json_response += escaped_content;
+    json_response += "\"}";
+    return json_response;
 }
 
 // Function to format the file content as an XML response
 std::string to_xml(const std::string& file_content) {
- std::string xml_response = "<?xml version=\"1.0\"?>\n<file>\n";
- xml_response += "<content>";
- xml_response += file_content;
- xml_response += "</content>\n</file>";
- return xml_response;
+    std::string xml_response = "<?xml version=\"1.0\"?>\n<file>\n";
+    xml_response += "<content>";
+    xml_response += file_content;
+    xml_response += "</content>\n</file>";
+    return xml_response;
 }
 
 // Function to send the file content as JSON or XML based on the Accept header
 void send_response(beast::tcp_stream& stream, const std::string& file_path, http::request<http::string_body>& req) {
- // Read the raw file content
- std::string file_content = read_file(file_path);
+    // Read the raw file content
+    std::string file_content = read_file(file_path);
 
- // Prepare the response based on the "Accept" header
- std::string accept = std::string(req[http::field::accept]); // Convert boost::string_view to std::string
+    // Prepare the response based on the "Accept" header
+    std::string accept = std::string(req[http::field::accept]); // Convert boost::string_view to std::string
 
- http::response<http::string_body> res;
- if (accept == "application/json") {
- std::string json_data = to_json(file_content);
- res = http::response<http::string_body>(http::status::ok, req.version());
- res.set(http::field::server, "Boost.Beast");
- res.set(http::field::content_type, "application/json");
- res.body() = json_data;
- } else if (accept == "application/xml") {
- std::string xml_data = to_xml(file_content);
- res = http::response<http::string_body>(http::status::ok, req.version());
- res.set(http::field::server, "Boost.Beast");
- res.set(http::field::content_type, "application/xml");
- res.body() = xml_data;
- } else {
- // Default to JSON if no acceptable format is specified
- std::string json_data = to_json(file_content);
- res = http::response<http::string_body>(http::status::ok, req.version());
- res.set(http::field::server, "Boost.Beast");
- res.set(http::field::content_type, "application/json");
- res.body() = json_data;
- }
+    http::response<http::string_body> res;
+    if (accept == "application/json") {
+        std::string json_data = to_json(file_content);
+        res = http::response<http::string_body>(http::status::ok, req.version());
+        res.set(http::field::server, "Boost.Beast");
+        res.set(http::field::content_type, "application/json");
+        res.body() = json_data;
+    } else if (accept == "application/xml") {
+        std::string xml_data = to_xml(file_content);
+        res = http::response<http::string_body>(http::status::ok, req.version());
+        res.set(http::field::server, "Boost.Beast");
+        res.set(http::field::content_type, "application/xml");
+        res.body() = xml_data;
+    } else {
+        // Default to JSON if no acceptable format is specified
+        std::string json_data = to_json(file_content);
+        res = http::response<http::string_body>(http::status::ok, req.version());
+        res.set(http::field::server, "Boost.Beast");
+        res.set(http::field::content_type, "application/json");
+        res.body() = json_data;
+    }
 
- res.prepare_payload();
- http::write(stream, res);
-}
-
-int main() {
- try {
- const std::string file_path = "USA-roads.csv";
-
- net::io_context ioc;
- net::ip::tcp::acceptor acceptor(ioc, {net::ip::tcp::v4(), 8080});
- acceptor.set_option(net::socket_base::reuse_address(true));
-
- std::cout << "Server listening on port 8080...\n";
-
- while (true) {
- // Create a new socket for each connection
- net::ip::tcp::socket socket(ioc);
-
- // Accept a connection
- acceptor.accept(socket);
-
- try {
- // Convert the socket to a tcp_stream
- beast::tcp_stream stream(std::move(socket));
-
- // Read the request
- beast::flat_buffer buffer;
- http::request<http::string_body> req;
- http::read(stream, buffer, req);
-
- std::cout << "Received request: " << req << "\n";
-
- // Send the file content as JSON or XML based on the Accept header
- send_response(stream, file_path, req);
- } catch (const std::exception& e) {
- std::cerr << "Error handling request: " << e.what() << "\n";
- }
-
- // Ensure the socket is open before calling shutdown
- if (socket.is_open()) {
- beast::error_code ec;
- socket.shutdown(net::ip::tcp::socket::shutdown_send, ec);
- if (ec && ec != beast::errc::not_connected) {
- std::cerr << "Socket shutdown error: " << ec.message() << "\n";
- }
- }
- }
- } catch (const std::exception& e) {
- std::cerr << "Error: " << e.what() << "\n";
- }
+    res.prepare_payload();
+    http::write(stream, res);
 }
 ```
 
@@ -722,45 +688,45 @@ Below is the pseudocode representation of the Dijkstra's algorithm:
 
 ```c++
 function BidirectionalDijkstra(graph, source, target):
- // Initialize distances and priority queues
- distFromSource = array of size |V| initialized to infinity
- distFromTarget = array of size |V| initialized to infinity
- distFromSource[source] = 0
- distFromTarget[target] = 0
+    // Initialize distances and priority queues
+    distFromSource = array of size |V| initialized to infinity
+    distFromTarget = array of size |V| initialized to infinity
+    distFromSource[source] = 0
+    distFromTarget[target] = 0
 
- forwardQueue = empty priority queue
- backwardQueue = empty priority queue
- forwardQueue.push((0, source)) // (distance, vertex)
- backwardQueue.push((0, target)) // (distance, vertex)
+    forwardQueue = empty priority queue
+    backwardQueue = empty priority queue
+    forwardQueue.push((0, source)) // (distance, vertex)
+    backwardQueue.push((0, target)) // (distance, vertex)
 
- while forwardQueue is not empty and backwardQueue is not empty:
- // Expand the forward search
- (currentDistance, currentVertex) = forwardQueue.pop()
- if currentDistance > distFromSource[currentVertex]:
- continue
- // Process neighbors
- for each neighbor in graph[currentVertex]:
- distance = currentDistance + weight(currentVertex, neighbor)
- if distance < distFromSource[neighbor]:
- distFromSource[neighbor] = distance
- forwardQueue.push((distance, neighbor))
+    while forwardQueue is not empty and backwardQueue is not empty:
+        // Expand the forward search
+        (currentDistance, currentVertex) = forwardQueue.pop()
+        if currentDistance > distFromSource[currentVertex]:
+            continue
+        // Process neighbors
+        for each neighbor in graph[currentVertex]:
+            distance = currentDistance + weight(currentVertex, neighbor)
+            if distance < distFromSource[neighbor]:
+                distFromSource[neighbor] = distance
+                forwardQueue.push((distance, neighbor))
 
- // Expand the backward search
- (currentDistance, currentVertex) = backwardQueue.pop()
- if currentDistance > distFromTarget[currentVertex]:
- continue
- // Process neighbors
- for each neighbor in graph[currentVertex]:
- distance = currentDistance + weight(currentVertex, neighbor)
- if distance < distFromTarget[neighbor]:
- distFromTarget[neighbor] = distance
- backwardQueue.push((distance, neighbor))
+        // Expand the backward search
+        (currentDistance, currentVertex) = backwardQueue.pop()
+        if currentDistance > distFromTarget[currentVertex]:
+            continue
+        // Process neighbors
+        for each neighbor in graph[currentVertex]:
+            distance = currentDistance + weight(currentVertex, neighbor)
+            if distance < distFromTarget[neighbor]:
+                distFromTarget[neighbor] = distance
+                backwardQueue.push((distance, neighbor))
 
- // Check for meeting point
- if a common node is found in both searches:
- return combine distances to find the shortest path
+        // Check for meeting point
+        if a common node is found in both searches:
+            return combine distances to find the shortest path
 
- return "No path found"
+    return "No path found"
 ```
 
 ### Data Source
@@ -783,27 +749,28 @@ To use this data effectively:
 
 Below is the improved explanation along with pseudocode to parse the data:
 
-```pseudocode
+```c++
 function parseCSV(file_path):
- graph = empty adjacency_matrix[]
+    graph = empty adjacency_matrix[]
 
- open file at file_path
- for each line in the file:
- data = split(line, ",")
- landmark_A = int(data[0])
- landmark_B = int(data[1])
- time = float(data[2])
+    open file at file_path
+    for each line in the file:
+        data = split(line, ",")
+        landmark_A = int(data[0])
+        landmark_B = int(data[1])
+        time = float(data[2])
 
- if landmark_A not in graph:
- graph[landmark_A] = empty list()
- if landmark_B not in graph:
- graph[landmark_B] = empty list()
+        if landmark_A not in graph:
+            graph[landmark_A] = empty list()
+        if landmark_B not in graph:
+            graph[landmark_B] = empty list()
 
- graph[landmark_A].append((landmark_B, time))
- graph[landmark_B].append((landmark_A, time))  # if the graph is undirected
+        graph[landmark_A].append((landmark_B, time))
+        graph[landmark_B].append((landmark_A, time))  // if the graph is undirected
 
- close file
- return graph
+    close file
+    return graph
+
 ```
 
 ### Data Integrity Verification
@@ -838,31 +805,31 @@ Pseudocode for cycle detection in a directed graph using Depth-First Search (DFS
 
 ```c++
 function isDAG(graph):
- visited = set() // To keep track of visited nodes
- recStack = set() // To keep track of nodes in the current path
+    visited = set()          // To keep track of visited nodes
+    recStack = set()         // To keep track of nodes in the current path
 
- for each vertex v in graph:
- if v not in visited:
- if isCyclicUtil(graph, v, visited, recStack):
- return false // Cycle detected
- return true // No cycles found
+    for each vertex v in graph:
+        if v not in visited:
+            if isCyclicUtil(graph, v, visited, recStack):
+                return false  // Cycle detected
+    return true               // No cycles found
 
 function isCyclicUtil(graph, v, visited, recStack):
- if v in recStack:
- return true // Cycle detected
+    if v in recStack:
+        return true           // Cycle detected
 
- if v in visited:
- return false // Already visited
+    if v in visited:
+        return false          // Already visited
 
- visited.add(v)
- recStack.add(v)
+    visited.add(v)
+    recStack.add(v)
 
- for each neighbor in graph[v]:
- if isCyclicUtil(graph, neighbor, visited, recStack):
- return true // Cycle detected
+    for each neighbor in graph[v]:
+        if isCyclicUtil(graph, neighbor, visited, recStack):
+            return true        // Cycle detected
 
- recStack.remove(v)
- return false // No cycle found
+    recStack.remove(v)
+    return false              // No cycle found
 
 ```
 
@@ -872,28 +839,28 @@ Pseudocode for checking if the graph is fully connected using Breadth-First Sear
 
 ```c++
 function isConnected(graph):
- visited = array of size |graph| initialized to false
- startNode = 0 // Start from the first node
- bfs(graph, startNode, visited)
+    visited = array of size |graph| initialized to false
+    startNode = 0            // Start from the first node
+    bfs(graph, startNode, visited)
 
- // Check if all nodes are visited
- for each node in visited:
- if node is false:
- return false // Not all nodes are reachable
- return true // All nodes are reachable
+    // Check if all nodes are visited
+    for each node in visited:
+        if node is false:
+            return false      // Not all nodes are reachable
+    return true               // All nodes are reachable
 
 function bfs(graph, start, visited):
- queue = new Queue()
- queue.enqueue(start)
- visited[start] = true
+    queue = new Queue()
+    queue.enqueue(start)
+    visited[start] = true
 
- while not queue.isEmpty():
- node = queue.dequeue()
+    while not queue.isEmpty():
+        node = queue.dequeue()
 
- for each neighbor in graph[node]:
- if not visited[neighbor]:
- visited[neighbor] = true
- queue.enqueue(neighbor)
+        for each neighbor in graph[node]:
+            if not visited[neighbor]:
+                visited[neighbor] = true
+                queue.enqueue(neighbor)
 ```
 
 ### Data Flow
@@ -914,7 +881,7 @@ It outlines the sequence of operations, starting from the user input, through th
 | Shortest Path Algorithm     | The algorithm that calculates the shortest path between the specified landmarks.                          |
 | Calculates Path             | The algorithm processes the data to determine the shortest route.                                         |
 | Returns Data                | The graph structure returns the calculated path and travel time to the server.                       |
-| Sends Response              | The server sends the final response back to the user, which includes the travel time and the ordered list of landmarks in the path. |
+| Sends Response              |the server sends the final response back to the user that includes the travel time and the ordered list of landmarks in the path. |
 
 ### Performance
 

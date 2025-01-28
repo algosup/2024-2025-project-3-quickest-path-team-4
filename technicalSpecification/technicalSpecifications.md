@@ -24,6 +24,7 @@
     - [Dependencies](#dependencies)
       - [STL](#stl)
         - [Usage of STL](#usage-of-stl)
+      - [Git Large File Storage](#git-large-file-storage)
       - [REST API](#rest-api-1)
         - [Boost.Beast](#boostbeast)
           - [Boost.Beast C++ Implementation](#boostbeast-c-implementation)
@@ -227,6 +228,53 @@ Standard Template Library is a C++ library offering a wide range of data structu
 
 - Purpose: Provides a collection of utility functions for operations like sorting, searching, and manipulating data.
 - Usage: Helps implement sorting or binary search operations required in graph construction and validation.
+
+#### Git Large File Storage
+
+Git Large File Storage (Git LFS) is an extension for Git that enables users to manage large files more efficiently. Instead of storing large files directly in the Git repository, Git LFS replaces them with lightweight references, while the actual file content is stored on a remote server. This approach helps to:
+
+- Reduce the size of the repository.
+- Improve performance.
+- Streamline the process of versioning large assets, such as datasets, without impacting the overall speed of Git operations.
+
+The `Data-Roads.csv` file is stored using Git LFS due to GitHub's limitation of 100 MB for individual file sizes, while the initial size of the dataset is approximately 653 MB. To effectively use Git LFS for this file, follow these steps:
+
+1. **Install Git LFS**:
+   - Follow the installation instructions provided in the [Git LFS download guide](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage?platform=mac).
+
+2. **Navigate to the Directory**:
+   - Open your terminal and change to the directory where the `Data-Roads.csv` file is located.
+
+3. **Fetch the Large Files**:
+   - Run the command:
+
+     ```bash
+     git lfs fetch
+     ```
+
+4. **Pull the Large Files**:
+   - Execute the following command to download the actual file content:
+
+     ```bash
+     git lfs pull
+     ```
+
+If you attempt to access the `Data-Roads.csv` file without pulling the data from Git LFS, for example, by executing a GET HTTP request like:
+
+```bash
+curl http://192.168.15.115:8080
+```
+
+You will receive a response similar to the following:
+
+```bash
+version https://git-lfs.github.com/spec/v1
+oid sha256:5b60e8cb900ec11cce3dd1a6547d0ab499aadf8198f2f0bb5abb87633369adc0
+size 668512325
+```
+
+This output indicates that the GET request only returns a pointer to the file's location rather than the actual file data itself. \
+To access the content of Data-Roads.csv, it is essential to perform the git lfs pull command, which retrieves the file from the remote storage.By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
 
 #### REST API
 

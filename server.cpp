@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <sstream>
 #include <optional>
+#include <cstdlib> // For system()
+#include <thread>
+#include <chrono>
 #include "graph_data.h"
 #include "Dijkstra.cpp"
 #include "loading.cpp"
@@ -18,20 +21,31 @@ using namespace std;
 using tcp = net::ip::tcp;
 
 graph_data gdata = load_graph_data("USA-roads.csv");
-
 unordered_map<int, int> single_neighbors;
 
-void handle_request(const http::request<http::string_body>& req, http::response<http::string_body>& res) {
-    // Check if the request is a GET to the "/path" route
-    if (req.method() == http::verb::get && req.target().starts_with("/path")) {
-        // Convert the target (string_view) to a string for easier manipulation
-        string query(req.target().begin(), req.target().end());  // Explicitly create a string from string_view
+// Function to start Ngrok and fetch the public URL
+string start_ngrok() {
+    system("ngrok http 8080 --log=stdout > ngrok.log 2>&1 &");
+    this_thread::sleep_for(chrono::seconds(3)); // Give Ngrok time to start
+    
+    FILE* pipe = popen("curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url'", "r");
+    if (!pipe) return "";
+    char buffer[128];
+    string result = "";
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+    }
+    pclose(pipe);
+    return result;
+}
 
-        // Parse query parameters (e.g., /path?start=1&end=5)
+void handle_request(const http::request<http::string_body>& req, http::response<http::string_body>& res) {
+    cout << "Received request: " << req.target() << endl;
+    if (req.method() == http::verb::get && req.target().starts_with("/path")) {
+        string query(req.target().begin(), req.target().end());
         int start = -1, end = -1;
         unordered_map<string, string> params;
 
-        // Extract query parameters
         if (query.find('?') != string::npos) {
             query = query.substr(query.find('?') + 1);
             stringstream ss(query);
@@ -45,13 +59,11 @@ void handle_request(const http::request<http::string_body>& req, http::response<
                     params[key] = value;
                 }
             }
-
-            // Extract start and end from the query parameters
             if (params.find("start") != params.end() && params.find("end") != params.end()) {
                 try {
                     start = stoi(params["start"]);
                     end = stoi(params["end"]);
-                } catch (const exception& e) {
+                } catch (const exception&) {
                     res.result(http::status::bad_request);
                     res.body() = "Invalid start or end node.";
                     res.set(http::field::content_type, "text/plain");
@@ -61,6 +73,8 @@ void handle_request(const http::request<http::string_body>& req, http::response<
             }
         }
 
+        cout << "Start: " << start << " End: " << end << endl;
+
         if (start == -1 || end == -1) {
             res.result(http::status::bad_request);
             res.body() = "Missing start or end node.";
@@ -68,55 +82,40 @@ void handle_request(const http::request<http::string_body>& req, http::response<
             res.prepare_payload();
             return;
         }
-        cout << start << endl << end << endl;
 
         are_extremities_singles are_they;
-
-        // Distance map: node -> shortest distance from the start node
-		unordered_map<int, int> distances;
-
-		// Initialize distances to infinity and start node to 0
-		for (const auto &[node, _] : gdata.adjacency)
-		{
-			distances[node] = numeric_limits<int>::max();
-		}
-
-        int true_start = start;
-		int true_end = end;
-
+        unordered_map<int, int> distances;
+        for (const auto &[node, _] : gdata.adjacency) {
+            distances[node] = numeric_limits<int>::max();
+        }
+        int true_start = start, true_end = end;
         distances[start] = 0;
-
         check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
 
-        cout << "Starting to find the path" << endl;   
-        // Run Dijkstra's algorithm
+        cout << "Starting to find the path" << endl;
+        auto begin = chrono::steady_clock::now();
         auto result = bidirectional_dijkstra(gdata, start, end, &distances);
+        auto end_time = chrono::steady_clock::now();
+        cout << "Path computation finished" << endl;
 
-        // Prepare the response
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - begin).count();
+        cout << "Path computation took " << duration << " ms" << endl;
+
         res.result(http::status::ok);
-        if (result.has_value()){
+        if (result.has_value()) {
             stringstream path;
-			string start_String = "";
-			string end_String = "";
-			if (are_they.is_start_single){
-				result.value().insert(result.value().begin(), start);
-				start_String = to_string(true_start) + " ";
-			}
-			if (are_they.is_end_single){
-				result.value().push_back(end);
-				end_String = to_string(true_end) + " ";
-			}
-			for (int node : result.value()){
-				path << node << " ";
-				}
-            res.body() = "Shortest path from " + to_string(true_start) + " to " + to_string(true_end) + ": " + start_String + path.str() + end_String;
-		} else {
+            string start_String = are_they.is_start_single ? to_string(true_start) + " " : "";
+            string end_String = are_they.is_end_single ? to_string(true_end) + " " : "";
+            for (int node : result.value()) {
+                path << node << " ";
+            }
+            res.body() = "Shortest path from " + to_string(true_start) + " to " + to_string(true_end) + ": " + start_String + path.str() + end_String + "\nComputation time: " + to_string(duration) + " ms";
+        } else {
             res.body() = "No path found from " + to_string(true_start) + " to " + to_string(true_end);
         }
         res.set(http::field::content_type, "text/plain");
         res.prepare_payload();
     } else {
-        // Handle invalid route
         res.result(http::status::not_found);
         res.body() = "Route not found.";
         res.set(http::field::content_type, "text/plain");
@@ -127,20 +126,11 @@ void handle_request(const http::request<http::string_body>& req, http::response<
 void do_session(tcp::socket socket) {
     try {
         beast::flat_buffer buffer;
-
-        // Read an HTTP request
         http::request<http::string_body> req;
         http::read(socket, buffer, req);
-
-        cout << req << endl;
-
-        // Prepare an HTTP response
+        cout << "Handling new session" << endl;
         http::response<http::string_body> res;
-
-        // Handle the request
         handle_request(req, res);
-
-        // Write the response back to the client
         http::write(socket, res);
     } catch (exception& e) {
         cerr << "Session error: " << e.what() << endl;
@@ -148,30 +138,24 @@ void do_session(tcp::socket socket) {
 }
 
 int main() {
-
     preprocess(&gdata, &single_neighbors);
+    string ngrok_url = start_ngrok();
+    cout << "Public Ngrok URL: " << ngrok_url << endl;
 
     try {
         net::io_context ioc;
-
-        // Create an endpoint for listening on port 8080
         tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
         acceptor.set_option(net::socket_base::reuse_address(true));
-
         cout << "Server is listening on 8080" << endl;
 
         while (true) {
-            // Accept a new connection
             tcp::socket socket(ioc);
             acceptor.accept(socket);
-
-            // Handle the session
-            do_session(move(socket));
+            cout << "New connection accepted" << endl;
+            do_session(std::move(socket));
         }
-
     } catch (exception& e) {
         cerr << "Error: " << e.what() << endl;
     }
-
     return 0;
 }

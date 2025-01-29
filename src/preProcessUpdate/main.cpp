@@ -21,7 +21,13 @@ int main()
 	// Create a new adjacency list to store the nodes that only contains 1 neighbor
 	unordered_map<int, int> single_neighbors;
 
+	// Create a new adjacency list to store the nodes that only contains 2 neighbors
+	unordered_map<int, int> double_neighbors;
+
+
 	preprocess(&g_data, &single_neighbors);
+
+	preprocessDoubleNeighbors(&g_data, &double_neighbors);
 
 	// Define the start and end nodes
 	int start;

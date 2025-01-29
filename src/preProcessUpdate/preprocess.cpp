@@ -35,6 +35,26 @@ void preprocess(graph_data *graph, unordered_map<int, int> *single_neighbors)
 	cout << single_neighbors->size() << endl;
 }
 
+void preprocessDoubleNeighbors(graph_data *graph, unordered_map<int, int> *double_neighbors)
+{
+
+	// Iterate through the adjacency list
+	for (auto &[node, neighbors] : graph->adjacency)
+	{
+		// If the node has only 2 neighbors
+		if (neighbors.size() == 2)
+		{
+			// Store the neighbor in the double_neighbors map
+			double_neighbors->operator[](node) = neighbors[0].first;
+
+		}
+	}
+
+	// Iterate through the single_neighbors map to print it
+	cout << "Double neighbors count:\n";
+	cout << double_neighbors->size() << endl;
+}
+
 void check_single_start_or_end(int *start, int *end, unordered_map<int, int> *single_neighbors, are_extremities_singles *yes)
 {
 	// Check if the start node is a single neighbor

@@ -1,3 +1,4 @@
+- [Note](#note)
 - [Data Validation (DV)](#data-validation-dv)
   - [Input validation](#input-validation)
     - [Read a Small CSV File \[DV\_001\]](#read-a-small-csv-file-dv_001)
@@ -38,6 +39,9 @@
     - [API response time \[RA\_032\]](#api-response-time-ra_032)
     - [Memory Usage \[RA\_033\]](#memory-usage-ra_033)
 
+# Note
+
+The results of the test AL_019 are available [here](./testResults.md)
 
 # Data Validation (DV)
 

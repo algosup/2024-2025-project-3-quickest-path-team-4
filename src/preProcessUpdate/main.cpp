@@ -25,9 +25,14 @@ int main()
 	unordered_map<int, int> double_neighbors;
 
 
+	// Create a new adjacency list to store the nodes that contains 3 neighbors or more
+	unordered_map<int, int> multiple_neighbors;
+
 	preprocess(&g_data, &single_neighbors);
 
 	preprocessDoubleNeighbors(&g_data, &double_neighbors);
+
+	preprocessMultipleNeighbors(&g_data, &multiple_neighbors);
 
 	// Define the start and end nodes
 	int start;

@@ -81,7 +81,7 @@
 | 03    | Parse the CSV data. | All rows are parsed correctly: each row contains valid integers for source ID, destination ID, and travel time.|||
 | 04    | Log the parsed data. | Logs display all parsed rows, matching the content of the input file.|||
 | 05    | Validate parsed row count. | The number of parsed rows matches the total rows in the file (14 rows).|||
-| 06    | Validate sampled rows for correctness. | Verify parsed values for rows 1, 3, 5, 7, and 10 match their corresponding input values.|||
+| 06    | Validate sampled rows for correctness. | Verify parsed values for rows 1, 3, 5, 7, and 10 match their corresponding input values.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
 
 **Expected output**:
 
@@ -140,7 +140,7 @@ Number of edges whose endpoints each have degree=1: 0
 | 03    | Parse the CSV data.| All rows are parsed correctly: each row contains valid integers for source ID, destination ID, and travel time. |||
 | 04    | Log the parsing performance.| Logs display parsing time and memory usage, ensuring acceptable performance metrics.|||
 | 05    | Validate parsed row count.| The number of parsed rows matches the total rows in the file (~24 million).|||
-| 06    | Validate sampled rows for correctness.| Randomly select and verify 10 rows from the parsed data match their corresponding input values.|||
+| 06    | Validate sampled rows for correctness.| Randomly select and verify 10 rows from the parsed data match their corresponding input values.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
 
 **Expected output**:
 
@@ -198,7 +198,7 @@ Number of edges whose endpoints each have degree=1: 0
 | 02    | Run the program with `dataTest.csv` as an argument. | The program successfully loads the file without errors. |||
 | 03    | Parse the CSV data.| All rows are parsed correctly: each row contains valid integers for source ID, destination ID, and travel time. |||
 | 04    | Compute the number of nodes.| The program calculates the total number of unique nodes in the graph (10). |||
-| 05    | Log the number of nodes.| Logs display the total number of distinct nodes as 10. |||
+| 05    | Log the number of nodes.| Logs display the total number of distinct nodes as 10. |[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
 
 **Additional checks**:
 
@@ -269,7 +269,7 @@ Number of distinct nodes in adjacency: 10
 | 02    | Run the program with `edgesTest.csv` as an argument.               | The program successfully loads the file without errors.                                                         |                 |        |
 | 03    | Parse the CSV data.                                                | All rows are parsed correctly: each row contains valid integers for source ID, destination ID, and travel time. |                 |        |
 | 04    | Compute the number of unique edges.                                | The program calculates the total number of unique edges in the graph (14).                                      |                 |        |
-| 05    | Log the number of edges.                                           | Logs display the total number of unique edges as 14.                                                            |                 |        |
+| 05    | Log the number of edges.                                           | Logs display the total number of unique edges as 14.                                                            ||[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)|
 
 **Additional checks**:
 
@@ -340,7 +340,7 @@ Number of self-loops found: 0
 | 03    | Parse the CSV data.                                                    | All rows are parsed correctly: each row contains valid integers for source ID, destination ID, and travel time. |                 |        |
 | 04    | Detect self-loops.                                                     | The program identifies **4 self-loops** (`2,2`, `3,3`, `6,6`, and `10,10`) in the graph.                        |                 |        |
 | 05    | Exclude self-loops from edge count.                                    | The program excludes the detected self-loops from the total edge count.                                         |                 |        |
-| 06    | Log the results.                                                       | Logs display the total number of self-loops, distinct nodes, and valid edges.                                   |                 |        |
+| 06    | Log the results.                                                       | Logs display the total number of self-loops, distinct nodes, and valid edges.                                   |[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)|        |
 
 **Expected output**:
 
@@ -469,7 +469,7 @@ In this graph:
 |02|Run the program with `notFullyConnected.csv` as an argument.|The program successfully loads the file without errors.|||
 |03|Parse the CSV data.|All rows are parsed correctly: each row contains valid integers for source ID, destination ID, and travel time.|||
 |04|Perform connectivity analysis.|The program identifies that the graph is not fully connected, and lists the number of components.|||
-|05|Log the results.|Logs confirm that the graph contains multiple disconnected components.|||
+|05|Log the results.|Logs confirm that the graph contains multiple disconnected components.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
 
 **Expected output**:
 
@@ -534,7 +534,7 @@ Number of edges whose endpoints each have degree=1: 0
 |01|Place the `isolatedNodes.csv` file in the program's working directory.|File is correctly placed in the directory where the program can access it.|||
 |02|Run the program with `isolatedNodes.csv` as input.|The program successfully loads the file without crashing.|||
 |03|Parse the CSV data.|All rows are parsed correctly, and isolated nodes are detected.|||
-|04|Validate isolated nodes in logs.|Logs indicate the presence of isolated nodes (e.g., Nodes 6 and 7).|||
+|04|Validate isolated nodes in logs.|Logs indicate the presence of isolated nodes (e.g., Nodes 6 and 7).|[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)||
 
 **Expected output**:
 
@@ -589,7 +589,7 @@ Number of isolated nodes (degree=0): 2
 |02|Run the program with `allIsolatedNodes.csv` as an argument.|The program successfully loads the file without crashing.|||
 |03|Parse the CSV data.|All rows are parsed as self-loops and logged. No valid edges are added to the adjacency list.|||
 |04|Validate the graph structure.|The adjacency list includes only nodes with no neighbors.|||
-|05|Log the graph analysis results.|Logs confirm the graph has 5 nodes, 0 edges, and no connections between nodes.|||
+|05|Log the graph analysis results.|Logs confirm the graph has 5 nodes, 0 edges, and no connections between nodes.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
 
 **Expected output**:
 
@@ -640,7 +640,7 @@ Number of edges whose endpoints each have degree=1: 0
 |01|Place the `empty.csv` file in the program's working directory.|File is correctly placed in the directory where the program can access it.|||
 |02|Run the program with `empty.csv` as an argument.|The program successfully loads the file without crashing.|||
 |03|Parse the CSV data.|The program detects the file is empty and does not attempt to parse rows.|||
-|04|Log the result.|Logs indicate the file is empty and no data was processed.|||
+|04|Log the result.|Logs indicate the file is empty and no data was processed.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
 
 **Expected output**:
 
@@ -674,7 +674,8 @@ CSV file is empty. No processing will be done.
 | ----- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------- | --------------- | ------ |
 | 01    | Place the `textFile.txt` file in the program's working directory. | File is correctly placed in the directory where the program can access it.         |                 |        |
 | 02    | Run the program with `textFile.txt` as input.                     | The program detects that the file format is invalid and logs an appropriate error. |                 |        |
-| 03    | Log the error.                                                    | Logs indicate that the file is not in CSV format and is rejected.                  |                 |        |
+| 03    | Log the error.                                                    | Logs indicate that the file is not in CSV format and is rejected.                  |                 |[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)
+|
 
 **Expected output**:
 
@@ -706,7 +707,8 @@ Error: Invalid file format. Only CSV files are accepted.
 | ----- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | --------------- | ------ |
 | 01    | Place the `jsonFile.json` file in the program's working directory. | File is correctly placed in the directory where the program can access it.         |                 |        |
 | 02    | Run the program with `jsonFile.json` as input.                     | The program detects that the file format is invalid and logs an appropriate error. |                 |        |
-| 03    | Log the error.                                                     | Logs indicate that the file is not in CSV format and is rejected.                  |                 |        |
+| 03    | Log the error.                                                     | Logs indicate that the file is not in CSV format and is rejected.                  |                 |[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)
+|
 
 **Expected output**:
 
@@ -748,7 +750,8 @@ Error: Invalid file format. Only CSV files are accepted.
 |01|Place the `invalidFormat.csv` file in the program's working directory.|File is correctly placed in the directory where the program can access it.|||
 |02|Run the program with `invalidFormat.csv` as an argument.|The program successfully loads the file without crashing.|||
 |03|Parse the CSV data.|The program identifies and logs rows with invalid formatting.|||
-|04|Log the errors.|Logs specify the issues with each invalid row.|||
+|04|Log the errors.|Logs specify the issues with each invalid row.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
+|
 
 **Expected output**:
 
@@ -763,21 +766,21 @@ Error: Invalid value in row => 9,,10
 Wrote adjacency to adjaAndNode.json in JSON-like format.
 
 =======================================
-Number of distinct nodes in adjacency: [node count]
-Number of edges read (excluding self-loops): [edge count]
-Number of self-loops found: [self-loop count]
+Number of distinct nodes in adjacency: 2
+Number of edges read (excluding self-loops): 1
+Number of self-loops found: 0
 
 =======================================
-Graph is [fully/not] connected.
+Graph is fully connected.
 
 =======================================
-[Cycle found/No cycle found] => Graph is [not] acyclic.
+No cycle found => Graph is acyclic.
 
 =======================================
-Number of isolated nodes (degree=0): [isolated node count]
+Number of isolated nodes (degree=0): 0
 
 =======================================
-Number of edges whose endpoints each have degree=1: [isolated edge count]
+Number of edges whose endpoints each have degree=1: 1
 ```
 
 **Postconditions**:
@@ -812,7 +815,8 @@ Number of edges whose endpoints each have degree=1: [isolated edge count]
 |01|Place the `missingFields.csv` file in the program's working directory.|File is correctly placed in the directory where the program can access it.|||
 |02|Run the program with `missingFields.csv` as an argument.|The program successfully loads the file without crashing.|||
 |03|Parse the CSV data.|The program skips rows with missing fields and logs errors.|||
-|04|Log the errors.|Logs specify the issues with each invalid row.|||
+|04|Log the errors.|Logs specify the issues with each invalid row.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
+|
 
 **Expected output**:
 
@@ -827,21 +831,21 @@ Error: Malformed row (missing fields) => ,,
 Wrote adjacency to adjaAndNode.json in JSON-like format.
 
 =======================================
-Number of distinct nodes in adjacency: [node count]
-Number of edges read (excluding self-loops): [edge count]
-Number of self-loops found: [self-loop count]
+Number of distinct nodes in adjacency: 2
+Number of edges read (excluding self-loops): 1
+Number of self-loops found: 0
 
 =======================================
-Graph is [fully/not] connected.
+Graph is fully connected.
 
 =======================================
-[Cycle found/No cycle found] => Graph is [not] acyclic.
+No cycle found => Graph is acyclic.
 
 =======================================
-Number of isolated nodes (degree=0): [isolated node count]
+Number of isolated nodes (degree=0): 0
 
 =======================================
-Number of edges whose endpoints each have degree=1: [isolated edge count]
+Number of edges whose endpoints each have degree=1: 1
 ```
 
 **Postconditions**:
@@ -876,7 +880,8 @@ Number of edges whose endpoints each have degree=1: [isolated edge count]
 | 01    | Place the `negativeTime.csv` file in the program's working directory. | File is correctly placed in the directory where the program can access it. |                 |        |
 | 02    | Run the program with `negativeTime.csv` as input.                     | The program successfully loads the file without crashing.                  |                 |        |
 | 03    | Parse the CSV data.                                                   | The program logs errors for rows with negative travel times.               |                 |        |
-| 04    | Log the errors.                                                       | Logs specify rows with negative travel times for review.                   |                 |        |
+| 04    | Log the errors.                                                       | Logs specify rows with negative travel times for review.                   |                 |[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)
+|
 
 **Expected output**:
 
@@ -937,7 +942,8 @@ Number of edges whose endpoints each have degree=1: 1
 |01|Place the `duplicateRows.csv` file in the program's working directory.|File is correctly placed in the directory where the program can access it.|||
 |02|Run the program with `duplicateRows.csv` as an argument.|The program successfully loads the file without crashing.|||
 |03|Parse the CSV data.|The program identifies duplicate rows and logs them.|||
-|04|Log the duplicates.|Logs indicate duplicate rows and their locations.|||
+|04|Log the duplicates.|Logs indicate duplicate rows and their locations.||[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)
+|
 
 **Expected output**:
 
@@ -1002,7 +1008,8 @@ A,3,20
 |01|Place the `wrongType.csv` file in the program's working directory.|File is correctly placed in the directory where the program can access it.|||
 |02|Run the program with `wrongType.csv` as input.|The program successfully loads the file without crashing.|||
 |03|Parse the CSV data.|The program logs errors for invalid data types in rows.|||
-|04|Log the errors.|Logs specify rows with invalid data types for review.|||
+|04|Log the errors.|Logs specify rows with invalid data types for review.||[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)
+|
 
 **Expected output**:
 
@@ -1021,7 +1028,7 @@ Number of edges read (excluding self-loops): 1
 Number of self-loops found: 0
 
 =======================================
-Graph is NOT fully connected: visited only 2 of 4 nodes.
+Graph is fully connected.
 
 =======================================
 No cycle found => Graph is acyclic.
@@ -1072,7 +1079,8 @@ Number of edges whose endpoints each have degree=1: 1
 | ----- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------- | ------ |
 | 01    | Place the `dataTest.csv` file in the program's working directory.          | File is correctly placed in the directory where the program can access it. |                 |        |
 | 02    | Run the program with `dataTest.csv` and input source = 1, destination = 4. | The program calculates the shortest path from node 1 to node 4 correctly.  |                 |        |
-| 03    | Verify the output.                                                         | The shortest path is `1 -> 2 -> 3 -> 4`, with a total time of 25.          |                 |        |
+| 03    | Verify the output.                                                         | The shortest path is `1 -> 2 -> 3 -> 4`, with a total time of 25.          |                 |[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)
+|
 
 **Expected output**:
 

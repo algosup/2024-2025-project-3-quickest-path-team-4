@@ -20,18 +20,46 @@ namespace net = boost::asio;
 using namespace std;
 using tcp = net::ip::tcp;
 
+const string SEPARATOR = "════════════════════════════════════════════════════════════";
+const string SUBSEPARATOR = "────────────────────────────────────────────────────────";
+
+string get_timestamp()
+{
+    auto now = chrono::system_clock::now();
+    auto now_time = chrono::system_clock::to_time_t(now);
+    stringstream ss;
+    ss << put_time(localtime(&now_time), "[%Y-%m-%d %H:%M:%S]");
+    return ss.str();
+}
+
+// Helper function for consistent log formatting
+void log_message(const string &category, const string &message, bool important = false)
+{
+    cout << get_timestamp() << " ";
+    if (important)
+    {
+        cout << "║ \033[1;32m" << left << setw(12) << category << "\033[0m │ " << message << endl;
+    }
+    else
+    {
+        cout << "║ " << left << setw(12) << category << " │ " << message << endl;
+    }
+}
+
 graph_data gdata = load_graph_data("USA-roads.csv");
 unordered_map<int, int> single_neighbors;
 
 // Function to start Ngrok and fetch the public URL
 string start_ngrok()
 {
+    log_message("NGROK", "Starting ngrok service...", true);
     system("ngrok http 8080 --log=stdout > ngrok.log 2>&1 &");
-    this_thread::sleep_for(chrono::seconds(3)); // Give Ngrok time to start
+    this_thread::sleep_for(chrono::seconds(3));
 
     FILE *pipe = popen("curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url'", "r");
     if (!pipe)
         return "";
+
     char buffer[128];
     string result = "";
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr)
@@ -72,7 +100,10 @@ string to_xml(int start, int end, const vector<int> &path, long duration)
 
 void handle_request(const http::request<http::string_body> &req, http::response<http::string_body> &res)
 {
-    cout << "Received request: " << req.target() << endl;
+    cout << SUBSEPARATOR << endl;
+    log_message("REQUEST", "New request received", true);
+    log_message("PATH", string(req.target()));
+
     string response_type = "json";
     if (req.find(http::field::accept) != req.end())
     {
@@ -82,6 +113,7 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             response_type = "xml";
         }
     }
+    log_message("FORMAT", "Response type: " + response_type);
 
     if (req.method() == http::verb::get && req.target().starts_with("/path"))
     {
@@ -144,14 +176,14 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         distances[start] = 0;
         check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
 
-        cout << "Starting to find the path" << endl;
+        log_message("PROCESS", "Starting path computation...");
         auto begin = chrono::steady_clock::now();
         auto result = bidirectional_dijkstra(gdata, start, end, &distances);
         auto end_time = chrono::steady_clock::now();
-        cout << "Path computation finished" << endl;
-
+        
         auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - begin).count();
-        cout << "Path computation took " << duration << " ms" << endl;
+        log_message("COMPLETE", "Path computation finished in " + to_string(duration) + "ms", true);
+
 
         res.result(http::status::ok);
         if (result.has_value())
@@ -189,41 +221,45 @@ void do_session(tcp::socket socket)
         beast::flat_buffer buffer;
         http::request<http::string_body> req;
         http::read(socket, buffer, req);
-        cout << "Handling new session" << endl;
+        log_message("SESSION", "New session started");
+
         http::response<http::string_body> res;
         handle_request(req, res);
         http::write(socket, res);
     }
     catch (exception &e)
     {
-        cerr << "Session error: " << e.what() << endl;
+        log_message("ERROR", string("Session error: ") + e.what());
     }
 }
 
 int main()
 {
+    cout << SEPARATOR << endl;
+    log_message("STARTUP", "Initializing server...", true);
+
     preprocess(&gdata, &single_neighbors);
     string ngrok_url = start_ngrok();
-    cout << "Public Ngrok URL: " << ngrok_url << endl;
+    log_message("NGROK", "Public URL: " + ngrok_url, true);
 
     try
     {
         net::io_context ioc;
         tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
         acceptor.set_option(net::socket_base::reuse_address(true));
-        cout << "Server is listening on 8080" << endl;
+        log_message("SERVER", "Listening on port 8080", true);
+        cout << SEPARATOR << endl;
 
         while (true)
         {
             tcp::socket socket(ioc);
             acceptor.accept(socket);
-            cout << "New connection accepted" << endl;
             do_session(std::move(socket));
         }
     }
     catch (exception &e)
     {
-        cerr << "Error: " << e.what() << endl;
+        log_message("ERROR", string("Fatal error: ") + e.what());
     }
     return 0;
 }

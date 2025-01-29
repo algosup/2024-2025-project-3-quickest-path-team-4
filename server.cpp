@@ -68,18 +68,44 @@ void handle_request(const http::request<http::string_body>& req, http::response<
             return;
         }
         std::cout << start << std::endl << end << std::endl;
+
+        are_extremities_singles are_they;
+
+        // Distance map: node -> shortest distance from the start node
+		unordered_map<int, int> distances;
+
+		// Initialize distances to infinity and start node to 0
+		for (const auto &[node, _] : gdata.adjacency)
+		{
+			distances[node] = numeric_limits<int>::max();
+		}
+
+        int true_start = start;
+		int true_end = end;
+
+        distances[start] = 0;
+
+        check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
+
+        std::cout << "kaka" << std::endl;   
         // Run Dijkstra's algorithm
-        auto result = dijkstra(gdata, start, end);
+        auto result = bidirectional_dijkstra(gdata, start, end, &distances);
 
         // Prepare the response
         res.result(http::status::ok);
-        if (result.has_value()) {
+        if (result.has_value()){
             std::stringstream path;
-            for (int node : result.value()) {
-                path << node << " ";
-            }
+			if (are_they.is_start_single){
+				result.value().insert(result.value().begin(), start);
+			}
+			if (are_they.is_end_single){
+				result.value().push_back(end);
+			}
+			for (int node : result.value()){
+				path << node << " ";
+				}
             res.body() = "Shortest path from " + std::to_string(start) + " to " + std::to_string(end) + ": " + path.str();
-        } else {
+		} else {
             res.body() = "No path found from " + std::to_string(start) + " to " + std::to_string(end);
         }
         res.set(http::field::content_type, "text/plain");
@@ -92,8 +118,6 @@ void handle_request(const http::request<http::string_body>& req, http::response<
         res.prepare_payload();
     }
 }
-
-
 
 void do_session(tcp::socket socket) {
     try {

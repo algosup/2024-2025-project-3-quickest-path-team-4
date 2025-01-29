@@ -16,7 +16,7 @@ struct are_extremities_singles
 void preprocess(graph_data *graph, unordered_map<int, int> *single_neighbors)
 {
 
-	// Iterate through the adjacency list
+	// Iterate through the adjacency list	
 	for (auto &[node, neighbors] : graph->adjacency)
 	{
 		// If the node has only 1 neighbor

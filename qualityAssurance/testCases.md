@@ -392,7 +392,7 @@ In this graph:
 |02|Run the program with `fullyConnected.csv` as an argument.|The program successfully loads the file without errors.|||
 |03|Parse the CSV data.|All rows are parsed correctly: each row contains valid integers for source ID, destination ID, and travel time.|||
 |04|Perform connectivity analysis.|The program identifies that all nodes are part of a single connected component.|||
-|05|Log the results.|Logs confirm that the graph is fully connected, with no isolated nodes or disconnected components.|||
+|05|Log the results.|Logs confirm that the graph is fully connected, with no isolated nodes or disconnected components.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
 
 
 **Expected output**:
@@ -1008,8 +1008,7 @@ A,3,20
 |01|Place the `wrongType.csv` file in the program's working directory.|File is correctly placed in the directory where the program can access it.|||
 |02|Run the program with `wrongType.csv` as input.|The program successfully loads the file without crashing.|||
 |03|Parse the CSV data.|The program logs errors for invalid data types in rows.|||
-|04|Log the errors.|Logs specify rows with invalid data types for review.||[#14](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/issues/14)
-|
+|04|Log the errors.|Logs specify rows with invalid data types for review.|[1f21fc3](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/commit/1f21fc38222ca44bedff533c10fc9c063494c85c)||
 
 **Expected output**:
 

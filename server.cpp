@@ -87,7 +87,7 @@ void handle_request(const http::request<http::string_body>& req, http::response<
 
         check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
 
-        std::cout << "kaka" << std::endl;   
+        std::cout << "Starting to find the path" << std::endl;   
         // Run Dijkstra's algorithm
         auto result = bidirectional_dijkstra(gdata, start, end, &distances);
 

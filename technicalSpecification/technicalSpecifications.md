@@ -190,8 +190,7 @@ For C++'s documentation: [C++ Reference](https://cplusplus.com/reference/)
 │   ├─── server
 │   │   └─── server.cpp
 │   │   └─── server.bin
-│   └─── testing
-│   
+│   └─── testing 
 ├─── 
 └─── 
 ```
@@ -209,37 +208,50 @@ For this project, where performance and scalability are critical, STL plays a vi
 Standard Template Library is a C++ library offering a wide range of data structures used to store objects and data. Here are the most important for this project:
 
 - ``<iostream>``
+  - Purpose: Provides input and output functionality for the project.
+  - Usage: Used for logging messages, displaying debug information, and handling input/output operations during development and testing.
 
-- Purpose: Provides input and output functionality for the project.
-- Usage: Used for logging messages, displaying debug information, and handling input/output operations during development and testing.
+---
+
 - ``<string>``
+  - Purpose: Provides a robust way to handle strings in C++.
+  - Usage: Used to manage API request/response data, handle file paths, and process input/output strings in the program.
 
-- Purpose: Provides a robust way to handle strings in C++.
-- Usage: Used to manage API request/response data, handle file paths, and process input/output strings in the program.
+---
+
 - ``<vector>``
+  - Purpose: A dynamic array that allows for efficient storage and manipulation of elements.
+  - Usage: Represents adjacency lists in graph representations, where each node’s connections are stored in a dynamic array.
 
-- Purpose: A dynamic array that allows for efficient storage and manipulation of elements.
-- Usage: Represents adjacency lists in graph representations, where each node’s connections are stored in a dynamic array.
+---
+
 - ``<fstream>``
+  - Purpose: Provides file input/output functionality.
+  - Usage: Reads the .csv file containing graph data, parsing and storing connections for graph construction.
 
-- Purpose: Provides file input/output functionality.
-- Usage: Reads the .csv file containing graph data, parsing and storing connections for graph construction.
+---
+
 - ``<queue>``
+  - Purpose: Implements a FIFO (First-In-First-Out) data structure, including priority queues.
+  - Usage: Dijkstra's algorithm uses a priority queue to process nodes based on their shortest path distances.
 
-- Purpose: Implements a FIFO (First-In-First-Out) data structure, including priority queues.
- Usage: Dijkstra's algorithm uses a priority queue to process nodes based on their shortest path distances.
+---
+
 - ``<unordered_map>``
+  - Purpose: Implements a hash table-based associative container for fast key-value pair access.
+  - Usage: Maps landmark IDs to their respective neighbors and weights, enabling efficient graph traversal and data retrieval.
 
-- Purpose: Implements a hash table-based associative container for fast key-value pair access.
-- Usage: Maps landmark IDs to their respective neighbors and weights, enabling efficient graph traversal and data retrieval.
+---
+
 - ``<chrono>``
+  - Purpose: Provides tools for measuring time intervals and system clocks.
+  - Usage: Used to benchmark algorithm performance, ensuring compliance with the <1-second query response goal.
 
-- Purpose: Provides tools for measuring time intervals and system clocks.
-- Usage: Used to benchmark algorithm performance, ensuring compliance with the <1-second query response goal.
+---
+
 - ``<algorithm>``
-
-- Purpose: Provides a collection of utility functions for operations like sorting, searching, and manipulating data.
-- Usage: Helps implement sorting or binary search operations required in graph construction and validation.
+  - Purpose: Provides a collection of utility functions for operations like sorting, searching, and manipulating data.
+  - Usage: Helps implement sorting or binary search operations required in graph construction and validation.
 
 #### Git Large File Storage
 
@@ -576,6 +588,8 @@ curl -H "Accept: application/json" "http://192.168.15.115:8080?source=1&destinat
 ```
 
 **HTTP Status Code: 404 Not Found**
+
+---
 
 #### Common HTTP Status Code
 

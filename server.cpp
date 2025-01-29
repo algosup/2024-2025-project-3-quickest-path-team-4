@@ -14,6 +14,7 @@
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
+using namespace std;
 using tcp = net::ip::tcp;
 
 graph_data gdata = load_graph_data("USA-roads.csv");
@@ -23,24 +24,24 @@ unordered_map<int, int> single_neighbors;
 void handle_request(const http::request<http::string_body>& req, http::response<http::string_body>& res) {
     // Check if the request is a GET to the "/path" route
     if (req.method() == http::verb::get && req.target().starts_with("/path")) {
-        // Convert the target (string_view) to a std::string for easier manipulation
-        std::string query(req.target().begin(), req.target().end());  // Explicitly create a string from string_view
+        // Convert the target (string_view) to a string for easier manipulation
+        string query(req.target().begin(), req.target().end());  // Explicitly create a string from string_view
 
         // Parse query parameters (e.g., /path?start=1&end=5)
         int start = -1, end = -1;
-        std::unordered_map<std::string, std::string> params;
+        unordered_map<string, string> params;
 
         // Extract query parameters
-        if (query.find('?') != std::string::npos) {
+        if (query.find('?') != string::npos) {
             query = query.substr(query.find('?') + 1);
-            std::stringstream ss(query);
-            std::string token;
+            stringstream ss(query);
+            string token;
 
-            while (std::getline(ss, token, '&')) {
+            while (getline(ss, token, '&')) {
                 auto pos = token.find('=');
-                if (pos != std::string::npos) {
-                    std::string key = token.substr(0, pos);
-                    std::string value = token.substr(pos + 1);
+                if (pos != string::npos) {
+                    string key = token.substr(0, pos);
+                    string value = token.substr(pos + 1);
                     params[key] = value;
                 }
             }
@@ -48,9 +49,9 @@ void handle_request(const http::request<http::string_body>& req, http::response<
             // Extract start and end from the query parameters
             if (params.find("start") != params.end() && params.find("end") != params.end()) {
                 try {
-                    start = std::stoi(params["start"]);
-                    end = std::stoi(params["end"]);
-                } catch (const std::exception& e) {
+                    start = stoi(params["start"]);
+                    end = stoi(params["end"]);
+                } catch (const exception& e) {
                     res.result(http::status::bad_request);
                     res.body() = "Invalid start or end node.";
                     res.set(http::field::content_type, "text/plain");
@@ -67,7 +68,7 @@ void handle_request(const http::request<http::string_body>& req, http::response<
             res.prepare_payload();
             return;
         }
-        std::cout << start << std::endl << end << std::endl;
+        cout << start << endl << end << endl;
 
         are_extremities_singles are_they;
 
@@ -87,26 +88,30 @@ void handle_request(const http::request<http::string_body>& req, http::response<
 
         check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
 
-        std::cout << "Starting to find the path" << std::endl;   
+        cout << "Starting to find the path" << endl;   
         // Run Dijkstra's algorithm
         auto result = bidirectional_dijkstra(gdata, start, end, &distances);
 
         // Prepare the response
         res.result(http::status::ok);
         if (result.has_value()){
-            std::stringstream path;
+            stringstream path;
+			string start_String = "";
+			string end_String = "";
 			if (are_they.is_start_single){
 				result.value().insert(result.value().begin(), start);
+				start_String = to_string(true_start) + " ";
 			}
 			if (are_they.is_end_single){
 				result.value().push_back(end);
+				end_String = to_string(true_end) + " ";
 			}
 			for (int node : result.value()){
 				path << node << " ";
 				}
-            res.body() = "Shortest path from " + std::to_string(start) + " to " + std::to_string(end) + ": " + path.str();
+            res.body() = "Shortest path from " + to_string(true_start) + " to " + to_string(true_end) + ": " + start_String + path.str() + end_String;
 		} else {
-            res.body() = "No path found from " + std::to_string(start) + " to " + std::to_string(end);
+            res.body() = "No path found from " + to_string(true_start) + " to " + to_string(true_end);
         }
         res.set(http::field::content_type, "text/plain");
         res.prepare_payload();
@@ -127,7 +132,7 @@ void do_session(tcp::socket socket) {
         http::request<http::string_body> req;
         http::read(socket, buffer, req);
 
-        std::cout << req << std::endl;
+        cout << req << endl;
 
         // Prepare an HTTP response
         http::response<http::string_body> res;
@@ -137,8 +142,8 @@ void do_session(tcp::socket socket) {
 
         // Write the response back to the client
         http::write(socket, res);
-    } catch (std::exception& e) {
-        std::cerr << "Session error: " << e.what() << std::endl;
+    } catch (exception& e) {
+        cerr << "Session error: " << e.what() << endl;
     }
 }
 
@@ -153,7 +158,7 @@ int main() {
         tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
         acceptor.set_option(net::socket_base::reuse_address(true));
 
-        std::cout << "Server is listening on 8080" << std::endl;
+        cout << "Server is listening on 8080" << endl;
 
         while (true) {
             // Accept a new connection
@@ -161,11 +166,11 @@ int main() {
             acceptor.accept(socket);
 
             // Handle the session
-            do_session(std::move(socket));
+            do_session(move(socket));
         }
 
-    } catch (std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+    } catch (exception& e) {
+        cerr << "Error: " << e.what() << endl;
     }
 
     return 0;

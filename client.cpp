@@ -115,7 +115,7 @@ int main() {
         path << "/path?start=" << start_node << "&end=" << end_node;
 
         // Server info - ngrok URL (without https://)
-        string server = "c1dd-176-149-154-211.ngrok-free.app";
+        string server = "6adb-62-102-238-89.ngrok-free.app";
 
         // Send the request
         cout << "\n\033[1;34mSending request to server...\033[0m\n"; // Blue color for status messages

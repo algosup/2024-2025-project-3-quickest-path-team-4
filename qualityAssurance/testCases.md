@@ -21,13 +21,13 @@
     - [Duplicate rows \[DV\_016\]](#duplicate-rows-dv_016)
     - [Wrong data types \[DV\_017\]](#wrong-data-types-dv_017)
 - [Algorithm (AL)](#algorithm-al)
-    - [Shortest path (small file) \[AV\_018\]](#shortest-path-small-file-av_018)
-    - [Shortest path (large file) \[AV\_019\]](#shortest-path-large-file-av_019)
-    - [Output consistency \[AV\_020\]](#output-consistency-av_020)
-    - [Paths with equal time \[AV\_021\]](#paths-with-equal-time-av_021)
-    - [Wrong type input \[AV\_022\]](#wrong-type-input-av_022)
-    - [Non-existing node \[AV\_023\]](#non-existing-node-av_023)
-    - [Twice the same \[AV\_024\]](#twice-the-same-av_024)
+    - [Shortest path (small file) \[AL\_018\]](#shortest-path-small-file-al_018)
+    - [Shortest path (large file) \[AL\_019\]](#shortest-path-large-file-al_019)
+    - [Output consistency \[AL\_020\]](#output-consistency-al_020)
+    - [Paths with equal time \[AL\_021\]](#paths-with-equal-time-al_021)
+    - [Wrong type input \[AL\_022\]](#wrong-type-input-al_022)
+    - [Non-existing node \[AL\_023\]](#non-existing-node-al_023)
+    - [Twice the same \[AL\_024\]](#twice-the-same-al_024)
 - [REST API (RA)](#rest-api-ra)
     - [Get shortest path \[RA\_026\]](#get-shortest-path-ra_026)
   - [Error handling](#error-handling-1)
@@ -1048,9 +1048,9 @@ Number of edges whose endpoints each have degree=1: 1
 
 # Algorithm (AL)
 
-### Shortest path (small file) [AV_018]
+### Shortest path (small file) [AL_018]
 
-**Test case ID**: AV_018
+**Test case ID**: AL_018
 
 **Test case description**: Verify the program calculates the shortest path correctly for all possible source and destination pairs in a small dataset.
 
@@ -1112,9 +1112,9 @@ The program calculates the shortest path for all possible pairs, verifying each 
 
 ---
 
-### Shortest path (large file) [AV_019]
+### Shortest path (large file) [AL_019]
 
-**Test case ID**: AV_019
+**Test case ID**: AL_019
 
 **Test case description**: Verify the program calculates the shortest path correctly for selected source-destination pairs in a large dataset.
 
@@ -1152,9 +1152,9 @@ The program calculates the shortest path for the provided source-destination pai
 
 ---
 
-### Output consistency [AV_020]
+### Output consistency [AL_020]
 
-**Test case ID**: AV_020
+**Test case ID**: AL_020
 
 **Test case description**: Validate that the algorithm consistently produces the same output for repeated queries.
 
@@ -1204,9 +1204,9 @@ Total travel time: 50
 
 ---
 
-### Paths with equal time [AV_021]
+### Paths with equal time [AL_021]
 
-**Test case ID**: AV_021
+**Test case ID**: AL_021
 
 **Test case description**: Verify the program handles scenarios with multiple shortest paths having equal travel time.
 
@@ -1246,9 +1246,9 @@ Total travel time: 30
 
 ---
 
-### Wrong type input [AV_022]
+### Wrong type input [AL_022]
 
-**Test case ID**: AV_022
+**Test case ID**: AL_022
 
 **Test case description**: Validate the program detects and handles queries with input types that are not integers (e.g., strings or special characters).
 
@@ -1280,9 +1280,9 @@ Error: Invalid input. Source and destination must be integers.
 
 ---
 
-### Non-existing node [AV_023]
+### Non-existing node [AL_023]
 
-**Test case ID**: AV_023
+**Test case ID**: AL_023
 
 **Test case description**: Validate the program detects and handles queries for nodes that do not exist in the dataset.
 
@@ -1315,9 +1315,9 @@ Error: Node 200 does not exist in the dataset.
 
 ---
 
-### Twice the same [AV_024]
+### Twice the same [AL_024]
 
-**Test case ID**: AV_024
+**Test case ID**: AL_024
 
 **Test case description**: Validate the program detects and handles queries where the source and destination are the same landmark.
 

@@ -9,12 +9,44 @@ using namespace std;
 struct transitionPath
 {
     int startNode;  // Always an intersection node
-    vector<int> transitionNodes;  // List of nodes with exactly 2 neighbors
-    vector<int> distances;  // Distance between each consecutive transition node
+    vector<pair<int, int>> transitionNodes;  // List of nodes with exactly 2 neighbors and their distance
     int totalDistance;  // Total distance from startNode to endNode
-    int endNode;  // Can be another intersection node or a 1-neighbor node
-
+    pair <int, int> endNode;  // Can be another intersection node or a 1-neighbor node, with its distance
 };
+
+/* struct intersectionNode
+{
+    int node;
+    vector<int> smallNeighbors;
+
+} */
+
+transitionPath* createTransitionPath(int start, vector <pair<int,int>> listTransition, pair<int,int> end)
+{
+    transitionPath* newPath = new transitionPath;
+
+    newPath->startNode = start;
+
+    for (int i = 0; i < listTransition.size(); i++)
+    {
+        newPath->transitionNodes.push_back({listTransition.at(i).first, listTransition.at(i).second});
+    } 
+
+    newPath->endNode.first = end.first;
+    newPath->endNode.second = end.second;
+
+    int pathTotal = 0;
+
+    for (int i = 0; i < newPath->transitionNodes.size(); i++)
+    {
+        pathTotal += listTransition.at(i).second;
+        cout << pathTotal << endl;
+    } 
+
+    newPath->totalDistance = pathTotal + newPath->endNode.second;
+    
+    return newPath;
+}
 
 void printAdjacency(int node, unordered_map<int, vector<pair<int, int>>> &adjacency)
 {
@@ -46,23 +78,51 @@ int main()
         {2, {{1, 20}, {3, 30}}},
         {3, {{2, 30}, {4, 12}}},
         {4, {{3, 12}, {5, 30}}},
-        {5, {{5, 30}}}};
+        {5, {{5, 30}}},
+        {6, {{1, 70}}},
+        {7, {{1, 35}}},};
 
-    printAdjacencyList(adjacencyTest);
+    //printAdjacencyList(adjacencyTest);
 
-    cout << "TEST" << endl;
+    int start = 1;
 
-   transitionPath* newPath = new transitionPath;
+    int firstSolo = adjacencyTest[start][1].first;
+    int firstSoloDist = adjacencyTest[start][1].second;
 
-   // Access the first node in adjacencyTest (node 1)
-    auto firstNode = adjacencyTest.begin();  // Get the first node as iterator
-    newPath->startNode = firstNode->first;  // Assign the first node's key (1 in this case)
+    int secondSolo = adjacencyTest[start][2].first;
+    int secondSoloDist = adjacencyTest[start][2].second;
+
+    int firstPath = adjacencyTest[start][0].first;
+    int firstPathDist = adjacencyTest[start][0].second;
+
+    int secondPath = adjacencyTest[2][1].first;
+    int secondPathDist = adjacencyTest[2][1].second;
+
+    int thirdPath = adjacencyTest[3][1].first;
+    int thirdPathDist = adjacencyTest[3][1].second;
+
+    int lastPath = adjacencyTest[4][1].first;
+    int lastPathDist = adjacencyTest[4][1].second;
+
+    pair<int, int> end = {lastPath, lastPathDist};
     
-    cout << "Start node: " << newPath->startNode << endl;
+    vector<pair<int, int>> listTransition;
+    listTransition.push_back({firstPath, firstPathDist});
+    listTransition.push_back({secondPath, secondPathDist});
+    listTransition.push_back({thirdPath, thirdPathDist});
 
-    // If you want to print the adjacency list of the first node
-    printAdjacency(newPath->startNode, adjacencyTest);
+    transitionPath* newPath = createTransitionPath(start, listTransition, end);
 
+    cout << "path start = " << newPath->startNode << endl;
+    for (int i = 0; i < newPath->transitionNodes.size(); i++)
+    {
+        cout << "transitionNode n " << i << " = " << newPath->transitionNodes.at(i).first << ", distance = " << newPath->transitionNodes.at(i).second << endl;
+    }
+
+    cout << "path end = " << newPath->endNode.first << ", distance = " << newPath->endNode.second << endl;
+
+    cout << "total distance = " << newPath->totalDistance << endl;
+    
 
     //GOAL: pathA, nodeStart, node2, dist1, node3, dist2, nodeEnd, dist3, pathDist
 

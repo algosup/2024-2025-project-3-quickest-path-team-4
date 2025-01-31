@@ -4,9 +4,9 @@
 #include <thread>
 #include <mutex>
 #include "graph_data.h"
-#include "loading.cpp"
-#include "Bidirectional_Astar.cpp"
-#include "preprocess.cpp"
+#include "loading.h"  // Include loading.h
+#include "preprocess.h"  // Include preprocess.h
+#include "Bidirectional_Astar.h"
 
 using namespace std;
 

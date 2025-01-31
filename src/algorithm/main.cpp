@@ -1,0 +1,91 @@
+#include <iostream>
+#include <string>
+#include <chrono>
+#include "graph_data.h"
+#include "loading.cpp"
+#include "Bidirectional_Astar.cpp"  // Include the Bidirectional A* algorithm file
+#include "preprocess.cpp"
+
+using namespace std;
+
+int main() {
+    // Path to the input file
+    string file_path = "USA-roads.csv";
+
+    are_extremities_singles are_they;
+
+    // Load the graph data
+    graph_data g_data = load_graph_data(file_path);
+
+    // Create a new adjacency list to store the nodes that only contains 1 neighbor
+    unordered_map<int, int> single_neighbors;
+
+    preprocess(&g_data, &single_neighbors);
+
+    while (true) {
+        // Define the start and end nodes
+        int start;
+        int end;
+
+        // Distance map: node -> shortest distance from the start node
+        vector<int> distances(g_data.adjacency.size(), numeric_limits<int>::max());
+
+        cout << "ready" << endl;
+
+        cout << "Start node: ";
+        cin >> start;
+        cout << "End node: ";
+        cin >> end;
+
+        int true_start = start;
+        int true_end = end;
+
+        distances[start] = 0;
+
+        chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+        check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
+        cout << "Processing." << endl;
+
+        // Find the shortest path using Bidirectional A*
+        auto result = bidirectional_astar(g_data, start, end, distances);  // Using Bidirectional A*
+
+        chrono::steady_clock::time_point stop = chrono::steady_clock::now();
+
+        if (result.has_value()) {
+            // Handle single neighbor cases (if needed)
+            if (are_they.is_start_single) {
+                result.value().insert(result.value().begin(), start);
+            }
+            if (are_they.is_end_single) {
+                result.value().push_back(end);
+            }
+            cout << "Shortest path from " << true_start << " to " << true_end << ": " << endl;
+            for (int i = 0; i < result.value().size(); i++) {
+                cout << result.value()[i] << " > ";
+                if (result.value()[i] == true_end) {
+                    cout << endl;
+                    break;
+                }
+            }
+        } else {
+            cout << "No path found from " << start << " to " << end << endl;
+        }
+
+        cout << endl;
+        cout << endl;
+        cout << "########################################" << endl;
+        cout << endl;
+        cout << "Loading Time = " << chrono::duration_cast<chrono::milliseconds>(stop - begin).count() << "[ms]" << endl;
+        cout << "Nodes: " << result.value().size() << endl;
+
+        // Ask user if they want to find another path
+        char choice;
+        cout << "Do you want to find another path? (y/n): ";
+        cin >> choice;
+        if (choice != 'y' && choice != 'Y') {
+            break;
+        }
+    }
+
+    return 0;
+}

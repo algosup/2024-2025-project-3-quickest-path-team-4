@@ -1,152 +1,143 @@
+#include "graph_data.h" // Include the graph_data header
 #include <queue>
 #include <unordered_map>
 #include <vector>
 #include <limits>
-#include <iostream>
-#include <optional>
 #include <algorithm>
+#include <optional>
 
 using namespace std;
 
-#include "graph_data.h"
+// Simplified node representation for the priority queue
+struct Node
+{
+    int f;
+    int g;
+    int vertex;
 
-// Custom comparator for the priority queue
-struct CompareNodeDist {
-    bool operator()(const pair<int, int>& a, const pair<int, int>& b) {
-        return a.first > b.first;
+    Node(int f_, int g_, int v_) : f(f_), g(g_), vertex(v_) {}
+
+    bool operator>(const Node &other) const
+    {
+        return f > other.f;
     }
 };
 
-// Helper function to process one step of either forward or backward search
-static bool process_step(const graph_data& g_data,
-                       priority_queue<pair<int, int>, vector<pair<int, int>>, CompareNodeDist>& pq,
-                       vector<int>& dist_current,
-                       const vector<int>& dist_opposite,
-                       vector<int>& pred,
-                       vector<bool>& visited,
-                       int& best_meeting_dist,
-                       int& meeting_node,
-                       bool is_backward) {
-    const auto [current_dist, current_node] = pq.top();
-    pq.pop();
-
-    if (visited[current_node]) {
-        return false;
-    }
-    visited[current_node] = true;
-
-    // Check for intersection
-    if (dist_opposite[current_node] != numeric_limits<int>::max()) {
-        int total_dist = current_dist + dist_opposite[current_node];
-        if (total_dist < best_meeting_dist) {
-            best_meeting_dist = total_dist;
-            meeting_node = current_node;
-        }
-        return true;
-    }
-
-    auto it = g_data.adjacency.find(current_node);
-    if (it == g_data.adjacency.end()) {
-        return false;
-    }
-
-    for (const auto& [neighbor, weight] : it->second) {
-        if (visited[neighbor]) continue;
-        
-        int new_dist = current_dist + weight;
-        if (new_dist < dist_current[neighbor]) {
-            dist_current[neighbor] = new_dist;
-            pred[neighbor] = current_node;
-            pq.emplace(new_dist, neighbor);
-        }
-    }
-
-    return false;
+// Manhattan distance heuristic But nothing
+inline int heuristic(int a, int b)
+{
+    return 0;
 }
 
-optional<vector<int>> bidirectional_dijkstra(const graph_data& g_data, int start, int end, unordered_map<int, int>* distances) {
+optional<vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, unordered_map<int, int>& distances) {
     if (start == end) {
-        (*distances)[start] = 0;
+        distances[start] = 0;
         return vector<int>{start};
     }
 
-    // Use vector<bool> for visited nodes (more efficient than unordered_map)
-    const int max_node = [&g_data]() {
-        int max_id = 0;
-        for (const auto& [node, _] : g_data.adjacency) {
-            max_id = max(max_id, node);
-        }
-        return max_id + 1;
-    }();
+    const size_t n = graph.adjacency.size();
 
-    vector<bool> visited_forward(max_node), visited_backward(max_node);
-    vector<int> dist_forward(max_node, numeric_limits<int>::max());
-    vector<int> dist_backward(max_node, numeric_limits<int>::max());
-    vector<int> pred_forward(max_node, -1);
-    vector<int> pred_backward(max_node, -1);
+    // Pre-allocate all vectors to avoid resizing
+    vector<bool> visited_forward(n), visited_backward(n);
+    vector<int> g_forward(n, numeric_limits<int>::max());
+    vector<int> g_backward(n, numeric_limits<int>::max());
+    vector<int> parent_forward(n, -1);
+    vector<int> parent_backward(n, -1);
 
-    // Initialize distances for start and end
-    dist_forward[start] = 0;
-    dist_backward[end] = 0;
+    g_forward[start] = 0;
+    g_backward[end] = 0;
 
-    // Use custom comparator for better performance
-    priority_queue<pair<int, int>, vector<pair<int, int>>, CompareNodeDist> pq_forward, pq_backward;
-    pq_forward.emplace(0, start);
-    pq_backward.emplace(0, end);
+    // Use priority queues with the simplified Node struct
+    priority_queue<Node, vector<Node>, greater<>> forward_queue, backward_queue;
+    forward_queue.emplace(heuristic(start, end), 0, start);
+    backward_queue.emplace(heuristic(end, start), 0, end);
 
-    int best_meeting_dist = numeric_limits<int>::max();
+    int best_path = numeric_limits<int>::max();
     int meeting_node = -1;
 
-    // Main loop with early termination condition
-    while (!pq_forward.empty() && !pq_backward.empty()) {
+    // Main search loop
+    while (!forward_queue.empty() && !backward_queue.empty()) {
         // Early termination check
-        const int min_forward = pq_forward.top().first;
-        const int min_backward = pq_backward.top().first;
-        if (min_forward + min_backward >= best_meeting_dist) {
-            break;
-        }
+        if (forward_queue.top().f + backward_queue.top().f >= best_path) break;
 
         // Forward search
-        if (process_step(g_data, pq_forward, dist_forward, dist_backward, 
-                        pred_forward, visited_forward, best_meeting_dist, 
-                        meeting_node, false)) {
-            break;
+        auto [f_curr, g_curr, curr] = forward_queue.top();
+        forward_queue.pop();
+
+        if (visited_forward[curr]) continue;
+        visited_forward[curr] = true;
+
+        // Check for intersection
+        if (visited_backward[curr]) {
+            int total_dist = g_curr + g_backward[curr];
+            if (total_dist < best_path) {
+                best_path = total_dist;
+                meeting_node = curr;
+            }
+            continue;
         }
 
-        // Backward search
-        if (process_step(g_data, pq_backward, dist_backward, dist_forward, 
-                        pred_backward, visited_backward, best_meeting_dist, 
-                        meeting_node, true)) {
-            break;
+        // Process neighbors
+        for (const auto& [next, weight] : graph.adjacency.at(curr)) {
+            if (visited_forward[next]) continue;
+
+            int new_g = g_curr + weight;
+            if (new_g < g_forward[next]) {
+                g_forward[next] = new_g;
+                parent_forward[next] = curr;
+                int f = new_g + heuristic(next, end);
+                forward_queue.emplace(f, new_g, next);
+            }
+        }
+
+        // Backward search (similar to forward search)
+        auto [b_f_curr, b_g_curr, b_curr] = backward_queue.top();
+        backward_queue.pop();
+
+        if (visited_backward[b_curr]) continue;
+        visited_backward[b_curr] = true;
+
+        if (visited_forward[b_curr]) {
+            int total_dist = b_g_curr + g_forward[b_curr];
+            if (total_dist < best_path) {
+                best_path = total_dist;
+                meeting_node = b_curr;
+            }
+            continue;
+        }
+
+        for (const auto& [next, weight] : graph.adjacency.at(b_curr)) {
+            if (visited_backward[next]) continue;
+
+            int new_g = b_g_curr + weight;
+            if (new_g < g_backward[next]) {
+                g_backward[next] = new_g;
+                parent_backward[next] = b_curr;
+                int f = new_g + heuristic(next, start);
+                backward_queue.emplace(f, new_g, next);
+            }
         }
     }
 
-    if (meeting_node == -1) {
-        return nullopt;
-    }
+    if (meeting_node == -1) return nullopt;
 
-    // Reconstruct path efficiently
+    // Reconstruct path
     vector<int> path;
-    path.reserve(max_node); // Pre-allocate memory
+    path.reserve(n);
 
-    // Forward path
-    for (int at = meeting_node; at != -1; at = pred_forward[at]) {
+    for (int at = meeting_node; at != -1; at = parent_forward[at]) {
         path.push_back(at);
     }
     reverse(path.begin(), path.end());
 
-    // Backward path
-    for (int at = pred_backward[meeting_node]; at != -1; at = pred_backward[at]) {
+    for (int at = parent_backward[meeting_node]; at != -1; at = parent_backward[at]) {
         path.push_back(at);
     }
 
-    // Update distances map efficiently
-    for (int i = 0; i < max_node; ++i) {
-        if (dist_forward[i] != numeric_limits<int>::max()) {
-            (*distances)[i] = dist_forward[i];
-        }
-        if (dist_backward[i] != numeric_limits<int>::max()) {
-            (*distances)[i] = min((*distances)[i], dist_backward[i]);
+    // Update distances
+    for (size_t i = 0; i < n; ++i) {
+        if (g_backward[i] < distances[i]) {
+            distances[i] = g_backward[i];
         }
     }
 

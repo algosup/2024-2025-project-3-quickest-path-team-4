@@ -1,5 +1,17 @@
+/*  
+Author: Thibaud 'Biohazardye' Marlier
+
+This client's version was created using port forwarding using ngrok. This version works, however, the fact that we had to change the server
+URL every time we wanted to test the client was a bit annoying. This is why we decided to use a more permanent solution, which is to deploy
+the server through a simple localhost server. And not using any port forwarding.
+
+*/
+
+
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
+#include <boost/beast/ssl.hpp>
+#include <boost/asio/ssl.hpp>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <iostream>
@@ -10,6 +22,7 @@
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
+namespace ssl = boost::asio::ssl;
 using tcp = net::ip::tcp;
 using namespace std;
 
@@ -19,21 +32,31 @@ void handle_response(const string& response) {
     cout << "\033[1;32m" << response << "\033[0m\n";     // Green color for the response
 }
 
-// Function to send a request using Boost.Beast (plain HTTP)
+// Function to send a request using Boost.Beast with SSL
 void send_request(const string& server, const string& path, const string& accept_header) {
     try {
         // Create the IO context
         net::io_context ioc;
 
+        // Create the SSL context
+        ssl::context ctx(ssl::context::tlsv12_client);
+        ctx.set_verify_mode(ssl::verify_none); // Note: In production, you should verify certificates
+
         // Create the resolver
         tcp::resolver resolver(ioc);
-        auto const results = resolver.resolve(server, "8080");
+        auto const results = resolver.resolve(server, "443");
 
-        // Create and connect the TCP stream
-        beast::tcp_stream stream(ioc);
+        // Create and connect the SSL stream
+        beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx);
 
+        // Set SNI Hostname (many hosts need this to handshake successfully)
+        SSL_set_tlsext_host_name(stream.native_handle(), server.c_str());
+        
         // Connect to the server
-        stream.connect(results);
+        beast::get_lowest_layer(stream).connect(results);
+
+        // Perform the SSL handshake
+        stream.handshake(ssl::stream_base::client);
 
         // Set up the HTTP GET request
         http::request<http::empty_body> req{http::verb::get, path, 11};
@@ -55,8 +78,8 @@ void send_request(const string& server, const string& path, const string& accept
 
         // Gracefully close the stream
         beast::error_code ec;
-        stream.socket().shutdown(tcp::socket::shutdown_both, ec);
-        if(ec && ec != beast::errc::not_connected)
+        stream.shutdown(ec);
+        if(ec && ec != net::error::eof)
             throw beast::system_error{ec};
 
     } catch (const beast::system_error& e) {
@@ -101,8 +124,8 @@ int main() {
         stringstream path;
         path << "/path?start=" << start_node << "&end=" << end_node;
 
-        // Server info - localhost
-        string server = "localhost";
+        // Server info - ngrok URL (without https://)
+        string server = "6adb-62-102-238-89.ngrok-free.app";
 
         // Send the request
         cout << "\n\033[1;34mSending request to server...\033[0m\n"; // Blue color for status messages

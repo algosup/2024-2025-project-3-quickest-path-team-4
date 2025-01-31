@@ -49,27 +49,6 @@ void log_message(const string &category, const string &message, bool important =
 graph_data gdata = load_graph_data("USA-roads.csv");
 unordered_map<int, int> single_neighbors;
 
-// Function to start Ngrok and fetch the public URL
-string start_ngrok()
-{
-    log_message("NGROK", "Starting ngrok service...", true);
-    system("ngrok http 8080 --log=stdout > ngrok.log 2>&1 &");
-    this_thread::sleep_for(chrono::seconds(3));
-
-    FILE *pipe = popen("curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url'", "r");
-    if (!pipe)
-        return "";
-
-    char buffer[128];
-    string result = "";
-    while (fgets(buffer, sizeof(buffer), pipe) != nullptr)
-    {
-        result += buffer;
-    }
-    pclose(pipe);
-    return result;
-}
-
 // Convert response to JSON format
 string to_json(int start, int end, const vector<int> &path, long duration)
 {
@@ -264,8 +243,6 @@ int main()
     log_message("STARTUP", "Initializing server...", true);
 
     preprocess(&gdata, &single_neighbors);
-    string ngrok_url = start_ngrok();
-    log_message("NGROK", "Public URL: " + ngrok_url, true);
 
     try
     {

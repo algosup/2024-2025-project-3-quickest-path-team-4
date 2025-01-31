@@ -74,14 +74,27 @@ string start_ngrok()
 string to_json(int start, int end, const vector<int> &path, long duration)
 {
     stringstream ss;
-    ss << "{\"start\": " << start << ", \"end\": " << end << ", \"path\": [";
+    ss << "{\n"
+       << "    \"start\": " << start << ",\n"
+       << "    \"end\": " << end << ",\n"
+       << "    \"path\": [";
+
+    // Format path array with proper spacing
     for (size_t i = 0; i < path.size(); ++i)
     {
+        if (i % 10 == 0 && i != 0)
+        { // Line break every 10 items
+            ss << "\n        ";
+        }
         ss << path[i];
         if (i < path.size() - 1)
             ss << ", ";
     }
-    ss << "], \"computation_time\": " << duration << "}";
+
+    ss << "],\n"
+       << "    \"computation_time\": " << duration << "\n"
+       << "}";
+
     return ss.str();
 }
 
@@ -89,12 +102,22 @@ string to_json(int start, int end, const vector<int> &path, long duration)
 string to_xml(int start, int end, const vector<int> &path, long duration)
 {
     stringstream ss;
-    ss << "<response><start>" << start << "</start><end>" << end << "</end><path>";
+    ss << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+       << "<response>\n"
+       << "    <start>" << start << "</start>\n"
+       << "    <end>" << end << "</end>\n"
+       << "    <path>\n";
+
+    // Format path nodes with proper indentation
     for (int node : path)
     {
-        ss << "<node>" << node << "</node>";
+        ss << "        <node>" << node << "</node>\n";
     }
-    ss << "</path><computation_time>" << duration << "</computation_time></response>";
+
+    ss << "    </path>\n"
+       << "    <computation_time>" << duration << "</computation_time>\n"
+       << "</response>";
+
     return ss.str();
 }
 
@@ -155,7 +178,10 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             }
         }
 
-        cout << "Start: " << start << " End: " << end << endl;
+        // Stylized log for Start and End nodes
+        stringstream nodes_message;
+        nodes_message << "Start: " << start << " End: " << end;
+        log_message("NODES", nodes_message.str());
 
         if (start == -1 || end == -1)
         {
@@ -180,10 +206,9 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         auto begin = chrono::steady_clock::now();
         auto result = bidirectional_dijkstra(gdata, start, end, &distances);
         auto end_time = chrono::steady_clock::now();
-        
+
         auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - begin).count();
         log_message("COMPLETE", "Path computation finished in " + to_string(duration) + "ms", true);
-
 
         res.result(http::status::ok);
         if (result.has_value())
@@ -255,7 +280,7 @@ int main()
             tcp::socket socket(ioc);
             acceptor.accept(socket);
             do_session(std::move(socket));
-        }
+        }  
     }
     catch (exception &e)
     {

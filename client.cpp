@@ -18,7 +18,8 @@ using namespace std;
 
 // Function to handle the response from the server
 void handle_response(const string& response) {
-    cout << "Response from server:\n" << response << endl;
+    cout << "\n\033[1;36mResponse from server:\033[0m\n"; // Cyan color for the header
+    cout << "\033[1;32m" << response << "\033[0m\n";     // Green color for the response
 }
 
 // Function to send a request using Boost.Beast with SSL
@@ -72,25 +73,40 @@ void send_request(const string& server, const string& path, const string& accept
             throw beast::system_error{ec};
 
     } catch (const beast::system_error& e) {
-        cerr << "Error: " << e.what() << endl;
+        cerr << "\033[1;31mError: " << e.what() << "\033[0m\n"; // Red color for errors
     } catch (const std::exception& e) {
-        cerr << "Exception: " << e.what() << endl;
+        cerr << "\033[1;31mException: " << e.what() << "\033[0m\n"; // Red color for exceptions
     }
+}
+
+void print_header() {
+    cout << "\033[1;35m========================================\033[0m\n"; // Magenta color for the header
+    cout << "\033[1;35m    ROADRUNNER - Client   \033[0m\n";
+    cout << "\033[1;35m========================================\033[0m\n";
+}
+
+void print_footer() {
+    cout << "\033[1;35m========================================\033[0m\n";
+    cout << "\033[1;35m Thank you for using the ROADRUNNER! \033[0m\n";
+    cout << "\033[1;35m========================================\033[0m\n";
 }
 
 int main() {
     char repeat_choice;
     do {
+        // Print the header
+        print_header();
+
         // Prompt user for start and end nodes
         int start_node, end_node;
-        cout << "Enter the start node: ";
+        cout << "\033[1;33mEnter the start node: \033[0m"; // Yellow color for prompts
         cin >> start_node;
-        cout << "Enter the end node: ";
+        cout << "\033[1;33mEnter the end node: \033[0m";
         cin >> end_node;
 
         // Prompt user for the response format
         int choice;
-        cout << "Choose response format (1 for JSON, 2 for XML): ";
+        cout << "\033[1;33mChoose response format (1 for JSON, 2 for XML): \033[0m";
         cin >> choice;
         string format = (choice == 1) ? "application/json" : "application/xml";
 
@@ -99,17 +115,20 @@ int main() {
         path << "/path?start=" << start_node << "&end=" << end_node;
 
         // Server info - ngrok URL (without https://)
-        string server = "873d-90-107-137-222.ngrok-free.app";
+        string server = "c1dd-176-149-154-211.ngrok-free.app";
 
         // Send the request
+        cout << "\n\033[1;34mSending request to server...\033[0m\n"; // Blue color for status messages
         send_request(server, path.str(), format);
 
         // Ask user if they want to calculate another path
-        cout << "\nDo you want to calculate another path? (y for yes, n for no): ";
+        cout << "\n\033[1;33mDo you want to calculate another path? (y for yes, n for no): \033[0m";
         cin >> repeat_choice;
 
     } while (repeat_choice == 'y' || repeat_choice == 'Y');
 
-    cout << "Exiting program." << endl;
+    // Print the footer
+    print_footer();
+
     return 0;
 }

@@ -13,6 +13,7 @@
 
 ## Team Morale
 Here is a graph representing the team's satisfaction for the fourth week. <br>
+<img src="Images/teamSatisfactionWeek4.png" width="500"> 
 
 
 ## Project advancements
@@ -20,7 +21,7 @@ Here is a graph representing the team's satisfaction for the fourth week. <br>
 1. **Complete Techincal Specifications**
  - We were hoping to finish the Technical Specifications, however, we realized that there are still many different parts of the algorithms that will require changes in the document. It will be completed on Thursday or Friday of next week.
 2. **Advancing on the code**
- - We managed to advance a lot on the code. Nearly all of the team worked on the code for this week. Not everyone could work on the algorithm at the same time, which meant some of us had to work on the server. It can receive a GET request, run the algorithm, and return results in XML or JSON format. The algorithm was also considerably improved, with the response for the longest path going down from 37 seconds to 13 seconds.
+ - We managed to advance a lot on the code. Nearly all of the team worked on the code for this week. Not everyone could work on the algorithm at the same time, which meant some of us had to work on the server. It can receive a GET request, run the algorithm, and return results in XML or JSON format. The algorithm was also considerably improved, with the response for the longest path going down from 37 seconds to 13 seconds. Then, the technical leader talked to team 6 and they showed us a new way to compile the code which made the longest path go down from 13 
 3. **Talking to our superiors about the software engineer's absence**
  - We went to talk to Franck, and he said that we should transform either the technical writer or the program manager into a software engineer. But before the team could decide who would become a software engineer. Ian came back and did some work, so we didn't think it necessary anymore to have someone take his role over. However, if the same thing were to happen for another project, I would make another group member a software engineer at the start of the project.
 

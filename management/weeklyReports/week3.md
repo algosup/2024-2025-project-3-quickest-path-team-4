@@ -10,7 +10,8 @@
  - We wanted to finish the algorithm to allow the team to finish the REST API.
 
 ## Team Morale
-Here is a graph representing the team's satisfaction for the second week. (I am waiting for Ian's input before putting the image)
+Here is a graph representing the team's satisfaction for the third week. <br>
+<img src="Images/teamSatisfactionWeek3.png" width="500"> 
 
 ## Project advancements
 

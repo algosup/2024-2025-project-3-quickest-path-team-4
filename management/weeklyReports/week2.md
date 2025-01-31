@@ -12,7 +12,8 @@
  - We wanted to start working on the code early.
 
 ## Team Morale
-Here is a graph representing the team's satisfaction for the second week. (I am waiting for Ian's input before putting the image)
+Here is a graph representing the team's satisfaction for the second week. <br>
+<img src="Images/teamSatisfactionWeek2.png" width="500"> 
 
 ## Project advancements
 

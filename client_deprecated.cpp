@@ -5,6 +5,8 @@ This client's version was created using port forwarding using ngrok. This versio
 URL every time we wanted to test the client was a bit annoying. This is why we decided to use a more permanent solution, which is to deploy
 the server through a simple localhost server. And not using any port forwarding.
 
+g++ -std=c++17 -Iboost_1_82_0 -I/opt/homebrew/opt/openssl@3/include client.cpp -o client -L/opt/homebrew/opt/openssl@3/lib -lssl -lcrypto -lpthread
+
 */
 
 

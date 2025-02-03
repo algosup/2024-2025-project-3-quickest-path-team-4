@@ -119,6 +119,16 @@ void handle_request(const http::request<http::string_body> &req, http::response<
     log_message("REQUEST", "New request received", true);
     log_message("PATH", string(req.target()));
 
+    // Helper function to send error response
+    auto send_error = [&res](http::status status, const string &message)
+    {
+        res.result(status);
+        res.body() = message;
+        res.set(http::field::content_type, "text/plain");
+        res.prepare_payload();
+    };
+
+    // Determine response type from Accept header
     string response_type = "json";
     if (req.find(http::field::accept) != req.end())
     {
@@ -130,69 +140,91 @@ void handle_request(const http::request<http::string_body> &req, http::response<
     }
     log_message("FORMAT", "Response type: " + response_type);
 
-    if (req.method() == http::verb::get && req.target().starts_with("/path"))
+    // Validate request method and path
+    if (req.method() != http::verb::get || !req.target().starts_with("/path"))
     {
-        string query(req.target().begin(), req.target().end());
-        int start = -1, end = -1;
-        unordered_map<string, string> params;
+        send_error(http::status::not_found, "Route not found.");
+        return;
+    }
 
-        if (query.find('?') != string::npos)
+    // Parse and validate query parameters
+    string query(req.target().begin(), req.target().end());
+    int start = -1, end = -1;
+    unordered_map<string, string> params;
+
+    if (query.find('?') != string::npos)
+    {
+        query = query.substr(query.find('?') + 1);
+        stringstream ss(query);
+        string token;
+
+        while (getline(ss, token, '&'))
         {
-            query = query.substr(query.find('?') + 1);
-            stringstream ss(query);
-            string token;
-
-            while (getline(ss, token, '&'))
+            auto pos = token.find('=');
+            if (pos != string::npos)
             {
-                auto pos = token.find('=');
-                if (pos != string::npos)
-                {
-                    string key = token.substr(0, pos);
-                    string value = token.substr(pos + 1);
-                    params[key] = value;
-                }
-            }
-            if (params.find("start") != params.end() && params.find("end") != params.end())
-            {
-                try
-                {
-                    start = stoi(params["start"]);
-                    end = stoi(params["end"]);
-                }
-                catch (const exception &)
-                {
-                    res.result(http::status::bad_request);
-                    res.body() = "Invalid start or end node.";
-                    res.set(http::field::content_type, "text/plain");
-                    res.prepare_payload();
-                    return;
-                }
+                string key = token.substr(0, pos);
+                string value = token.substr(pos + 1);
+                params[key] = value;
             }
         }
 
-        stringstream nodes_message;
-        nodes_message << "Start: " << start << " End: " << end;
-        log_message("NODES", nodes_message.str());
-
-        if (start == -1 || end == -1)
+        // Parse start and end parameters
+        if (params.find("start") != params.end() && params.find("end") != params.end())
         {
-            res.result(http::status::bad_request);
-            res.body() = "Missing start or end node.";
-            res.set(http::field::content_type, "text/plain");
-            res.prepare_payload();
-            return;
+            try
+            {
+                start = stoi(params["start"]);
+                end = stoi(params["end"]);
+            }
+            catch (const exception &)
+            {
+                send_error(http::status::bad_request, "Invalid start or end node format.");
+                return;
+            }
         }
+    }
 
-        are_extremities_singles are_they;
-        unordered_map<int, int> distances;
+    // Validate start and end nodes
+    if (start == -1 || end == -1)
+    {
+        send_error(http::status::bad_request, "Missing start or end node parameters.");
+        return;
+    }
+
+    // Log node information
+    stringstream nodes_message;
+    nodes_message << "Start: " << start << " (exists: "
+                  << (gdata.adjacency.count(start) > 0) << ") End: " << end
+                  << " (exists: " << (gdata.adjacency.count(end) > 0) << ")";
+    log_message("NODES", nodes_message.str());
+
+    // Validate nodes exist in graph
+    if (gdata.adjacency.find(start) == gdata.adjacency.end() ||
+        gdata.adjacency.find(end) == gdata.adjacency.end())
+    {
+        send_error(http::status::bad_request, "Start or end node does not exist in the graph.");
+        return;
+    }
+
+    // Initialize path finding data structures
+    are_extremities_singles are_they{};
+    unordered_map<int, int> distances;
+
+    try
+    {
         for (const auto &[node, _] : gdata.adjacency)
         {
             distances[node] = numeric_limits<int>::max();
         }
+
         int true_start = start, true_end = end;
         distances[start] = 0;
+
+        // Check for single neighbors
         check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
 
+        // Compute path
         log_message("PROCESS", "Starting path computation...");
         auto begin = chrono::steady_clock::now();
         auto result = bidirectional_astar(gdata, start, end, distances);
@@ -200,6 +232,7 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - begin).count();
         log_message("COMPLETE", "Path computation finished in " + to_string(duration) + "ms", true);
 
+        // Prepare response
         res.result(http::status::ok);
         if (result.has_value())
         {
@@ -217,15 +250,15 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         else
         {
             res.body() = "No path found from " + to_string(true_start) + " to " + to_string(true_end);
+            res.set(http::field::content_type, "text/plain");
         }
         res.prepare_payload();
     }
-    else
+    catch (const exception &e)
     {
-        res.result(http::status::not_found);
-        res.body() = "Route not found.";
-        res.set(http::field::content_type, "text/plain");
-        res.prepare_payload();
+        log_message("ERROR", string("Path computation error: ") + e.what());
+        send_error(http::status::internal_server_error, "Internal server error during path computation.");
+        return;
     }
 }
 

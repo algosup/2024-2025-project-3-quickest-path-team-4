@@ -256,7 +256,7 @@ int main()
             tcp::socket socket(ioc);
             acceptor.accept(socket);
             do_session(std::move(socket));
-        }  
+        }
     }
     catch (exception &e)
     {

@@ -14,14 +14,17 @@ using tcp = net::ip::tcp;
 using namespace std;
 
 // Function to handle the response from the server
-void handle_response(const string& response) {
+void handle_response(const string &response)
+{
     cout << "\n\033[1;36mResponse from server:\033[0m\n"; // Cyan color for the header
-    cout << "\033[1;32m" << response << "\033[0m\n";     // Green color for the response
+    cout << "\033[1;32m" << response << "\033[0m\n";      // Green color for the response
 }
 
 // Function to send a request using Boost.Beast (plain HTTP)
-void send_request(const string& server, const string& path, const string& accept_header) {
-    try {
+void send_request(const string &server, const string &path, const string &accept_header)
+{
+    try
+    {
         // Create the IO context
         net::io_context ioc;
 
@@ -56,31 +59,38 @@ void send_request(const string& server, const string& path, const string& accept
         // Gracefully close the stream
         beast::error_code ec;
         stream.socket().shutdown(tcp::socket::shutdown_both, ec);
-        if(ec && ec != beast::errc::not_connected)
+        if (ec && ec != beast::errc::not_connected)
             throw beast::system_error{ec};
-
-    } catch (const beast::system_error& e) {
+    }
+    catch (const beast::system_error &e)
+    {
         cerr << "\033[1;31mError: " << e.what() << "\033[0m\n"; // Red color for errors
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         cerr << "\033[1;31mException: " << e.what() << "\033[0m\n"; // Red color for exceptions
     }
 }
 
-void print_header() {
+void print_header()
+{
     cout << "\033[1;35m========================================\033[0m\n"; // Magenta color for the header
     cout << "\033[1;35m    ROADRUNNER - Client   \033[0m\n";
     cout << "\033[1;35m========================================\033[0m\n";
 }
 
-void print_footer() {
+void print_footer()
+{
     cout << "\033[1;35m========================================\033[0m\n";
     cout << "\033[1;35m Thank you for using the ROADRUNNER! \033[0m\n";
     cout << "\033[1;35m========================================\033[0m\n";
 }
 
-int main() {
+int main()
+{
     char repeat_choice;
-    do {
+    do
+    {
         // Print the header
         print_header();
 

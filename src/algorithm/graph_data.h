@@ -15,11 +15,10 @@ struct Coordinate {
 
 struct graph_data {
     vector<vector<pair<int, int>>> adjacency;
-    vector<int> node_degrees;  // Store the degree of each node
-    int min_edge_weight = numeric_limits<int>::max();  // Store the minimum edge weight
-    vector<Coordinate> coordinates;  // Store coordinates for each node
+    vector<int> node_degrees;
+    int min_edge_weight = numeric_limits<int>::max();
+    vector<Coordinate> coordinates;
 
-    // Constructor to initialize the graph with a given size
     explicit graph_data(size_t size = 0) : adjacency(size), node_degrees(size, 0), coordinates(size) {}
 
     void add_edge(int from, int to, int weight) {
@@ -37,13 +36,11 @@ struct graph_data {
         node_degrees[from]++;
         node_degrees[to]++;
 
-        // Update minimum edge weight
         if (weight < min_edge_weight) {
             min_edge_weight = weight;
         }
     }
 
-    // Prints the contents of the graph_data
     void print_contents() const {
         cout << "Graph Data:\n";
         cout << "Adjacency List:\n";

@@ -5,13 +5,11 @@
 #include <mutex>
 #include <optional>
 #include <vector>
-#include <queue>
-#include <functional>
+#include <atomic>
 
-// Declare the mutex as extern
-extern std::mutex mtx;
+extern std::mutex forward_mtx, backward_mtx;
+extern std::atomic<bool> found;
 
-// Node structure for the priority queue
 struct Node {
     int f;
     int g;
@@ -20,16 +18,11 @@ struct Node {
     Node(int f_, int g_, int v_) : f(f_), g(g_), vertex(v_) {}
 };
 
-// Custom comparator for the priority queue
-struct NodeComparator {
-    bool operator()(const Node& a, const Node& b) const {
-        return a.f > b.f;  // Min-heap
-    }
-};
+using Heap = std::vector<Node>;
+auto cmp = [](const Node& a, const Node& b) { return a.f > b.f; };
 
-using Heap = std::priority_queue<Node, std::vector<Node>, NodeComparator>;
+inline int zero_heuristic(int a, int b);
 
-// Declare the bidirectional_astar function
-std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, std::vector<int>& distances, const std::vector<std::vector<int>>& landmark_distances);
+std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, std::vector<int>& distances);
 
-#endif // BIDIRECTIONAL_ASTAR_H
+#endif

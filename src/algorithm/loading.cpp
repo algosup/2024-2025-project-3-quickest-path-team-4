@@ -10,7 +10,7 @@ graph_data load_graph_data(const string &file_path) {
     ifstream file_stream(file_path);
     if (!file_stream.is_open()) {
         cerr << "Error: Could not open file: " << file_path << endl;
-        return graph_data();  // Explicitly construct the graph_data object
+        return graph_data();
     }
 
     graph_data g_data;
@@ -21,7 +21,6 @@ graph_data load_graph_data(const string &file_path) {
         stringstream line_stream(line_data);
         string val_a, val_b, val_time;
 
-        // Read the values from the CSV
         if (!getline(line_stream, val_a, ',') ||
             !getline(line_stream, val_b, ',') ||
             !getline(line_stream, val_time, ',')) {
@@ -39,7 +38,6 @@ graph_data load_graph_data(const string &file_path) {
             continue;
         }
 
-        // Update the adjacency list
         g_data.add_edge(node_a, node_b, time_cost);
         g_data.add_edge(node_b, node_a, time_cost);
     }

@@ -2,29 +2,26 @@
 #include <thread>
 #include <future>
 #include <algorithm>
+#include <atomic>
 
-// Define the mutex here
-std::mutex mtx;
+std::mutex forward_mtx, backward_mtx;
+std::atomic<bool> found(false);
 
-// Improved heuristic using Euclidean distance (assuming coordinates are available)
-inline int euclidean_heuristic(int a, int b, const graph_data& graph) {
-    // Assuming graph has coordinates for each node
-    int dx = graph.coordinates[a].x - graph.coordinates[b].x;
-    int dy = graph.coordinates[a].y - graph.coordinates[b].y;
-    return static_cast<int>(std::sqrt(dx * dx + dy * dy));
+inline int zero_heuristic(int a, int b) {
+    return 0;
 }
 
-// Forward search function
-void forward_search(const graph_data& graph, int start, int end, std::vector<bool>& visited, std::vector<int>& g, std::vector<int>& parent, Heap& queue, const std::vector<std::vector<int>>& landmark_distances) {
-    while (true) {
-        mtx.lock();
+void forward_search(const graph_data& graph, int start, int end, std::vector<bool>& visited, std::vector<int>& g, std::vector<int>& parent, Heap& queue) {
+    while (!found) {
+        forward_mtx.lock();
         if (queue.empty()) {
-            mtx.unlock();
+            forward_mtx.unlock();
             break;
         }
-        auto node = queue.top();
-        queue.pop();
-        mtx.unlock();
+        std::pop_heap(queue.begin(), queue.end(), cmp);
+        auto node = queue.back();
+        queue.pop_back();
+        forward_mtx.unlock();
 
         int curr = node.vertex;
         if (visited[curr]) continue;
@@ -37,26 +34,27 @@ void forward_search(const graph_data& graph, int start, int end, std::vector<boo
             if (new_g < g[next]) {
                 g[next] = new_g;
                 parent[next] = curr;
-                int f = new_g + euclidean_heuristic(next, end, graph);
-                mtx.lock();
-                queue.push(Node(f, new_g, next));
-                mtx.unlock();
+                int f = new_g + zero_heuristic(next, end);
+                forward_mtx.lock();
+                queue.push_back(Node(f, new_g, next));
+                std::push_heap(queue.begin(), queue.end(), cmp);
+                forward_mtx.unlock();
             }
         }
     }
 }
 
-// Backward search function
-void backward_search(const graph_data& graph, int start, int end, std::vector<bool>& visited, std::vector<int>& g, std::vector<int>& parent, Heap& queue, const std::vector<std::vector<int>>& landmark_distances) {
-    while (true) {
-        mtx.lock();
+void backward_search(const graph_data& graph, int start, int end, std::vector<bool>& visited, std::vector<int>& g, std::vector<int>& parent, Heap& queue) {
+    while (!found) {
+        backward_mtx.lock();
         if (queue.empty()) {
-            mtx.unlock();
+            backward_mtx.unlock();
             break;
         }
-        auto node = queue.top();
-        queue.pop();
-        mtx.unlock();
+        std::pop_heap(queue.begin(), queue.end(), cmp);
+        auto node = queue.back();
+        queue.pop_back();
+        backward_mtx.unlock();
 
         int curr = node.vertex;
         if (visited[curr]) continue;
@@ -69,16 +67,17 @@ void backward_search(const graph_data& graph, int start, int end, std::vector<bo
             if (new_g < g[next]) {
                 g[next] = new_g;
                 parent[next] = curr;
-                int f = new_g + euclidean_heuristic(next, start, graph);
-                mtx.lock();
-                queue.push(Node(f, new_g, next));
-                mtx.unlock();
+                int f = new_g + zero_heuristic(next, start);
+                backward_mtx.lock();
+                queue.push_back(Node(f, new_g, next));
+                std::push_heap(queue.begin(), queue.end(), cmp);
+                backward_mtx.unlock();
             }
         }
     }
 }
 
-std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, std::vector<int>& distances, const std::vector<std::vector<int>>& landmark_distances) {
+std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, std::vector<int>& distances) {
     if (start == end) {
         distances[start] = 0;
         return std::vector<int>{start};
@@ -86,7 +85,6 @@ std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int
 
     const size_t n = graph.adjacency.size();
 
-    // Pre-allocate all vectors to avoid resizing
     std::vector<bool> visited_forward(n), visited_backward(n);
     std::vector<int> g_forward(n, std::numeric_limits<int>::max());
     std::vector<int> g_backward(n, std::numeric_limits<int>::max());
@@ -96,19 +94,18 @@ std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int
     g_forward[start] = 0;
     g_backward[end] = 0;
 
-    // Use priority queues with the custom comparator
     Heap forward_queue, backward_queue;
-    forward_queue.push(Node(euclidean_heuristic(start, end, graph), 0, start));
-    backward_queue.push(Node(euclidean_heuristic(end, start, graph), 0, end));
+    forward_queue.push_back(Node(zero_heuristic(start, end), 0, start));
+    std::push_heap(forward_queue.begin(), forward_queue.end(), cmp);
+    backward_queue.push_back(Node(zero_heuristic(end, start), 0, end));
+    std::push_heap(backward_queue.begin(), backward_queue.end(), cmp);
 
-    // Run forward and backward searches in parallel using std::async
-    auto future_forward = std::async(std::launch::async, forward_search, std::ref(graph), start, end, std::ref(visited_forward), std::ref(g_forward), std::ref(parent_forward), std::ref(forward_queue), std::ref(landmark_distances));
-    auto future_backward = std::async(std::launch::async, backward_search, std::ref(graph), start, end, std::ref(visited_backward), std::ref(g_backward), std::ref(parent_backward), std::ref(backward_queue), std::ref(landmark_distances));
+    auto future_forward = std::async(std::launch::async, forward_search, std::ref(graph), start, end, std::ref(visited_forward), std::ref(g_forward), std::ref(parent_forward), std::ref(forward_queue));
+    auto future_backward = std::async(std::launch::async, backward_search, std::ref(graph), start, end, std::ref(visited_backward), std::ref(g_backward), std::ref(parent_backward), std::ref(backward_queue));
 
     future_forward.get();
     future_backward.get();
 
-    // Find the meeting node
     int best_path = std::numeric_limits<int>::max();
     int meeting_node = -1;
     for (size_t i = 0; i < n; ++i) {
@@ -117,13 +114,13 @@ std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int
             if (total_dist < best_path) {
                 best_path = total_dist;
                 meeting_node = i;
+                found = true;
             }
         }
     }
 
     if (meeting_node == -1) return std::nullopt;
 
-    // Reconstruct path
     std::vector<int> path;
     for (int at = meeting_node; at != -1; at = parent_forward[at]) {
         path.push_back(at);
@@ -134,7 +131,6 @@ std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int
         path.push_back(at);
     }
 
-    // Update distances
     distances = std::move(g_forward);
     for (size_t i = 0; i < n; ++i) {
         if (g_backward[i] < distances[i]) {

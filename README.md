@@ -32,7 +32,7 @@ Road Runner is available anywhere
     - type the `windows+R` keys, type `cmd` and press enter.
 
 3. Type in the request: 
-    - type in this command: `(onlapaencordoncjemérien)`
+    - type in this command: `(we do not have it yet but it will be here.)`
 
 4. Type your start and end point:
     - Give Road Runner the ID's of the starting and ending landmark.

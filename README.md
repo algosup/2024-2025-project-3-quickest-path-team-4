@@ -32,7 +32,9 @@ Road Runner is available anywhere
     - type the `windows+R` keys, type `cmd` and press enter.
 
 3. Type in the request: 
-    - type in this command: `(we do not have it yet but it will be here.)`
+    - If you want your response in a .xml file, type in this command: `curl -o result.xml "http://localhost:8080/path?start=x&end=y" -H "Accept: application/xml"`
+    - If you want your response in a .JSON file, type in this command: `curl -o result.json "http://localhost:8080/path?start=x&end=y"`
+    - Replace the x from `start=x` and y from `end=y` to the start and end node you wish.
 
 4. Type your start and end point:
     - Give Road Runner the ID's of the starting and ending landmark.

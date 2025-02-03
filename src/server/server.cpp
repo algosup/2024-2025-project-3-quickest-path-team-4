@@ -1,3 +1,6 @@
+// curl -o result.xml "http://localhost:8080/path?start=1&end=2" -H "Accept: application/xml"
+// curl -o result.json "http://localhost:8080/path?start=1&end=2"
+
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/asio.hpp>
@@ -106,7 +109,7 @@ void handle_request(const http::request<http::string_body> &req, http::response<
     log_message("REQUEST", "New request received", true);
     log_message("PATH", string(req.target()));
 
-    string response_type = "json";
+    string response_type = "json"; // Default to JSON
     if (req.find(http::field::accept) != req.end())
     {
         string accept_header = req[http::field::accept];
@@ -191,16 +194,25 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         res.result(http::status::ok);
         if (result.has_value())
         {
+            string filename;
+            string content;
+
             if (response_type == "xml")
             {
+                filename = "path_result.xml";
+                content = to_xml(true_start, true_end, result.value(), duration);
                 res.set(http::field::content_type, "application/xml");
-                res.body() = to_xml(true_start, true_end, result.value(), duration);
             }
             else
             {
+                filename = "path_result.json";
+                content = to_json(true_start, true_end, result.value(), duration);
                 res.set(http::field::content_type, "application/json");
-                res.body() = to_json(true_start, true_end, result.value(), duration);
             }
+
+            // Set the Content-Disposition header to trigger a file download
+            res.set(http::field::content_disposition, "attachment; filename=" + filename);
+            res.body() = content;
         }
         else
         {

@@ -11,7 +11,7 @@
 #include <chrono>
 #include <iomanip>
 #ifdef _WIN32
-    #include <windows.h>
+#include <windows.h>
 #endif
 #include "graph_data.h"
 #include "Dijkstra.cpp"
@@ -28,7 +28,8 @@ const string SEPARATOR = "══════════════════
 const string SUBSEPARATOR = "────────────────────────────────────────────────────────";
 
 #ifdef _WIN32
-void initialize_windows_console() {
+void initialize_windows_console()
+{
     // Enable ANSI escape sequences for Windows console
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD dwMode = 0;
@@ -38,7 +39,8 @@ void initialize_windows_console() {
 }
 #endif
 
-string get_timestamp() {
+string get_timestamp()
+{
     auto now = chrono::system_clock::now();
     auto now_time = chrono::system_clock::to_time_t(now);
     stringstream ss;
@@ -47,11 +49,15 @@ string get_timestamp() {
 }
 
 // Helper function for consistent log formatting
-void log_message(const string &category, const string &message, bool important = false) {
+void log_message(const string &category, const string &message, bool important = false)
+{
     cout << get_timestamp() << " ";
-    if (important) {
+    if (important)
+    {
         cout << "║ \033[1;32m" << left << setw(12) << category << "\033[0m │ " << message << endl;
-    } else {
+    }
+    else
+    {
         cout << "║ " << left << setw(12) << category << " │ " << message << endl;
     }
 }
@@ -60,15 +66,18 @@ void log_message(const string &category, const string &message, bool important =
 graph_data gdata = load_graph_data("USA-roads.csv");
 unordered_map<int, int> single_neighbors;
 
-string to_json(int start, int end, const vector<int> &path, long duration) {
+string to_json(int start, int end, const vector<int> &path, long duration)
+{
     stringstream ss;
     ss << "{\n"
        << "    \"start\": " << start << ",\n"
        << "    \"end\": " << end << ",\n"
        << "    \"path\": [";
 
-    for (size_t i = 0; i < path.size(); ++i) {
-        if (i % 10 == 0 && i != 0) {
+    for (size_t i = 0; i < path.size(); ++i)
+    {
+        if (i % 10 == 0 && i != 0)
+        {
             ss << "\n        ";
         }
         ss << path[i];
@@ -83,7 +92,8 @@ string to_json(int start, int end, const vector<int> &path, long duration) {
     return ss.str();
 }
 
-string to_xml(int start, int end, const vector<int> &path, long duration) {
+string to_xml(int start, int end, const vector<int> &path, long duration)
+{
     stringstream ss;
     ss << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
        << "<response>\n"
@@ -91,7 +101,8 @@ string to_xml(int start, int end, const vector<int> &path, long duration) {
        << "    <end>" << end << "</end>\n"
        << "    <path>\n";
 
-    for (int node : path) {
+    for (int node : path)
+    {
         ss << "        <node>" << node << "</node>\n";
     }
 
@@ -102,43 +113,54 @@ string to_xml(int start, int end, const vector<int> &path, long duration) {
     return ss.str();
 }
 
-void handle_request(const http::request<http::string_body> &req, http::response<http::string_body> &res) {
+void handle_request(const http::request<http::string_body> &req, http::response<http::string_body> &res)
+{
     cout << SUBSEPARATOR << endl;
     log_message("REQUEST", "New request received", true);
     log_message("PATH", string(req.target()));
 
     string response_type = "json";
-    if (req.find(http::field::accept) != req.end()) {
+    if (req.find(http::field::accept) != req.end())
+    {
         string accept_header = req[http::field::accept];
-        if (accept_header.find("application/xml") != string::npos) {
+        if (accept_header.find("application/xml") != string::npos)
+        {
             response_type = "xml";
         }
     }
     log_message("FORMAT", "Response type: " + response_type);
 
-    if (req.method() == http::verb::get && req.target().starts_with("/path")) {
+    if (req.method() == http::verb::get && req.target().starts_with("/path"))
+    {
         string query(req.target().begin(), req.target().end());
         int start = -1, end = -1;
         unordered_map<string, string> params;
 
-        if (query.find('?') != string::npos) {
+        if (query.find('?') != string::npos)
+        {
             query = query.substr(query.find('?') + 1);
             stringstream ss(query);
             string token;
 
-            while (getline(ss, token, '&')) {
+            while (getline(ss, token, '&'))
+            {
                 auto pos = token.find('=');
-                if (pos != string::npos) {
+                if (pos != string::npos)
+                {
                     string key = token.substr(0, pos);
                     string value = token.substr(pos + 1);
                     params[key] = value;
                 }
             }
-            if (params.find("start") != params.end() && params.find("end") != params.end()) {
-                try {
+            if (params.find("start") != params.end() && params.find("end") != params.end())
+            {
+                try
+                {
                     start = stoi(params["start"]);
                     end = stoi(params["end"]);
-                } catch (const exception &) {
+                }
+                catch (const exception &)
+                {
                     res.result(http::status::bad_request);
                     res.body() = "Invalid start or end node.";
                     res.set(http::field::content_type, "text/plain");
@@ -152,7 +174,8 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         nodes_message << "Start: " << start << " End: " << end;
         log_message("NODES", nodes_message.str());
 
-        if (start == -1 || end == -1) {
+        if (start == -1 || end == -1)
+        {
             res.result(http::status::bad_request);
             res.body() = "Missing start or end node.";
             res.set(http::field::content_type, "text/plain");
@@ -162,7 +185,8 @@ void handle_request(const http::request<http::string_body> &req, http::response<
 
         are_extremities_singles are_they;
         unordered_map<int, int> distances;
-        for (const auto &[node, _] : gdata.adjacency) {
+        for (const auto &[node, _] : gdata.adjacency)
+        {
             distances[node] = numeric_limits<int>::max();
         }
         int true_start = start, true_end = end;
@@ -177,19 +201,27 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         log_message("COMPLETE", "Path computation finished in " + to_string(duration) + "ms", true);
 
         res.result(http::status::ok);
-        if (result.has_value()) {
-            if (response_type == "xml") {
+        if (result.has_value())
+        {
+            if (response_type == "xml")
+            {
                 res.set(http::field::content_type, "application/xml");
                 res.body() = to_xml(true_start, true_end, result.value(), duration);
-            } else {
+            }
+            else
+            {
                 res.set(http::field::content_type, "application/json");
                 res.body() = to_json(true_start, true_end, result.value(), duration);
             }
-        } else {
+        }
+        else
+        {
             res.body() = "No path found from " + to_string(true_start) + " to " + to_string(true_end);
         }
         res.prepare_payload();
-    } else {
+    }
+    else
+    {
         res.result(http::status::not_found);
         res.body() = "Route not found.";
         res.set(http::field::content_type, "text/plain");
@@ -197,44 +229,89 @@ void handle_request(const http::request<http::string_body> &req, http::response<
     }
 }
 
-void do_session(tcp::socket socket) {
-    try {
-        beast::flat_buffer buffer;
-        http::request<http::string_body> req;
-        http::read(socket, buffer, req);
-        log_message("SESSION", "New session started");
+void do_session(tcp::socket socket)
+{
+    bool keep_alive = true;
 
-        http::response<http::string_body> res;
-        handle_request(req, res);
-        http::write(socket, res);
-    } catch (exception &e) {
-        log_message("ERROR", string("Session error: ") + e.what());
+    while (keep_alive)
+    {
+        try
+        {
+            beast::flat_buffer buffer;
+            http::request<http::string_body> req;
+
+            // Read the request
+            beast::error_code ec;
+            http::read(socket, buffer, req, ec);
+
+            if (ec == http::error::end_of_stream)
+            {
+                break; // Client closed connection
+            }
+
+            if (ec)
+            {
+                throw beast::system_error{ec};
+            }
+
+            // Check if we should keep alive
+            keep_alive = req.keep_alive();
+
+            // Handle the request
+            http::response<http::string_body> res;
+            handle_request(req, res);
+
+            // Set keep-alive header in response
+            res.keep_alive(keep_alive);
+
+            // Send the response
+            http::write(socket, res, ec);
+
+            if (ec)
+            {
+                throw beast::system_error{ec};
+            }
+        }
+        catch (exception &e)
+        {
+            log_message("ERROR", string("Session error: ") + e.what());
+            break;
+        }
     }
+
+    // Gracefully close the socket
+    beast::error_code ec;
+    socket.shutdown(tcp::socket::shutdown_send, ec);
 }
 
-int main() {
-    #ifdef _WIN32
-        initialize_windows_console();
-    #endif
+int main()
+{
+#ifdef _WIN32
+    initialize_windows_console();
+#endif
 
     cout << SEPARATOR << endl;
     log_message("STARTUP", "Initializing server...", true);
 
     preprocess(&gdata, &single_neighbors);
 
-    try {
+    try
+    {
         net::io_context ioc;
         tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
         acceptor.set_option(net::socket_base::reuse_address(true));
         log_message("SERVER", "Listening on port 8080", true);
         cout << SEPARATOR << endl;
 
-        while (true) {
+        while (true)
+        {
             tcp::socket socket(ioc);
             acceptor.accept(socket);
             do_session(std::move(socket));
         }
-    } catch (exception &e) {
+    }
+    catch (exception &e)
+    {
         log_message("ERROR", string("Fatal error: ") + e.what());
     }
     return 0;

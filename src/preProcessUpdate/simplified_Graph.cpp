@@ -6,7 +6,7 @@
 
 using namespace std;
 
-//path representing the list of 2-neighbors nodes required between an intersection node and another intersection node or a single neighbor nod
+//Path representing the list of 2-neighbors nodes required between an intersection node and another intersection node or a single neighbor nod. There must always be at least one 2-neighbor node in the transition path.
 struct transitionPath
 {
     int startNode;  // Always an intersection node
@@ -21,7 +21,7 @@ struct intersectionNode
     int node;
     vector<pair<int, int>> smallNeighbors;
     vector<pair<int, int>> intersectionNeighbors;
-    vector<transitionPath> transitionPathList;
+    vector<transitionPath*> transitionPathList;
 }; 
 
 transitionPath* createTransitionPath(int start, vector <pair<int,int>> listTransition, pair<int,int> end)
@@ -50,8 +50,8 @@ transitionPath* createTransitionPath(int start, vector <pair<int,int>> listTrans
     return newPath;
 }
 
-intersectionNode* createIntersectionNode(int interNode, vector <pair<int,int>> singleNodes, vector <pair<int,int>> interNeighbors, vector<transitionPath> transitionList)
-{// TO TEST
+intersectionNode* createIntersectionNode(int interNode, vector <pair<int,int>> singleNodes, vector <pair<int,int>> interNeighbors, vector<transitionPath*> transitionList)
+{
     intersectionNode* newInternode = new intersectionNode;
 
     newInternode->node = interNode;
@@ -90,6 +90,43 @@ void printTransitionPath(transitionPath* path)
     cout << "path end = " << path->endNode.first << ", distance = " << path->endNode.second << endl;
 
     cout << "total distance = " << path->totalDistance << endl;
+}
+
+void printIntersectionNode(intersectionNode* interNode)
+{
+    cout << "Intersection Node = " << interNode->node << endl;
+
+    if (interNode->smallNeighbors.empty()) {
+        cout << "The intersection node has no small neighbors."<< endl;
+    } else {
+        cout << "The intersection node has " << interNode->smallNeighbors.size() << " small neighbors" << endl;
+        for (int i = 0; i < interNode->smallNeighbors.size(); i++)
+        {
+            cout << "smallNeighbors n " << i << " = " << interNode->smallNeighbors.at(i).first << ", distance = " << interNode->smallNeighbors.at(i).second << endl;
+        }
+    }
+    cout << endl;
+
+    if (interNode->intersectionNeighbors.empty()) {
+        cout << "The intersection node has no intersection neighbors."<< endl;
+    } else {
+        cout << "The intersection node has " << interNode->intersectionNeighbors.size() << "Intersection Neighbors" << endl;
+        for (int i = 0; i < interNode->intersectionNeighbors.size(); i++)
+        {
+            cout << "intersectionNeighbor n " << i << " = " << interNode->intersectionNeighbors.at(i).first << ", distance = " << interNode->intersectionNeighbors.at(i).second << endl;
+        }
+    }
+    cout << endl;
+
+    if (interNode->transitionPathList.empty()) {
+        cout << "The intersection node has no transition path."<< endl;
+    } else {
+        cout << "The intersection node has " << interNode->transitionPathList.size() << " Transition Paths" << endl;
+        for (int i = 0; i < interNode->transitionPathList.size(); i++)
+        {   cout << "Path from " << interNode->node << " to " << interNode->transitionPathList.at(i)->endNode.first << ":" << endl;
+            printTransitionPath(interNode->transitionPathList.at(i));
+        }
+    }
 }
 
 void printAdjacency(int node, unordered_map<int, vector<pair<int, int>>> &adjacency)
@@ -159,15 +196,18 @@ int main()
 
     transitionPath* newPath = createTransitionPath(start, listTransition, end);
 
-    cout << "path start = " << newPath->startNode << endl;
-    for (int i = 0; i < newPath->transitionNodes.size(); i++)
-    {
-        cout << "transitionNode n " << i << " = " << newPath->transitionNodes.at(i).first << ", distance = " << newPath->transitionNodes.at(i).second << endl;
-    }
+    vector<pair<int, int>> smallNeighbors;
+    smallNeighbors.push_back(deadend1);
+    smallNeighbors.push_back(deadend2);
 
-    cout << "path end = " << newPath->endNode.first << ", distance = " << newPath->endNode.second << endl;
+    vector<pair<int, int>> emptyNeighbors;
 
-    cout << "total distance = " << newPath->totalDistance << endl;
+    vector<transitionPath*> pathList;
+    pathList.push_back(newPath);
+
+    intersectionNode* newNode = createIntersectionNode(start, smallNeighbors, emptyNeighbors, pathList);
+
+    printIntersectionNode(newNode);
 
     //GOAL: pathA, nodeStart, node2, dist1, node3, dist2, nodeEnd, dist3, pathDist
 

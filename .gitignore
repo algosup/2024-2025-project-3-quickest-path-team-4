@@ -1,7 +1,6 @@
 # Default
 .vscode
 .DS_Store
-*.gitattributes
 
 # Prerequisites
 *.d

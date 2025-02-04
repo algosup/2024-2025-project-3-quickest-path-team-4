@@ -96,25 +96,25 @@ To directly run a road runner server from your computer:
 <br>
 
 3. Navigate to the right folder:
-    - For Windows:
-        1. Open file explorer.
-        2. Navigate to the folder in which the server.cpp file is located.
-        3. copy the file path located on the top of file explorer.
-        4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
-        Note: Make sure to include quotes around the path if it contains spaces.
-    - For Mcbook:
-        1. Open Finder.
-        2. Navigate to the folder containing the server.cpp file.
-        3. Right-click the folder name at the top of Finder (or use `Control + Click) and select "Copy as Pathname".
-        4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
+- For Windows:
+    1. Open file explorer.
+    2. Navigate to the folder in which the server.cpp file is located.
+    3. copy the file path located on the top of file explorer.
+    4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
+    Note: Make sure to include quotes around the path if it contains spaces.
+- For Mcbook:
+    1. Open Finder.
+    2. Navigate to the folder containing the server.cpp file.
+    3. Right-click the folder name at the top of Finder (or use `Control + Click) and select "Copy as Pathname".
+    4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
 <br>
 
 4. Compile and run the code:
-    - For Windows:
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server.exe -pthread`.
-        2. Then type `.\server.exe`.
-        3. Road Runner is now ready to go from your machine!
-    - For Mcbook:
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server -lpthread`.
-        2. Then type `./server.exe`.
-        3. Road Runner is now ready to go from your machine!
+- For Windows:
+    1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server.exe -pthread`.
+    2. Then type `.\server.exe`.
+    3. Road Runner is now ready to go from your machine!
+- For Mcbook:
+    1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server -lpthread`.
+    2. Then type `./server.exe`.
+    3. Road Runner is now ready to go from your machine!

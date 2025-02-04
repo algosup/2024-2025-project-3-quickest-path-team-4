@@ -21,18 +21,41 @@ Road Runner isn’t just an algorithm, it's your personal helper. Powered by adv
 
 </div>
 
+## Links to the documentation:
+
+### Specifications
+
+- [Functional Specifications](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/functionalSpecifications/functionalSpecifications.md)
+- [Technical Specifications](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/technicalSpecification/technicalSpecifications.md)
+
+### Project Management
+
+- [Management Artifact](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/management/managementArtifacts.md)
+- [Weekly Reports](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/management/weeklyReports/globalReport.md)
+
+### Quality Assurance
+
+- [Test Plan](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/qualityAssurance/documents/testPlan.md)
+- [Test Cases](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/qualityAssurance/documents/testCases.md)
+
+### User Manual
+
+- [User Manual](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/userManual/Road_Runner_User_Manual_Team_4.pdf)
+
 ## How to use Road Runner?
 
-Road Runner is available anywhere
+Road Runner is available anywhere!
 
 1. Connect to the same wifi: 
-    - be connected to the same wifi as Road Runner's server.
+    - Be connected to the same wifi as Road Runner's server.
 
 2. Open your terminal: 
-    - type the `windows+R` keys, type `cmd` and press enter.
+    - Type the `windows+R` keys, type `cmd` and press enter.
 
 3. Type in the request: 
-    - type in this command: `(we do not have it yet but it will be here.)`
+    1. If you want your response in a .xml file, type in this command: `curl -o result.xml "http://localhost:8080/path?start=x&end=y" -H "Accept: application/xml"`.
+    2. If you want your response in a .JSON file, type in this command: `curl -o result.json "http://localhost:8080/path?start=x&end=y"`.
+    3. Replace the x from `start=x` and y from `end=y` to the start and end node you wish.
 
 4. Type your start and end point:
     - Give Road Runner the ID's of the starting and ending landmark.
@@ -40,21 +63,58 @@ Road Runner is available anywhere
 5. Choose your results format:
     - You can get your results, which include the travel times and landmarks you will pass through in `JSON` or `XML` format.
 
-# How to download Road Runner?
+## How to download Road Runner?
 
 Maybe you want to read or modify the code, here is how you do it:
 1. Download the project:
-- Open your terminal.
-- Clone this repository by typing git clone `https://github.com/algosup/2024-2025-project-3-quickest-path-team-4`.
-- Type cd `2024-2025-project-3-quickest-path-team-4` to get into the project's directory.
+    1. Open your terminal.
+    2. Clone this repository by typing git clone `https://github.com/algosup/2024-2025-project-3-quickest-path-team-4`.
+    3. Type cd `2024-2025-project-3-quickest-path-team-4` to get into the project's directory.
+
 2. Check if everything works fine:
-- Still in the terminal, type `cd src` to get into the source folder.
-- Make sure there is a `.csv` files in the `src` folder.
+    1. Still in the terminal, type `cd src` to get into the source folder.
+    2. Make sure there is a `.csv` files in the `src` folder.
 
-To run the program:
+## How to run the program:
 
-(I will add stuff there when we have all the files ready)
+To directly run a road runner server from your computer:
 
-Link to the documentation:
+1. Install all the required software:
+    - For Mcbook : 
+        - Install hombrew: https://docs.brew.sh/Installation.
+        - Install the compiler: https://formulae.brew.sh/formula/gcc.
+    - For Windows : 
+        - Install Clang: https://clang.llvm.org/get_started.html.
+        - Install MinGW-w64: https://www.mingw-w64.org/downloads/.
+        - Type this `vcpkg install pthreads` in the MinGW terminal.
+<br>
 
-(The links will be added when the files have been pushed in the main)
+
+2. Open your terminal:
+    - accurately
+    - Type the `windows+R` keys, type `cmd` and press enter.
+<br>
+
+3. Navigate to the right folder:
+    - For Windows:
+        1. Open file explorer.
+        2. Navigate to the folder in which the server.cpp file is located.
+        3. copy the file path located on the top of file explorer.
+        4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
+        Note: Make sure to include quotes around the path if it contains spaces.
+    - For Mcbook:
+        1. Open Finder.
+        2. Navigate to the folder containing the server.cpp file.
+        3. Right-click the folder name at the top of Finder (or use `Control + Click) and select "Copy as Pathname".
+        4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
+<br>
+
+4. Compile and run the code:
+    - For Windows:
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server.exe -pthread`.
+        2. Then type `.\server.exe`.
+        3. Road Runner is now ready to go from your machine!
+    - For Mcbook:
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server -lpthread`.
+        2. Then type `./server.exe`.
+        3. Road Runner is now ready to go from your machine!

@@ -25,22 +25,22 @@ Road Runner isn’t just an algorithm, it's your personal helper. Powered by adv
 
 ### Specifications
 
-- [Functional Specifications](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/functionalSpecifications/functionalSpecifications.md)
-- [Technical Specifications](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/technicalSpecification/technicalSpecifications.md)
+- [Functional Specifications](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/functionalSpecifications/functionalSpecifications.md)
+- [Technical Specifications](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/technicalSpecification/technicalSpecifications.md)
 
 ### Project Management
 
-- [Management Artifact](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/management/managementArtifacts.md)
-- [Weekly Reports](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/management/weeklyReports/globalReport.md)
+- [Management Artifact](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/management/managementArtifacts.md)
+- [Weekly Reports](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/management/weeklyReports/globalReport.md)
 
 ### Quality Assurance
 
-- [Test Plan](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/qualityAssurance/documents/testPlan.md)
-- [Test Cases](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/qualityAssurance/documents/testCases.md)
+- [Test Plan](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/qualityAssurance/documents/testPlan.md)
+- [Test Cases](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/qualityAssurance/documents/testCases.md)
 
 ### User Manual
 
-- [User Manual](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/document/userManual/Road%20Runner%20User%20Manual%20Team%204.pdf)
+- [User Manual](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/userManual/Road_Runner_User_Manual_Team_4.pdf)
 
 ## How to use Road Runner?
 
@@ -88,9 +88,13 @@ To directly run a road runner server from your computer:
         - Install MinGW-w64: https://www.mingw-w64.org/downloads/.
         - Type this `vcpkg install pthreads` in the MinGW terminal.
 <br>
+
+
 2. Open your terminal:
+    - accurately
     - Type the `windows+R` keys, type `cmd` and press enter.
 <br>
+
 3. Navigate to the right folder:
     - For Windows:
         1. Open file explorer.
@@ -104,10 +108,13 @@ To directly run a road runner server from your computer:
         3. Right-click the folder name at the top of Finder (or use `Control + Click) and select "Copy as Pathname".
         4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
 <br>
+
 4. Compile and run the code:
     - For Windows:
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server.exe -pthread`
-        2. Then type `.\server.exe`
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server.exe -pthread`.
+        2. Then type `.\server.exe`.
         3. Road Runner is now ready to go from your machine!
     - For Mcbook:
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server -lpthread`
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server -lpthread`.
+        2. Then type `./server.exe`.
+        3. Road Runner is now ready to go from your machine!

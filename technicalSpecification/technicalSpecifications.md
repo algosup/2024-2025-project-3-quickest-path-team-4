@@ -25,7 +25,7 @@
     - [File Architecture](#file-architecture)
     - [Dependencies](#dependencies)
       - [STL](#stl)
-        - [Usage of STL](#usage-of-stl)
+    - [STL Libraries Used](#stl-libraries-used)
       - [Git Large File Storage](#git-large-file-storage)
       - [REST API](#rest-api-1)
         - [Boost.Beast](#boostbeast)
@@ -226,55 +226,77 @@ The Standard Template Library (STL) is a powerful C++ library that provides a co
 
 For this project, where performance and scalability are critical, STL plays a vital role by offering optimized implementations of data structures and algorithms. Below is a breakdown of the selected STL components and how they are used in this project:
 
-##### Usage of STL
+### STL Libraries Used
 
-Standard Template Library is a C++ library offering a wide range of data structures used to store objects and data. Here are the most important for this project:
-
-- ``<iostream>``
-  - Purpose: Provides input and output functionality for the project.
-  - Usage: Used for logging messages, displaying debug information, and handling input/output operations during development and testing.
+- **`<iostream>`**
+  - **Purpose**: Provides input and output functionality for the project.
+  - **Usage**: Used for logging messages, displaying debug information, and handling input/output operations during development and testing.
 
 ---
 
-- ``<string>``
-  - Purpose: Provides a robust way to handle strings in C++.
-  - Usage: Used to manage API request/response data, handle file paths, and process input/output strings in the program.
+- **`<string>`**
+  - **Purpose**: Provides a robust way to handle strings in C++.
+  - **Usage**: Used to manage API request/response data, handle file paths, and process input/output strings in the program.
 
 ---
 
-- ``<vector>``
-  - Purpose: A dynamic array that allows for efficient storage and manipulation of elements.
-  - Usage: Represents adjacency lists in graph representations, where each node’s connections are stored in a dynamic array.
+- **`<vector>`**
+  - **Purpose**: A dynamic array that allows for efficient storage and manipulation of elements.
+  - **Usage**: Represents adjacency lists in graph representations, where each node’s connections are stored in a dynamic array.
 
 ---
 
-- ``<fstream>``
-  - Purpose: Provides file input/output functionality.
-  - Usage: Reads the .csv file containing graph data, parsing and storing connections for graph construction.
+- **`<fstream>`**
+  - **Purpose**: Provides file input/output functionality.
+  - **Usage**: Reads the .csv file containing graph data, parsing and storing connections for graph construction.
 
 ---
 
-- ``<queue>``
-  - Purpose: Implements a FIFO (First-In-First-Out) data structure, including priority queues.
-  - Usage: Dijkstra's algorithm uses a priority queue to process nodes based on their shortest path distances.
+- **`<queue>`**
+  - **Purpose**: Implements a FIFO (First-In-First-Out) data structure, including priority queues.
+  - **Usage**: Dijkstra's algorithm uses a priority queue to process nodes based on their shortest path distances.
 
 ---
 
-- ``<unordered_map>``
-  - Purpose: Implements a hash table-based associative container for fast key-value pair access.
-  - Usage: Maps landmark IDs to their respective neighbors and weights, enabling efficient graph traversal and data retrieval.
+- **`<unordered_map>`**
+  - **Purpose**: Implements a hash table-based associative container for fast key-value pair access.
+  - **Usage**: Maps landmark IDs to their respective neighbors and weights, enabling efficient graph traversal and data retrieval.
 
 ---
 
-- ``<chrono>``
-  - Purpose: Provides tools for measuring time intervals and system clocks.
-  - Usage: Used to benchmark algorithm performance, ensuring compliance with the <1-second query response goal.
+- **`<chrono>`**
+  - **Purpose**: Provides tools for measuring time intervals and system clocks.
+  - **Usage**: Used to benchmark algorithm performance, ensuring compliance with the <1-second query response goal.
 
 ---
 
-- ``<algorithm>``
-  - Purpose: Provides a collection of utility functions for operations like sorting, searching, and manipulating data.
-  - Usage: Helps implement sorting or binary search operations required in graph construction and validation.
+- **`<algorithm>`**
+  - **Purpose**: Provides a collection of utility functions for operations like sorting, searching, and manipulating data.
+  - **Usage**: Helps implement sorting or binary search operations required in graph construction and validation.
+
+---
+
+- **`<limits>`**
+  - **Purpose**: Provides information about the properties of arithmetic types.
+  - **Usage**: Used to define maximum values for initializing distances in pathfinding algorithms.
+
+---
+
+- **`<sstream>`**
+  - **Purpose**: Provides string stream classes for operations on strings.
+  - **Usage**: Used for formatting strings, particularly in constructing JSON or XML responses.
+
+---
+
+- **`<optional>`**
+  - **Purpose**: Provides a way to represent optional (nullable) objects.
+  - **Usage**: Used to handle cases where a value may or may not be present, such as optional pathfinding results.
+
+---
+
+- **`<utility>`**
+  - **Purpose**: Provides utility functions and classes, such as pair and move semantics.
+  - **Usage**: Used for handling pairs of values, particularly in graph edge representations.
 
 #### Git Large File Storage
 

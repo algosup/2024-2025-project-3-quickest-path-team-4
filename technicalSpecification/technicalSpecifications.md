@@ -1,9 +1,9 @@
-# Technical Specifications Shortest Path Algorithm
+# Technical Specifications ROADRUNNER
 
 <details>
 <summary> Table Of Content </summary>
 
-- [Technical Specifications Shortest Path Algorithm](#technical-specifications-shortest-path-algorithm)
+- [Technical Specifications ROADRUNNER](#technical-specifications-roadrunner)
   - [Introduction](#introduction)
     - [Project Introduction](#project-introduction)
     - [Document Purpose](#document-purpose)
@@ -56,15 +56,35 @@
         - [Why do we use BFS?](#why-do-we-use-bfs)
       - [Graph Validation Verification](#graph-validation-verification)
       - [Connectivity Checks](#connectivity-checks)
+    - [Data Output](#data-output)
+      - [Response Structure](#response-structure)
+      - [Example of Responses](#example-of-responses)
     - [Data Flow](#data-flow)
     - [Performance](#performance)
       - [Optimization](#optimization)
+        - [Dead-End Node Removal](#dead-end-node-removal)
+        - [Efficient Data Structures](#efficient-data-structures)
+        - [Priority Queue Optimization](#priority-queue-optimization)
+        - [Bidirectional Search](#bidirectional-search)
       - [Big-O Notation](#big-o-notation)
         - [Time Complexity](#time-complexity)
         - [What Does This Time Complexity Mean?](#what-does-this-time-complexity-mean)
         - [Space complexity](#space-complexity)
           - [Space Complexity Calculation for Bidirectional Dijkstra's Algorithm](#space-complexity-calculation-for-bidirectional-dijkstras-algorithm)
           - [Total Space Complexity](#total-space-complexity)
+  - [Server](#server)
+    - [Data Preprocessing](#data-preprocessing)
+    - [Request Handling](#request-handling)
+  - [Client](#client)
+    - [Client's Key Features](#clients-key-features)
+      - [User Interaction](#user-interaction)
+      - [HTTP Request Handling](#http-request-handling)
+      - [Response Processing](#response-processing)
+      - [Error Handling](#error-handling)
+      - [Loop for Multiple Queries](#loop-for-multiple-queries)
+    - [Client's Pseudo Code](#clients-pseudo-code)
+    - [Client's Response](#clients-response)
+    - [Client-Server Interaction Sequence Diagram](#client-server-interaction-sequence-diagram)
   - [Testing](#testing)
     - [Unit Tests](#unit-tests)
     - [Performance Test](#performance-test)
@@ -144,9 +164,9 @@ Checks can be performed using a programming language other than C++, though we w
 1. C++ Source Code: This should include comments and clear documentation. The code should only use libraries from the STL and those required for the web server.
 2. Time and Space Complexity: Big O notation for the main algorithms.
 3. REST API Implementation: Demonstrating the ability to handle multiple formats (XML and
- JSON).
+   JSON).
 4. Test Suite: Tests to validate correctness, performance, and compliance with the 10%
- approximation rule.
+   approximation rule.
 5. Data Validation Tool: A utility to verify the integrity of the provided CSV file.
 
 ## Development Environment
@@ -184,15 +204,18 @@ For C++'s documentation: [C++ Reference](https://cplusplus.com/reference/)
 ├─── src
 │   ├─── boost_1_82_0 
 │   │   └─── (all the files necessary for Boost.Beast integrity)
-│   ├─── algorithm
-│   │   └─── dijksta.cpp
-│   │   └─── dijkstra.bin
+│   ├─── client
+│   │   └─── client.cpp
 │   ├─── server
+│   │   └─── dijkstra.cpp
+│   │   └─── graph_data.h
+│   │   └─── loading.cpp
+│   │   └─── preprocess.cpp
 │   │   └─── server.cpp
-│   │   └─── server.bin
-│   └─── testing 
-├─── 
-└─── 
+│   │   └─── USA-roads.csv
+│   └─── tests
+│   │   └─── tests.cpp
+│   │   └─── unit_tests.cpp 
 ```
 
 ### Dependencies
@@ -264,24 +287,25 @@ Git Large File Storage (Git LFS) is an extension for Git that enables users to m
 The `Data-Roads.csv` file is stored using Git LFS due to GitHub's limitation of 100 MB for individual file sizes, while the initial size of the dataset is approximately 653 MB. To effectively use Git LFS for this file, follow these steps:
 
 1. **Install Git LFS**:
+
    - Follow the installation instructions provided in the [Git LFS download guide](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage?platform=mac).
-
 2. **Navigate to the Directory**:
-   - Open your terminal and change to the directory where the `Data-Roads.csv` file is located.
 
+   - Open your terminal and change to the directory where the `Data-Roads.csv` file is located.
 3. **Fetch the Large Files**:
+
    - Run the command:
 
- ```bash
+```bash
      git lfs fetch
- ```
+```
 
 4. **Pull the Large Files**:
    - Execute the following command to download the actual file content:
 
- ```bash
+```bash
      git lfs pull
- ```
+```
 
 If you attempt to access the `Data-Roads.csv` file without pulling the data from Git LFS, for example, by executing a GET HTTP request like:
 
@@ -297,7 +321,7 @@ oid sha256:5b60e8cb900ec11cce3dd1a6547d0ab499aadf8198f2f0bb5abb87633369adc0
 size 668512325
 ```
 
-This output indicates that the GET request only returns a pointer to the file's location rather than the actual file data itself. \
+This output indicates that the GET request only returns a pointer to the file's location rather than the actual file data itself.
 To access the content of Data-Roads.csv, it is essential to perform the git lfs pull command, which retrieves the file from the remote storage. By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
 
 #### REST API
@@ -405,12 +429,12 @@ It will process the request and respond with the shortest path data in either JS
 To set up localhost on port 8080 for this project:
 
 1. Server Initialization:
- Use the Boost.Beast library to create an HTTP server.
- Bind the server to 192.168.15.115:8080.
+   Use the Boost.Beast library to create an HTTP server.
+   Bind the server to 192.168.15.115:8080.
 2. Handling Requests:
- The server listens for incoming GET requests.
- It parses the input parameters (source and destination landmark IDs) and passes them to the shortest path algorithm.
- The result is formatted into the requested response format (JSON or XML) and sent back to the client.
+   The server listens for incoming GET requests.
+   It parses the input parameters (source and destination landmark IDs) and passes them to the shortest path algorithm.
+   The result is formatted into the requested response format (JSON or XML) and sent back to the client.
 
 **Storing Data on the localhost server**
 
@@ -617,10 +641,22 @@ graph TD
 | User                    | Represents the end-user who interacts with the API.                                  |
 | API Server              | The server that processes requests and sends responses.                              |
 | Graph Data Structure    | The data structure that holds the graph representation of landmarks and connections. |
-| Shortest Path Algorithm | The algorithm is used to calculate the shortest path between landmarks.                 |
+| Shortest Path Algorithm | The algorithm is used to calculate the shortest path between landmarks.              |
 | CSV Data Source         | The source of the data used to populate the graph.                                   |
 
 ### System Architecture
+
+This diagram illustrates the overall architecture of the ROADRUNNER system, showing the interaction between the client, server, and data sources.
+
+```mermaid
+graph TD
+    A[Client] -->|Sends Request| B[API Server]
+    B -->|Retrieves Data| C[Graph Data Structure]
+    C -->|Data for Calculation| D[Shortest Path Algorithm]
+    D -->|Calculated Path| B
+    B -->|Sends Response| A
+    E[CSV Data Source] -->|Populates| C
+```
 
 ## Algorithm
 
@@ -642,14 +678,14 @@ Below, you can find a nicely made YouTube video that shows the speed difference 
 
 These terms are crucial for the subsequent section. Kindly refer to the table below to ensure a comprehensive understanding of the material that follows.
 
-| Term                     | Definition                                                                                                                                                                                                                                                                                               |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Nodes** | The fundamental units in a graph that represent entities or points. In the context of a graph, nodes are often referred to as vertices.                                                                                                                                                                  |
-| **Weighted Graph** | A graph in which each edge has an associated numerical value (weight) that represents the cost, distance, or time to traverse that edge.                                                                                                                                                                 |
-| **Heuristic** | A problem-solving approach that employs a practical method or various shortcuts to produce solutions that may not be optimal but are sufficient for reaching an immediate goal. In pathfinding, heuristics help estimate the cost to reach the goal from a given node.                                   |
-| **Edges** | The connections between nodes in a graph. Edges can be directed (one-way) or undirected (two-way) and may have weights in a weighted graph.                                                                                                                                                              |
-| **Priority Queue** | A data structure that stores elements in such a way that the element with the highest priority is served before other elements with lower priority. In the context of graph algorithms, it is often used to efficiently retrieve the next node to process based on the shortest distance or lowest cost. |
-|**Breadth-First Search (BFS)** | An algorithm used to explore all the nodes in a graph level by level, starting from a given node and visiting all its neighbors before moving on to the next level of nodes.|
+| Term                                 | Definition                                                                                                                                                                                                                                                                                               |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Nodes**                      | The fundamental units in a graph that represent entities or points. In the context of a graph, nodes are often referred to as vertices.                                                                                                                                                                  |
+| **Weighted Graph**             | A graph in which each edge has an associated numerical value (weight) that represents the cost, distance, or time to traverse that edge.                                                                                                                                                                 |
+| **Heuristic**                  | A problem-solving approach that employs a practical method or various shortcuts to produce solutions that may not be optimal but are sufficient for reaching an immediate goal. In pathfinding, heuristics help estimate the cost to reach the goal from a given node.                                   |
+| **Edges**                      | The connections between nodes in a graph. Edges can be directed (one-way) or undirected (two-way) and may have weights in a weighted graph.                                                                                                                                                              |
+| **Priority Queue**             | A data structure that stores elements in such a way that the element with the highest priority is served before other elements with lower priority. In the context of graph algorithms, it is often used to efficiently retrieve the next node to process based on the shortest distance or lowest cost. |
+| **Breadth-First Search (BFS)** | An algorithm used to explore all the nodes in a graph level by level, starting from a given node and visiting all its neighbors before moving on to the next level of nodes.                                                                                                                             |
 
 ### Overview of Bidirectional Dijkstra's Algorithm
 
@@ -691,7 +727,6 @@ Bidirectional Dijkstra's algorithm simultaneously searches from both the source 
 In the context of our project, we have decided not to implement multi-threading for the following reasons:
 
 1. Resource Intensive: Implementing multi-threading can significantly increase the computational power required to run the algorithm. Given that our primary goal is to ensure that the API responds in less than one second on typical computers, the overhead associated with managing multiple threads could hinder our ability to meet this performance requirement. The additional context switching and synchronization between threads may lead to increased latency, which is counterproductive to our objectives.
-
 2. Nature of Dijkstra's Bidirectional Algorithm: The bidirectional Dijkstra's algorithm inherently operates in a step-by-step manner, alternating between searches from the source and the target. This back-and-forth approach does not lend itself well to parallelization, as each step depends on the results of the previous one. Introducing multi-threading in this scenario would not provide significant performance benefits and could complicate the implementation unnecessarily.
 
 By focusing on optimizing the existing single-threaded implementation of the bidirectional Dijkstra algorithm, we can ensure that we meet our performance goals while maintaining code simplicity and clarity.
@@ -792,9 +827,7 @@ function parseCSV(file_path):
 #### Functional Specifications
 
 1. Directed Acyclic Graph (DAG) Verification: We need to verify that the graph is a Directed Acyclic Graph (DAG), meaning it should not contain any cycles. This is crucial for ensuring that there are no infinite loops during pathfinding operations.
-
 2. Graph Connectivity Verification: The graph must be fully connected, allowing navigation between any two landmarks. This means that there should be a path between every pair of nodes in the graph.
-
 3. Implementation in C++: Although these checks can be performed in various programming languages, we will implement them in C++ to maintain consistency with the rest of the project.
 
 #### Breadth-First Search
@@ -804,13 +837,9 @@ Breadth-First Search (BFS) is an algorithm used to traverse or search through a 
 ##### Why do we use BFS?
 
 1. Level Order Traversal: BFS explores nodes level by level, ensuring that all nodes at the current depth are processed before moving deeper. This is useful for problems where the shortest path in terms of the number of edges is required.
-
 2. Finding Shortest Paths in Unweighted Graphs: BFS guarantees the shortest path in unweighted graphs because it explores all neighbors of a node before moving to the next level. This characteristic is essential when we need to find the quickest route between two points.
-
 3. Simplicity and Clarity: The BFS algorithm is straightforward to implement and understand. Its queue-based structure makes it easy to manage the nodes being explored, which simplifies debugging and maintenance.
-
 4. Guaranteed Completion: BFS ensures that if there is a path between the starting node and any other node, it will find it. This is crucial for connectivity checks, as it verifies that all nodes can be reached from a given starting point.
-
 5. Memory Efficiency: While BFS can consume more memory than Depth-First Search (DFS) due to storing all nodes at the current level in the queue, it is still efficient for many applications, especially when the graph is wide and shallow.
 
 #### Graph Validation Verification
@@ -877,6 +906,59 @@ function bfs(graph, start, visited):
                 queue.enqueue(neighbor)
 ```
 
+### Data Output
+
+The output generated by the shortest path algorithm is crucial for users to understand the results of their queries. The API is designed to return the calculated shortest path between two specified landmarks in a structured format, either JSON or XML, depending on the client's request.
+
+#### Response Structure
+
+1. Successful Response: When a valid request is made, the server responds with a JSON or XML object containing the following information:
+   - Travel Time: The total time taken to traverse the path between the source and destination landmarks.
+   - Path: An ordered list of landmark IDs representing the sequence of landmarks from the source to the destination.
+   - Computation Time: The time taken by the algorithm to calculate the shortest path.
+2. Error Response: If the request encounters an error (e.g., invalid landmark IDs, missing parameters), the server responds with an appropriate HTTP status code and an error message detailing the issue.
+
+#### Example of Responses
+
+Successful Request Example
+
+**Request:**
+
+To retrieve the shortest path between two landmarks, the client sends a GET request with the appropriate headers. Here’s an example using curl:
+
+```bash
+curl -H "Accept: application/json" "http://192.168.15.115:8080?source=1&destination=10"
+```
+
+**Response (JSON):**
+
+If the request is successful, the server responds with a JSON object containing the travel time and the ordered list of landmarks in the path:
+
+```json
+{
+    "travel_time": 15.5,
+    "path": [1, 5, 10],
+    "computation_time": 153ms
+}
+```
+
+**Response (XML):**
+
+If the client requests XML format, the server responds with an XML representation of the same data:
+
+```xml
+<?xml version="1.0"?>
+<response>
+    <travel_time>15.5</travel_time>
+    <path>
+        <landmark>1</landmark>
+        <landmark>5</landmark>
+        <landmark>10</landmark>
+    </path>
+    <computations_time>153ms</computation_time>
+</response>
+```
+
 ### Data Flow
 
 The data flow graph provides a visual representation of how data moves through our software system, illustrating the interactions between various components involved in processing user requests.
@@ -885,17 +967,17 @@ It outlines the sequence of operations, starting from the user input, through th
 
 ![I/O Diagram](image/technicalSpecifications/ioDiagram.png)
 
-| Component                   | Description                                                                                                 |
-|-----------------------------|-------------------------------------------------------------------------------------------------------------|
-| User Input                  | Represents the initial request made by the user, which includes the source and destination landmark IDs.    |
-| API Server                  | The server that receives the request and processes it.                                                     |
-| Parses Input Parameters      | The server extracts the necessary parameters from the request.                                            |
-| Graph Data Structure        | The data structure that holds the graph representation of landmarks and connections.                       |
-| Retrieves Data              | The server retrieves the relevant data from the graph based on the input parameters.                      |
-| Shortest Path Algorithm     | The algorithm that calculates the shortest path between the specified landmarks.                          |
-| Calculates Path             | The algorithm processes the data to determine the shortest route.                                         |
-| Returns Data                | The graph structure returns the calculated path and travel time to the server.                       |
-| Sends Response              |the server sends the final response back to the user that includes the travel time and the ordered list of landmarks in the path. |
+| Component               | Description                                                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| User Input              | Represents the initial request made by the user, which includes the source and destination landmark IDs.                          |
+| API Server              | The server that receives the request and processes it.                                                                            |
+| Parses Input Parameters | The server extracts the necessary parameters from the request.                                                                    |
+| Graph Data Structure    | The data structure that holds the graph representation of landmarks and connections.                                              |
+| Retrieves Data          | The server retrieves the relevant data from the graph based on the input parameters.                                              |
+| Shortest Path Algorithm | The algorithm that calculates the shortest path between the specified landmarks.                                                  |
+| Calculates Path         | The algorithm processes the data to determine the shortest route.                                                                 |
+| Returns Data            | The graph structure returns the calculated path and travel time to the server.                                                    |
+| Sends Response          | the server sends the final response back to the user that includes the travel time and the ordered list of landmarks in the path. |
 
 ### Performance
 
@@ -903,14 +985,21 @@ It outlines the sequence of operations, starting from the user input, through th
 
 To enhance the performance and efficiency of the shortest path algorithm, the following optimization techniques have been implemented:
 
-- Dead-End Node Removal: Approximately 17% of the nodes in the graph are identified as dead ends, which do not contribute to any valid paths between landmarks. By removing these nodes from the graph, we reduce the overall size of the dataset, leading to faster processing times and lower memory consumption. Dead ends are only retained if they are the start or end points of a path.
+##### Dead-End Node Removal
 
-- Efficient Data Structures:
+Approximately 17% of the nodes in the graph are identified as dead ends, which do not contribute to any valid paths between landmarks. By removing these nodes from the graph, we reduce the overall size of the dataset, leading to faster processing times and lower memory consumption. Dead ends are only retained if they are the start or end points of a path.
+
+##### Efficient Data Structures
+
 The use of appropriate data structures, such as adjacency lists for graph representation, allows for efficient storage and retrieval of connections between landmarks. This choice minimizes the overhead associated with traversing the graph and accessing edge weights.
 
-- Priority Queue Optimization: The algorithm utilizes a priority queue (implemented as a binary heap) to manage the nodes being explored. This data structure allows for efficient retrieval of the next node with the shortest distance, significantly speeding up the pathfinding process compared to simpler data structures like arrays or linked lists.
+##### Priority Queue Optimization
 
-- Bidirectional Search: By simultaneously searching from both the source and target nodes, the bidirectional Dijkstra's algorithm reduces the number of nodes explored. This approach effectively halves the search space, leading to faster execution times, especially in large graphs.
+The algorithm utilizes a priority queue (implemented as a binary heap) to manage the nodes being explored. This data structure allows for efficient retrieval of the next node with the shortest distance, significantly speeding up the pathfinding process compared to simpler data structures like arrays or linked lists.
+
+##### Bidirectional Search
+
+By simultaneously searching from both the source and target nodes, the bidirectional Dijkstra's algorithm reduces the number of nodes explored. This approach effectively halves the search space, leading to faster execution times, especially in large graphs.
 
 By employing these optimization techniques, the project aims to achieve a high-performance solution that can handle large datasets and deliver quick responses to user queries.
 
@@ -933,6 +1022,7 @@ V = 23,947,347 − (0.17 × 23,947,347) ≈ 19,875,902
 ```
 
 ---
+
 **2. Total V + E**
 
 The adjusted total number of nodes and edges:
@@ -942,6 +1032,7 @@ V + E = 19,875,902+28,854,312=48,730,214
 ```
 
 ---
+
 **3. Logarithmic Component (log(V))**
 
 ```math
@@ -951,7 +1042,7 @@ log(V)≈log(19,875,902)≈7.297
 ---
 
 4. Big-O Notation
-The Big-O notation for the algorithm is:
+   The Big-O notation for the algorithm is:
 
 ```math
 O((V+E)∗log(V))≈O(48,730,214×7.297)≈O(355,358,147)
@@ -991,13 +1082,9 @@ To calculate the space complexity of an algorithm, you need to consider the amou
 For the Bidirectional Dijkstra's algorithm, the space complexity can be analyzed as follows:
 
 - Graph Representation: If the graph is represented using an adjacency list, the space required is proportional to the number of vertices (V) and edges (E). The space complexity for the adjacency list is O(V + E).
-
 - Distance Arrays: Two arrays (or maps) are used to store the shortest distances from the source and target nodes. Each of these arrays will require O(V) space. Therefore, the total space for the distance arrays is O(V).
-
 - Priority Queues: Two priority queues are used to manage the nodes being explored from both the source and target. In the worst case, each priority queue can hold all the vertices, which requires O(V) space for each queue. Thus, the total space for the priority queues is O(V).
-
 - Visited Sets: Sets (or arrays) to keep track of visited nodes for both searches will also require O(V) space.
-
 - Auxiliary Variables: Any additional variables used in the algorithm (e.g., counters, temporary variables) will require a constant amount of space, which can be considered O(1).
 
 ###### Total Space Complexity
@@ -1021,6 +1108,203 @@ O(V + E) = 23,947,347 + 28,854,312 = 52,801,659
 
 This indicates that the memory required by the algorithm grows linearly with the size of the graph, making it efficient for large datasets.
 
+## Server
+
+The server is a critical component of the shortest path algorithm project, designed to handle incoming HTTP requests, process them, and return the appropriate responses. Built using the Boost.Beast library, the server efficiently manages communication between clients and the underlying graph data structure.
+
+### Data Preprocessing
+
+The server preprocesses the graph data upon startup to enhance performance during pathfinding operations. This preprocessing includes:
+
+- **Loading Data:** A loading.cpp file which contains functions to read the CSV file and populate the graph_data structure. This involves parsing each line of the CSV to extract landmark IDs and travel times, and updating the adjacency list accordingly.
+- **Removing Dead-End Nodes:** A preprocess.cpp file including functions to identify and remove dead-end nodes from the graph. Dead-end nodes are those that do not contribute to any valid paths between landmarks. This reduces the overall size of the graph and improves algorithm efficiency.
+- **Identifying Single Neighbors:** The server checks for nodes that have only one neighbor. If a start or end node is a single neighbor, it is updated to point to its only neighbor, simplifying the graph further.
+
+This diagram illustrates the preprocessing steps taken by the server before handling requests, such as loading data, removing dead-end nodes, and identifying single neighbors.
+
+```mermaid
+graph TD
+    A[Load Data from CSV] --> B[Parse Data]
+    B --> C[Build Adjacency List]
+    C --> D[Remove Dead-End Nodes]
+    D --> E[Identify Single Neighbors]
+    E --> F[Ready for Requests]
+```
+
+### Request Handling
+
+The server listens for incoming HTTP requests on a specified port (8080) and processes them as follows:
+
+- **Listening for Connections:** The server uses Boost.Asio to create a TCP acceptor that listens for incoming connections. When a client connects, the server accepts the connection and begins processing the request.
+- **Parsing Requests:** The server reads the incoming HTTP request, extracts the relevant parameters (source and destination landmark IDs), and validates them. If any required parameters are missing or invalid, the server responds with an appropriate error message.
+- **Pathfinding Execution:** Upon receiving a valid request, the server invokes the bidirectional Dijkstra algorithm implemented in Dijkstra.cpp. The algorithm calculates the shortest path between the specified landmarks using the preprocessed graph data.
+- **Response Generation:** After computing the shortest path, the server formats the response in the requested format (JSON or XML) and sends it back to the client. The response includes the travel time, the ordered list of landmarks in the path, and the computation time.
+- **Graceful Shutdown:** The server ensures that all connections are properly closed after processing requests, maintaining resource integrity and preventing memory leaks.
+
+The server is a robust and efficient component of the shortest path algorithm project, designed to handle large datasets and provide quick responses to client requests. By leveraging the Boost.Beast and Boost.Asio libraries, the server ensures high performance, scalability, and reliability in processing pathfinding queries.
+
+This flowchart outlines the steps the server takes to handle incoming requests, including parsing, validation, pathfinding, and response generation.
+
+```mermaid
+flowchart TD
+    A[Start] --> B[Receive Request]
+    B --> C[Parse Request]
+    C --> D{Valid Parameters?}
+    D -- Yes --> E[Invoke Pathfinding Algorithm]
+    D -- No --> F[Return Error Response]
+    E --> G[Generate Response]
+    G --> H[Send Response]
+    F --> H
+    H --> I[End]
+```
+
+## Client
+
+The client is a console application built using the Boost.Beast library, which facilitates HTTP communication with the server hosting the shortest path algorithm. The client is designed to interactively prompt the user for input, send requests to the server, and display the responses in a user-friendly format.
+
+### Client's Key Features
+
+#### User Interaction
+
+The client prompts the user to enter the start and end landmark IDs, as well as the desired response format (JSON or XML). This interactive approach allows users to specify their queries easily.
+
+#### HTTP Request Handling
+
+The client constructs an HTTP GET request using the Boost.Beast library. It sets the appropriate headers, including the Accept header to specify the desired response format.
+
+#### Response Processing
+
+Upon receiving a response from the server, the client processes the response and displays it in a formatted manner. It handles both successful responses and error messages, providing clear feedback to the user.
+
+#### Error Handling
+
+The client includes robust error handling to manage exceptions that may arise during network communication, ensuring that users are informed of any issues encountered.
+
+#### Loop for Multiple Queries
+
+The client allows users to perform multiple queries in a single session. After processing a request, it prompts the user to calculate another path, enhancing usability.
+
+### Client's Pseudo Code
+
+```pseudocode
+BEGIN Client
+
+    FUNCTION print_header()
+        PRINT "========================================"
+        PRINT "    ROADRUNNER - Client   "
+        PRINT "========================================"
+    END FUNCTION
+
+    FUNCTION print_footer()
+        PRINT "========================================"
+        PRINT " Thank you for using the ROADRUNNER! "
+        PRINT "========================================"
+    END FUNCTION
+
+    FUNCTION handle_response(response)
+        PRINT "Response from server:"
+        PRINT response
+    END FUNCTION
+
+    FUNCTION send_request(server, path, accept_header)
+        TRY
+            // Create IO context
+            CREATE io_context
+
+            // Resolve server address
+            resolver = CREATE tcp::resolver(io_context)
+            results = resolver.resolve(server, "8080")
+
+            // Create TCP stream and connect to server
+            stream = CREATE tcp_stream(io_context)
+            stream.connect(results)
+
+            // Set up HTTP GET request
+            request = CREATE http::request<http::empty_body>(http::verb::get, path, 11)
+            request.set(http::field::host, server)
+            request.set(http::field::accept, accept_header)
+            request.set(http::field::user_agent, "Boost Beast Client")
+
+            // Send the HTTP request
+            http::write(stream, request)
+
+            // Receive the response
+            buffer = CREATE beast::flat_buffer()
+            response = CREATE http::response<http::dynamic_body>()
+            http::read(stream, buffer, response)
+
+            // Handle the response
+            response_content = buffers_to_string(response.body().data())
+            handle_response(response_content)
+
+            // Gracefully close the stream
+            stream.socket().shutdown(tcp::socket::shutdown_both)
+        CATCH (beast::system_error e)
+            PRINT "Error: " + e.what()
+        CATCH (exception e)
+            PRINT "Exception: " + e.what()
+        END TRY
+    END FUNCTION
+
+    FUNCTION main()
+        REPEAT
+            print_header()
+
+            // Prompt user for start and end nodes
+            PRINT "Enter the start node: "
+            INPUT start_node
+            PRINT "Enter the end node: "
+            INPUT end_node
+
+            // Prompt user for response format
+            PRINT "Choose response format (1 for JSON, 2 for XML): "
+            INPUT choice
+            IF choice == 1 THEN
+                format = "application/json"
+            ELSE
+                format = "application/xml"
+            END IF
+
+            // Construct the URL with query parameters
+            path = "/path?start=" + start_node + "&end=" + end_node
+
+            // Server info - localhost
+            server = "localhost"
+
+            // Send the request
+            PRINT "Sending request to server..."
+            send_request(server, path, format)
+
+            // Ask user if they want to calculate another path
+            PRINT "Do you want to calculate another path? (y for yes, n for no): "
+            INPUT repeat_choice
+        UNTIL repeat_choice != 'y' AND repeat_choice != 'Y'
+
+        print_footer()
+    END FUNCTION
+
+END Client
+```
+
+### Client's Response
+
+The client's response is delivered through the REST API, and the output format will be either XML or JSON, depending on the user's selection. The output must adhere to the structure defined in the [Data Output](#data-output) section of the document.
+
+### Client-Server Interaction Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Client
+    participant Server
+
+    User->>Client: Enter start and end nodes
+    Client->>Server: Send GET request
+    Server->>Server: Process request
+    Server->>Client: Return response
+    Client->>User: Display response
+```
+
 ## Testing
 
 Testing is a crucial aspect of software development that ensures the application's reliability, correctness, and performance.
@@ -1039,7 +1323,7 @@ Unit tests are designed to validate the functionality of individual components o
 
 Pseudocode example:
 
-``` c++
+```c++
 function testGraphConstruction():
  graph = parseCSV("USA-Roads.csv")
  assert graph.getNodeCount() == expectedNodeCount // Replace with expected count
@@ -1177,9 +1461,7 @@ Continuous Integration and Continuous Deployment (CI/CD) practices are implement
 The following CI/CD practices are in place:
 
 1. **Automated Testing:** Unit tests and performance tests are integrated into the CI pipeline. Every time code is pushed to the repository, the tests are automatically executed to ensure that new changes do not introduce regressions.
-
 2. **Code Quality Checks:** Static code analysis tools are used to enforce coding standards and identify potential issues in the codebase before deployment.
-
 3. **Deployment Automation:** The deployment process is automated to ensure that the latest version of the application is deployed to the production environment seamlessly, reducing the risk of human error.
 
 ## Conclusion
@@ -1194,22 +1476,14 @@ Your contributions are essential to the success of this project, and we apprecia
 
 ## Glossary
 
-1. Nodes: In graph theory, nodes are the individual points or vertices that make up the graph. Each node can represent an entity, such as a landmark in this project.
-
-2. Weighted Graph: A graph where edges have weights assigned to them, indicating the cost or distance associated with traversing that edge. This is crucial for algorithms that calculate shortest paths.
-
-3. Heuristic: A technique used to speed up the process of finding a satisfactory solution, where an exact solution is not feasible. In pathfinding, heuristics can help prioritize which paths to explore based on estimated costs.
-
-4. Edges: The connections between nodes in a graph. They can represent various relationships, such as roads between landmarks in this project.
-
-5. Priority Queue: A specialized data structure that allows for efficient retrieval of the highest (or lowest) priority element. It is commonly used in algorithms like Dijkstra's to manage nodes based on their distance from the source.
-
-6. Breadth-First Search (BFS): An algorithm for traversing or searching tree or graph data structures. It explores all neighbor nodes at the present depth before moving on to nodes at the next depth level.
-
-7. Bidirectional Dijkstra's Algorithm: An optimization of Dijkstra's algorithm that searches from both the source and target nodes simultaneously, reducing the number of nodes explored.
-
+1. **Nodes:** In graph theory, nodes are the individual points or vertices that make up the graph. Each node can represent an entity, such as a landmark in this project.
+2. **Weighted Graph:** A graph where edges have weights assigned to them, indicating the cost or distance associated with traversing that edge. This is crucial for algorithms that calculate shortest paths.
+3. **Heuristic:** A technique used to speed up the process of finding a satisfactory solution, where an exact solution is not feasible. In pathfinding, heuristics can help prioritize which paths to explore based on estimated costs.
+4. **Edges:** The connections between nodes in a graph. They can represent various relationships, such as roads between landmarks in this project.
+5. **Priority Queue:** A specialized data structure that allows for efficient retrieval of the highest (or lowest) priority element. It is commonly used in algorithms like Dijkstra's to manage nodes based on their distance from the source.
+6. **Breadth-First Search (BFS):** An algorithm for traversing or searching tree or graph data structures. It explores all neighbor nodes at the present depth before moving on to nodes at the next depth level.
+7. **Bidirectional Dijkstra's Algorithm:** An optimization of Dijkstra's algorithm that searches from both the source and target nodes simultaneously, reducing the number of nodes explored.
 8. Graph Data Structure: How a graph is represented in memory, typically using adjacency lists or matrices.
-
-9. API (Application Programming Interface): A set of functions and procedures that allow the creation of applications that access the features or data of an operating system, application, or other services.
-
-10. CSV (Comma-Separated Values): A simple file format used to store tabular data, such as a spreadsheet or database, in plain text.
+9. **API (Application Programming Interface):** A set of functions and procedures that allow the creation of applications that access the features or data of an operating system, application, or other services.
+10. **TCP Acceptor:** A TCP acceptor is a component in network programming that listens for incoming TCP connection requests on a specified port. It is responsible for accepting connections from clients and establishing a communication channel between the server and the client. In the context of a server, the TCP acceptor waits for client requests and, upon receiving a connection, creates a new socket for communication, allowing the server to handle multiple client connections concurrently.
+11. **CSV (Comma-Separated Values):** A simple file format used to store tabular data, such as a spreadsheet or database, in plain text.

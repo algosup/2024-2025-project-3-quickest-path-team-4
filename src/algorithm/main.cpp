@@ -1,88 +1,109 @@
-#include <iostream>
-#include <string>
-#include <chrono>
-#include <thread>
-#include <mutex>
-#include "graph_data.h"
-#include "loading.h"
-#include "preprocess.h"
 #include "Bidirectional_Astar.h"
-#include "save_load_binary.h"
+#include <thread>
+#include <future>
+#include <queue>
+#include <atomic>
+#include <cmath>
 
-using namespace std;
+std::atomic<bool> found(false);
 
-int main() {
-    string file_path = "USA-roads.csv";
-    string compressed_paths_file = "compressed_paths.bin";
-    are_extremities_singles are_they;
-
-    // Load the graph data
-    graph_data g_data = load_graph_data(file_path);
-
-    // Load compressed paths from binary file
-    unordered_map<int, unordered_map<int, path_info>> compressed_paths;
-    if (!load_compressed_paths_binary(compressed_paths_file, compressed_paths)) {
-        cerr << "Failed to load compressed paths from binary file. Proceeding without precomputed paths." << endl;
+// Comparator for priority queue
+struct NodeComparator {
+    bool operator()(const Node& a, const Node& b) const {
+        return a.f > b.f; // Min-heap
     }
+};
 
-    // Preprocess the graph
-    unordered_map<int, int> single_neighbors;
-    preprocess(&g_data, &single_neighbors, compressed_paths);
+// Define a priority queue for min-heap
+using PriorityQueue = std::priority_queue<Node, std::vector<Node>, NodeComparator>;
 
-    while (true) {
-        int start, end;
-        vector<int> distances(g_data.adjacency.size(), numeric_limits<int>::max());
-
-        cout << "ready" << endl;
-        cout << "Start node: ";
-        cin >> start;
-        cout << "End node: ";
-        cin >> end;
-
-        int true_start = start;
-        int true_end = end;
-        distances[start] = 0;
-
-        chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-        check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
-        cout << "Processing." << endl;
-
-        // Find the shortest path using Bidirectional A*
-        auto result = bidirectional_astar(g_data, start, end, distances);
-
-        chrono::steady_clock::time_point stop = chrono::steady_clock::now();
-
-        if (result.has_value()) {
-            if (are_they.is_start_single) {
-                result.value().insert(result.value().begin(), start);
-            }
-            if (are_they.is_end_single) {
-                result.value().push_back(end);
-            }
-
-            cout << "Shortest path from " << true_start << " to " << true_end << ": " << endl;
-            for (int i = 0; i < result.value().size(); i++) {
-                cout << result.value()[i] << " > ";
-                if (result.value()[i] == true_end) {
-                    cout << endl;
-                    break;
-                }
-            }
-        } else {
-            cout << "No path found from " << start << " to " << end << endl;
-            break;
-        }
-
-        cout << "Loading Time = " << chrono::duration_cast<chrono::milliseconds>(stop - begin).count() << "[ms]" << endl;
-        cout << "Nodes: " << result.value().size() << endl;
-
-        char choice;
-        cout << "Do you want to find another path? (y/n): ";
-        cin >> choice;
-        if (choice != 'y' && choice != 'Y') {
-            break;
-        }
-    }
-
+inline int zero_heuristic(int a, int b) {
     return 0;
+}
+
+void search(const graph_data& graph, int start, int end, std::vector<bool>& visited, std::vector<int>& g, std::vector<int>& parent, PriorityQueue* queue, std::atomic<int>& meeting_node) {
+    while (!found.load(std::memory_order_relaxed)) {
+        if (queue->empty()) return;
+
+        Node node = queue->top();
+        queue->pop();
+
+        int curr = node.vertex;
+        if (visited[curr]) continue;
+        visited[curr] = true;
+
+        if (visited[curr] && meeting_node.load(std::memory_order_relaxed) == -1) {
+            meeting_node.store(curr, std::memory_order_relaxed);
+            found.store(true, std::memory_order_relaxed);
+        }
+
+        for (const auto& [next, weight] : graph.adjacency[curr]) {
+            if (visited[next]) continue;
+
+            int new_g = node.g + weight;
+            if (new_g < g[next]) {
+                g[next] = new_g;
+                parent[next] = curr;
+                queue->push(Node(new_g + zero_heuristic(next, end), new_g, next));
+            }
+        }
+    }
+}
+
+std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, std::vector<int>& distances) {
+    if (start == end) {
+        distances[start] = 0;
+        return std::vector<int>{start};
+    }
+
+    const size_t n = graph.adjacency.size();
+    std::vector<bool> visited_forward(n, false), visited_backward(n, false);
+    std::vector<int> g_forward(n, std::numeric_limits<int>::max());
+    std::vector<int> g_backward(n, std::numeric_limits<int>::max());
+    std::vector<int> parent_forward(n, -1), parent_backward(n, -1);
+    std::atomic<int> meeting_node(-1);
+
+    g_forward[start] = 0;
+    g_backward[end] = 0;
+
+    PriorityQueue forward_queue, backward_queue;
+    forward_queue.push(Node(0, 0, start));
+    backward_queue.push(Node(0, 0, end));
+
+    auto future_forward = std::async(std::launch::async, [&]() {
+        search(graph, start, end, visited_forward, g_forward, parent_forward, &forward_queue, meeting_node);
+    });
+    
+    auto future_backward = std::async(std::launch::async, [&]() {
+        search(graph, end, start, visited_backward, g_backward, parent_backward, &backward_queue, meeting_node);
+    });
+
+    future_forward.get();
+    future_backward.get();
+
+    if (meeting_node.load() == -1) return std::nullopt;
+
+    std::vector<int> forward_path;
+    for (int at = meeting_node; at != -1; at = parent_forward[at]) {
+        forward_path.push_back(at);
+    }
+    std::reverse(forward_path.begin(), forward_path.end());
+
+    std::vector<int> backward_path;
+    for (int at = parent_backward[meeting_node]; at != -1; at = parent_backward[at]) {
+        backward_path.push_back(at);
+    }
+
+    std::vector<int> path;
+    path.insert(path.end(), forward_path.begin(), forward_path.end());
+    path.insert(path.end(), backward_path.begin(), backward_path.end());
+
+    distances = g_forward;
+    for (size_t i = 0; i < n; ++i) {
+        if (g_backward[i] < distances[i]) {
+            distances[i] = g_backward[i];
+        }
+    }
+
+    return path;
 }

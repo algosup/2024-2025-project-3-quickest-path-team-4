@@ -69,7 +69,7 @@
       - [Fast Path Reconstruction](#fast-path-reconstruction)
       - [Big-O Notation](#big-o-notation)
         - [Time Complexity](#time-complexity)
-          - [Legacy (January 24, 2025) Big-O Notation\*\*](#legacy-january-24-2025-big-o-notation)
+          - [Legacy (January 24, 2025) Big-O Notation](#legacy-january-24-2025-big-o-notation)
           - [Updated Big-O Notation (5th February 2025)](#updated-big-o-notation-5th-february-2025)
           - [Breaking Down the Components](#breaking-down-the-components)
           - [Performance Gain Analysis](#performance-gain-analysis)
@@ -1120,7 +1120,7 @@ To calculate the Big-O notation of this algorithm, we analyze its computational 
 
 ---
 
-###### Legacy (January 24, 2025) Big-O Notation**
+###### Legacy (January 24, 2025) Big-O Notation
 
 Before implementing our recent optimizations, the **worst-case complexity** was estimated as:
 

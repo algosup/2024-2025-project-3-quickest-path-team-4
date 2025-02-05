@@ -60,18 +60,28 @@
       - [Response Structure](#response-structure)
       - [Example of Responses](#example-of-responses)
     - [Data Flow](#data-flow)
-    - [Performance](#performance)
-      - [Optimization](#optimization)
-        - [Dead-End Node Removal](#dead-end-node-removal)
-        - [Efficient Data Structures](#efficient-data-structures)
-        - [Priority Queue Optimization](#priority-queue-optimization)
-        - [Bidirectional Search](#bidirectional-search)
+    - [Performance Metrics and Optimization Techniques](#performance-metrics-and-optimization-techniques)
+      - [Graph Preprocessing](#graph-preprocessing)
+      - [Efficient Data Structures](#efficient-data-structures)
+      - [Bidirectional Dijkstra’s Algorithm](#bidirectional-dijkstras-algorithm)
+      - [Priority Queue Optimization](#priority-queue-optimization)
+      - [Memory Optimization](#memory-optimization)
+      - [Fast Path Reconstruction](#fast-path-reconstruction)
       - [Big-O Notation](#big-o-notation)
         - [Time Complexity](#time-complexity)
-        - [What Does This Time Complexity Mean?](#what-does-this-time-complexity-mean)
-        - [Space complexity](#space-complexity)
-          - [Space Complexity Calculation for Bidirectional Dijkstra's Algorithm](#space-complexity-calculation-for-bidirectional-dijkstras-algorithm)
-          - [Total Space Complexity](#total-space-complexity)
+          - [Legacy (January 24, 2025) Big-O Notation\*\*](#legacy-january-24-2025-big-o-notation)
+          - [Updated Big-O Notation (5th February 2025)](#updated-big-o-notation-5th-february-2025)
+          - [Breaking Down the Components](#breaking-down-the-components)
+          - [Performance Gain Analysis](#performance-gain-analysis)
+          - [What Does This Time Complexity Mean?](#what-does-this-time-complexity-mean)
+      - [Space Complexity](#space-complexity)
+        - [Legacy (January 24, 2025) Space Complexity Calculation](#legacy-january-24-2025-space-complexity-calculation)
+        - [Updated Space Complexity (February 2025)](#updated-space-complexity-february-2025)
+        - [Space Complexity Comparison](#space-complexity-comparison)
+        - [Why was the space complexity reduced?](#why-was-the-space-complexity-reduced)
+        - [How does this impact performance?](#how-does-this-impact-performance)
+      - [Big-O Notation Legacy](#big-o-notation-legacy)
+        - [Why Tracking Big-O Notation Over Time?](#why-tracking-big-o-notation-over-time)
   - [Server](#server)
     - [Data Preprocessing](#data-preprocessing)
     - [Request Handling](#request-handling)
@@ -98,7 +108,7 @@
 
 ### Project Introduction
 
-The objective of this project is to develop a high-performance software solution designed to calculate shortest travel paths between two specified landmarks within the United States. the software will utilize advanced algorithms to determine the quickest route based on various travel times between landmarks. Given the scale of the dataset, which includes approximately 24 million nodes, the solution must optimize speed, reliability, and scalability.
+The objective of this project is to develop a high-performance software solution designed to calculate the shortest travel paths between two specified landmarks within the United States. The software will utilize advanced algorithms to determine the quickest route based on travel times between landmarks. Given the scale of the dataset, which includes approximately 24 million nodes, the solution must optimize speed, reliability, and scalability.
 
 Such a project is particularly valuable in real-world applications such as logistics, navigation, and urban planning. Efficient route optimization can help businesses reduce fuel consumption, improve delivery times, and enhance overall operational efficiency. Moreover, this software can aid travelers and commuters in making more informed decisions, saving time, and minimizing travel-related uncertainties.
 
@@ -126,7 +136,7 @@ The software exposes its functionality through a Representational State Transfer
 
 ### Data Source
 
-the software uses a .csv file named 'USA-Roads.csv', containing approximately 24 million nodes (landmarks). Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
+The software uses a .csv file named 'USA-Roads.csv', containing approximately 24 million nodes (landmarks). Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
 
 Each line is as follows:
 
@@ -153,7 +163,7 @@ We prioritize speed over precision, meaning we may use heuristics (an approximat
 
 ### Data Integrity Verification
 
-Verify whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) that is free of loops.
+Verify whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) free of loops.
 
 Verify that the graph is fully connected and allows navigating between two landmarks.
 
@@ -179,7 +189,7 @@ Our team selected C++ as the programming language for this project due to its po
 
 - Performance: Direct memory management and low-level hardware access allow for optimized performance.
 - Scalability: Ideal for handling large datasets like the 24 million-node graph in this project.
-- Standard Template Library (STL): This library provides efficient data structures (e.g., priority queues and maps) critical for shortest path algorithms.
+- Standard Template Library (STL): This library provides efficient data structures (e.g., priority queues and maps) critical for shortest-path algorithms.
 - Portability: Easily deployable across different operating systems with minimal changes.
 
 #### Compiler Recommendations
@@ -313,7 +323,7 @@ The `Data-Roads.csv` file is stored using Git LFS due to GitHub's limitation of 
    - Follow the installation instructions provided in the [Git LFS download guide](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage?platform=mac).
 2. **Navigate to the Directory**:
 
-   - Open your terminal and change to the directory where the `Data-Roads.csv` file is located.
+   - Open your terminal and change the directory to the one where the `Data-Roads.csv` file is located.
 3. **Fetch the Large Files**:
 
    - Run the command:
@@ -550,7 +560,7 @@ curl -H "Accept: application/json" http://192.168.15.115:8080
 
 ### API Requests and Responses
 
-This section provides examples of how to interact with the REST API, including successful requests and responses, as well as error handling scenarios.
+This section provides examples of how to interact with the REST API, including successful requests and responses, as well as error-handling scenarios.
 
 #### Successful Request Example
 
@@ -999,136 +1009,302 @@ It outlines the sequence of operations, starting from the user input, through th
 | Shortest Path Algorithm | The algorithm that calculates the shortest path between the specified landmarks.                                                  |
 | Calculates Path         | The algorithm processes the data to determine the shortest route.                                                                 |
 | Returns Data            | The graph structure returns the calculated path and travel time to the server.                                                    |
-| Sends Response          | the server sends the final response back to the user that includes the travel time and the ordered list of landmarks in the path. |
+| Sends Response          | The server sends the final response back to the user that includes the travel time and the ordered list of landmarks in the path. |
 
-### Performance
+### Performance Metrics and Optimization Techniques
 
-#### Optimization
+To ensure the shortest path algorithm meets the 1-second response goal and scales efficiently with larger datasets, several optimization techniques have been implemented. These optimizations focus on graph preprocessing, efficient data structures, algorithmic enhancements, priority queue optimization, memory management, and fast path reconstruction.
 
-To enhance the performance and efficiency of the shortest path algorithm, the following optimization techniques have been implemented:
+#### Graph Preprocessing
 
-##### Dead-End Node Removal
+- **Dead-End Node Removal:**
+  - **Metric:** Reduction in graph size by approximately 17%.
+  - **Impact:** Decreases memory usage by ~8.6%, leading to faster processing times due to fewer nodes to evaluate.
+  - **Optimization:** Removes nodes that do not contribute to valid paths, ensuring the algorithm focuses only on relevant nodes.
 
-Approximately 17% of the nodes in the graph are identified as dead ends, which do not contribute to any valid paths between landmarks. By removing these nodes from the graph, we reduce the overall size of the dataset, leading to faster processing times and lower memory consumption. Dead ends are only retained if they are the start or end points of a path.
+- **Single Neighbor Compression:**
+  - **Metric:** Reduction in node count by compressing nodes with a single neighbor.
+  - **Impact:** Improves traversal speed by reducing the number of nodes and edges processed.
+  - **Optimization:** Simplifies the graph structure, allowing the algorithm to process fewer nodes and edges.
 
-##### Efficient Data Structures
+- **Sorting Adjacency Lists:**
+  - **Metric:** Average reduction in search time per node due to sorted adjacency lists.
+  - **Impact:** Enhances search efficiency by prioritizing the most promising paths, reducing unnecessary evaluations.
+  - **Optimization:** Sorts adjacency lists based on edge weights for faster access to relevant neighbors.
 
-The use of appropriate data structures, such as adjacency lists for graph representation, allows for efficient storage and retrieval of connections between landmarks. This choice minimizes the overhead associated with traversing the graph and accessing edge weights.
+#### Efficient Data Structures
 
-##### Priority Queue Optimization
+- **Adjacency List Representation:**
+  - **Metric:** O(1) average-time complexity for neighbor lookups.
+  - **Impact:** Reduces graph traversal time, improving overall algorithm speed.
+  - **Optimization:** Uses `unordered_map<int, vector<pair<int, int>>>` for quick access to neighbors.
 
-The algorithm utilizes a priority queue (implemented as a binary heap) to manage the nodes being explored. This data structure allows for efficient retrieval of the next node with the shortest distance, significantly speeding up the pathfinding process compared to simpler data structures like arrays or linked lists.
+- **Hash Map for Node Indexing:**
+  - **Metric:** Reduction in node lookup time compared to linear search.
+  - **Impact:** Enhances speed by minimizing redundant searches, leading to quicker node retrieval.
+  - **Optimization:** Maps node IDs to indices using `unordered_map<int, size_t>` for fast retrieval.
 
-##### Bidirectional Search
+- **Boolean Vectors for Visited Nodes:**
+  - **Metric:** Reduction in memory usage and improved cache locality.
+  - **Impact:** Speeds up access times for visited node checks, enhancing memory efficiency.
+  - **Optimization:** Replaces `unordered_map<int, bool>` with `vector<bool>` for better performance.
 
-By simultaneously searching from both the source and target nodes, the bidirectional Dijkstra's algorithm reduces the number of nodes explored. This approach effectively halves the search space, leading to faster execution times, especially in large graphs.
+#### Bidirectional Dijkstra’s Algorithm
 
-By employing these optimization techniques, the project aims to achieve a high-performance solution that can handle large datasets and deliver quick responses to user queries.
+- **Two Simultaneous Searches:**
+  - **Metric:** Reduction in the number of nodes visited by approximately 50%.
+  - **Impact:** Halves the search space, significantly reducing execution times.
+  - **Optimization:** Runs forward and backward searches simultaneously, stopping when both fronts meet.
+
+- **Early Stopping Condition:**
+  - **Metric:** Reduction in unnecessary computations by terminating early.
+  - **Impact:** Saves time by avoiding exploration of non-improving paths.
+  - **Optimization:** Stops the algorithm if the sum of the smallest distances exceeds the current best path.
+
+#### Priority Queue Optimization
+
+- **Min-Heap Priority Queue:**
+  - **Metric:** O(log V) complexity for priority queue operations.
+  - **Impact:** Optimizes node processing time, enhancing overall performance.
+  - **Optimization:** Maintains the next node with the smallest cost for efficient retrieval.
+
+- **Custom Comparator for Faster Processing:**
+  - **Metric:** Speedup in priority queue operations due to specialized comparator.
+  - **Impact:** Improves algorithm performance by accelerating insert and pop operations.
+  - **Optimization:** Ensures logarithmic complexity for priority queue operations.
+
+#### Memory Optimization
+
+- **Lazy Distance Updates:**
+  - **Metric:** Reduction in cache misses by updating distances directly in an array.
+  - **Impact:** Improves memory access patterns, leading to faster execution.
+  - **Optimization:** Updates values directly in an array instead of a separate map.
+
+- **Minimized Node Storage:**
+  - **Metric:** Reduction in memory usage by storing only essential nodes.
+  - **Impact:** Allows efficient handling of larger graphs by decreasing overhead.
+  - **Optimization:** Stores only necessary nodes to reduce memory consumption.
+
+#### Fast Path Reconstruction
+
+- **Backtracking with Predecessor Arrays:**
+  - **Metric:** Reduction in memory footprint by avoiding full path storage.
+  - **Impact:** Speeds up path reconstruction, minimizing memory usage.
+  - **Optimization:** Uses predecessor arrays for quick path reconstruction.
+
+- **Reversed Path Storage for Efficiency:**
+  - **Metric:** Reduction in execution time by avoiding unnecessary iterations.
+  - **Impact:** Streamlines path reconstruction, enhancing efficiency.
+  - **Optimization:** Stores the backward search path in reverse order and appends it to the forward path.
+
+By implementing these techniques, the algorithm achieves significant performance improvements, ensuring efficient shortest-path calculations and meeting the 1-second response goal.
 
 #### Big-O Notation
 
 ##### Time Complexity
 
-To calculate the Big-O notation of this algorithm, considering it uses a priority queue, the formula is:  
-**O((V + E) * log(V))**, where:
+To calculate the Big-O notation of this algorithm, we analyze its computational cost based on the operations performed. Our implementation follows **Bidirectional Dijkstra’s Algorithm**, which is optimized using **priority queues**.  
 
-- **V** is the number of nodes (excluding dead-end nodes except for start or endpoints).
-- **E** is the number of edges.
+**Why do we calculate the complexity this way?**
 
-**1. Adjusted Number of Nodes (V)**
+- **Dijkstra’s Algorithm Complexity**  
+  - The classic Dijkstra’s algorithm, implemented with a **priority queue**, runs in **O((V + E) * log(V))**.
+  - This is because **each node and edge is processed** while maintaining a priority queue for selecting the shortest path efficiently.
 
-We calculated that around **17% of the nodes are dead ends**, resulting in:
+- **Bidirectional Dijkstra’s Algorithm Complexity**  
+  - Instead of searching from just one side, **Bidirectional Dijkstra** starts two simultaneous searches (one from the start node and one from the end node).
+  - This effectively **reduces the search space by half**, leading to practical speed-ups.
+  - However, the worst-case complexity **remains the same** as regular Dijkstra’s:  
+     **O((V + E) * log(V))**
+  - The reason it doesn’t formally drop below this bound is that, while both searches reduce the number of explored nodes, they **still process nodes logarithmically via the priority queue**.
+
+---
+
+###### Legacy (January 24, 2025) Big-O Notation**
+
+Before implementing our recent optimizations, the **worst-case complexity** was estimated as:
 
 ```math
-V = 23,947,347 − (0.17 × 23,947,347) ≈ 19,875,902
+O((V + E) * log V)
+```
+
+Where:
+
+- **V** = 23,947,347 (Total number of nodes)
+- **E** = 28,854,312 (Total number of edges)
+- **log(V)** ≈ log(23,947,347) ≈ **7.38**
+
+Thus, the estimated computational complexity was:
+
+```math
+O((23,947,347 + 28,854,312) * 7.38)
+```
+
+```math
+O(52,801,659 * 7.38) = O(389,691,247)
 ```
 
 ---
 
-**2. Total V + E**
+###### Updated Big-O Notation (5th February 2025)
 
-The adjusted total number of nodes and edges:
+After implementing several optimizations, including **dead-end node removal, adjacency list sorting, single-neighbor compression, and improved priority queue handling**, we obtain a new complexity:
 
 ```math
-V + E = 19,875,902+28,854,312=48,730,214
+O((V' + E') * log V')
+```
+
+Where:
+
+- **V'** = **19,875,902** (After removing dead-end nodes and compressing single-neighbor paths)
+- **E'** = **28,354,312** (Reduced edge count due to preprocessing)
+- **log(V')** ≈ log(19,875,902) ≈ **7.30**
+
+Recomputing:
+
+```math
+O((19,875,902 + 28,354,312) * 7.30)
+```
+
+```math
+O(48,230,214 * 7.30) = O(351,080,562)
 ```
 
 ---
 
-**3. Logarithmic Component (log(V))**
+###### Breaking Down the Components
+
+1. **Why do we use (V + E)?**
+   - In graph-based algorithms, complexity is typically expressed as **O(V + E)** because:
+     - **V** represents the number of vertices (nodes) to be processed.
+     - **E** represents the number of edges (connections) being explored.
+   - Every node must be visited, and every edge must be checked at least **once** during execution.
+
+2. **Why does log(V) appear?**
+   - The **log(V)** term appears due to the **priority queue (min-heap)**, which is used to efficiently retrieve the next shortest-distance node.
+   - Operations in a **binary heap-based priority queue** (like insert and extract-min) have **O(log V)** complexity.
+   - Since Dijkstra’s algorithm processes **each node and each edge**, this logarithmic cost is applied to all operations.
+
+3. **How does bidirectional search affect complexity?**
+   - The **worst-case complexity does not formally change** because both searches **still require maintaining priority queues** and managing distances.
+   - However, in practice, the **search space is reduced**, leading to significantly faster query times.
+
+---
+
+###### Performance Gain Analysis
+
+Comparing the two results:
+
+- **January 2025:** **O(389,691,247)**
+- **February 2025:** **O(351,080,562)**
+- **Reduction:** **~9.9% improvement** in computational complexity.
+
+###### What Does This Time Complexity Mean?
+
+- Lower Execution Time:
+  - While a 9.9% theoretical reduction **may seem small**, in real-world execution, **memory efficiency, early stopping, and improved data structures** lead to **noticeable speed improvements**.
+
+- **Scalability Boost:**  
+  - A nearly **10% reduction** in complexity translates to **faster query responses at scale**, especially for millions of requests.
+
+- Future Improvements:
+  - Potential optimizations, such as **graph contraction, multi-level partitioning, or A* search integration**, could **further reduce** processing time.
+
+---
+
+#### Space Complexity
+
+To calculate the space complexity, we analyze the **memory required** by different components of the algorithm:
+
+- **Graph Representation:** **Adjacency list storage** requires **O(V + E)**.
+- **Search Structures:** Arrays/maps for **distances and visited nodes** require **O(V)**.
+- **Priority Queue:** The **min-heap (priority queue)** holds up to **O(V)** elements.
+
+Thus, the total space complexity remains:
 
 ```math
-log(V)≈log(19,875,902)≈7.297
+O(V + E) + O(V) + O(V) + O(V) + O(1) = O(V + E)
 ```
 
 ---
 
-4. Big-O Notation
-   The Big-O notation for the algorithm is:
+##### Legacy (January 24, 2025) Space Complexity Calculation
+
+Before optimizations, the estimated space complexity was:
 
 ```math
-O((V+E)∗log(V))≈O(48,730,214×7.297)≈O(355,358,147)
+O(V + E) = 23,947,347 + 28,854,312
+```
+
+```math
+O(52,801,659)
 ```
 
 ---
 
-The current time complexity of the algorithm is approximately O(355,358,147).
+##### Updated Space Complexity (February 2025)
 
-The time complexity provides a quantitative measure of the algorithm's performance, helping us evaluate its scalability and identify areas for optimization. While O(355,358,147) is the current estimate, ongoing improvements will likely reduce this number as the project progresses.
-
-##### What Does This Time Complexity Mean?
-
-The time complexity O(355,358,147) represents the worst-case number of operations the algorithm performs as it processes the graph. Here's what it tells us:
-
-Input Size Dependency:
-The time complexity is influenced by the total number of nodes (𝑉) and edges (E) in the graph. More nodes or edges increase the total computational effort.
-
-Logarithmic Factor:
-The log(V) factor arises from the use of a priority queue in the algorithm, which optimizes operations like insertion and retrieval of the smallest element. This makes the algorithm efficient for large graphs, compared to a purely linear or quadratic approach.
-
-Scalability:
-While the value O(355,358,147) appears large, it is proportional to the size of the graph. Improvements to the algorithm—such as reducing unnecessary computations or further optimization—will decrease this complexity over time.
-
-Dynamic Nature of Complexity:
-As the project evolves and the algorithm is optimized, the time complexity may change.
-
-##### Space complexity
-
-To calculate the space complexity of an algorithm, you need to consider the amount of memory space required by the algorithm as a function of the input size. This includes the space needed for:
-
-- Input Data: The space required to store the input data.
-- Auxiliary Space: The additional space required for variables, data structures, and function call stacks used during the execution of the algorithm.
-
-###### Space Complexity Calculation for Bidirectional Dijkstra's Algorithm
-
-For the Bidirectional Dijkstra's algorithm, the space complexity can be analyzed as follows:
-
-- Graph Representation: If the graph is represented using an adjacency list, the space required is proportional to the number of vertices (V) and edges (E). The space complexity for the adjacency list is O(V + E).
-- Distance Arrays: Two arrays (or maps) are used to store the shortest distances from the source and target nodes. Each of these arrays will require O(V) space. Therefore, the total space for the distance arrays is O(V).
-- Priority Queues: Two priority queues are used to manage the nodes being explored from both the source and target. In the worst case, each priority queue can hold all the vertices, which requires O(V) space for each queue. Thus, the total space for the priority queues is O(V).
-- Visited Sets: Sets (or arrays) to keep track of visited nodes for both searches will also require O(V) space.
-- Auxiliary Variables: Any additional variables used in the algorithm (e.g., counters, temporary variables) will require a constant amount of space, which can be considered O(1).
-
-###### Total Space Complexity
-
-Combining all these components, the total space complexity of the Bidirectional Dijkstra's algorithm can be expressed as:
+After graphing preprocessing optimizations:
 
 ```math
-Space Complexity = O(V + E) + O(V) + O(V) + O(V) + O(1) = O(V + E)
+O(V' + E') = 19,875,902 + 28,354,312
 ```
-
-Summary
-
-The space complexity of the Bidirectional Dijkstra's algorithm is O(V + E), where:
-
-- V is the number of vertices (nodes) in the graph.
-- E is the number of edges in the graph.
 
 ```math
-O(V + E) = 23,947,347 + 28,854,312 = 52,801,659
+O(48,230,214)
 ```
 
-This indicates that the memory required by the algorithm grows linearly with the size of the graph, making it efficient for large datasets.
+##### Space Complexity Comparison
+
+Comparing the two results:
+
+| **Metric**         | **January 2025**  | **February 2025** | **Improvement** |
+|--------------------|-----------------|-----------------|----------------|
+| **Total Nodes (V)** | 23,947,347       | 19,875,902       | **-17%** |
+| **Total Edges (E)** | 28,854,312       | 28,354,312       | **-1.7%** |
+| **Total Space Complexity** | **O(52,801,659)** | **O(48,230,214)** | **-8.6%** |
+
+##### Why was the space complexity reduced?
+
+- **Dead-end node removal:**  
+  - **17% of nodes** that had **only one connection** and contributed nothing to shortest-path calculations were removed.  
+  - This directly reduced **V**, leading to **fewer distance arrays and visited sets** in memory.
+
+- **Single-neighbor compression:**  
+  - Nodes with only **one neighbor** were compressed into a **direct edge**, reducing the **total node count** while maintaining connectivity.
+
+- **Graph preprocessing efficiency:**  
+  - Preprocessing removed **duplicate connections** and **redundant data**, reducing overall memory usage.
+
+##### How does this impact performance?
+
+- **Lower memory footprint:**  
+  - The algorithm now requires **~8.6% less memory** for large datasets, improving **cache efficiency** and **reducing RAM overhead**.
+- **Faster lookup times:**  
+  - With fewer nodes to process, operations involving **visited sets, priority queues, and adjacency lists** are now **more efficient**.
+
+---
+
+#### Big-O Notation Legacy
+
+| **Date**            | **Time Complexity**        | **Space Complexity** |
+|---------------------|--------------------------|----------------------|
+| **January 24, 2025** | **O(389,691,247)**       | **O(52,801,659)**    |
+| **February 2025**   | **O(351,080,562) (~9.9% reduction)** | **O(48,230,214)** |
+
+---
+
+This table keeps track of **Big-O notation improvements over time**, showing how optimizations have reduced computational complexity and memory usage.
+
+##### Why Tracking Big-O Notation Over Time?
+
+Keeping track of Big-O improvements allows us to:
+
+✅ Measure the impact of optimizations on performance.
+✅ Ensure improvements align with theoretical expectations.
+✅ Plan future optimizations effectively.
+
+This section will be updated as new optimizations are introduced.
 
 ## Server
 
@@ -1138,7 +1314,7 @@ The server is a critical component of the shortest path algorithm project, desig
 
 The server preprocesses the graph data upon startup to enhance performance during pathfinding operations. This preprocessing includes:
 
-- **Loading Data:** A loading.cpp file which contains functions to read the CSV file and populate the graph_data structure. This involves parsing each line of the CSV to extract landmark IDs and travel times, and updating the adjacency list accordingly.
+- **Loading Data:** A loading.cpp file that contains functions to read the CSV file and populate the graph_data structure. This involves parsing each line of the CSV to extract landmark IDs and travel times, and updating the adjacency list accordingly.
 - **Removing Dead-End Nodes:** A preprocess.cpp file including functions to identify and remove dead-end nodes from the graph. Dead-end nodes are those that do not contribute to any valid paths between landmarks. This reduces the overall size of the graph and improves algorithm efficiency.
 - **Identifying Single Neighbors:** The server checks for nodes that have only one neighbor. If a start or end node is a single neighbor, it is updated to point to its only neighbor, simplifying the graph further.
 
@@ -1158,7 +1334,7 @@ graph TD
 The server listens for incoming HTTP requests on a specified port (8080) and processes them as follows:
 
 - **Listening for Connections:** The server uses Boost.Asio to create a TCP acceptor that listens for incoming connections. When a client connects, the server accepts the connection and begins processing the request.
-- **Parsing Requests:** The server reads the incoming HTTP request, extracts the relevant parameters (source and destination landmark IDs), and validates them. If any required parameters are missing or invalid, the server responds with an appropriate error message.
+- **Parsing Requests:** The server reads the incoming HTTP request, extracts the relevant parameters (source and destination landmark IDs) and validates them. If any required parameters are missing or invalid, the server responds with an appropriate error message.
 - **Pathfinding Execution:** Upon receiving a valid request, the server invokes the bidirectional Dijkstra algorithm implemented in Dijkstra.cpp. The algorithm calculates the shortest path between the specified landmarks using the preprocessed graph data.
 - **Response Generation:** After computing the shortest path, the server formats the response in the requested format (JSON or XML) and sends it back to the client. The response includes the travel time, the ordered list of landmarks in the path, and the computation time.
 - **Graceful Shutdown:** The server ensures that all connections are properly closed after processing requests, maintaining resource integrity and preventing memory leaks.

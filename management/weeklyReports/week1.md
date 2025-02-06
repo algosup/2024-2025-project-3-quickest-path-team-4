@@ -7,13 +7,13 @@ This week was the first week of the project, which means the team mostly focused
 ## Week 1 Objectives
 
 1. **Data verification**
-    - We wanted to verify the dataset to confirm the absence of extra or isolated paths and cycles.
+ - We wanted to verify the dataset to confirm the absence of extra or isolated paths and cycles.
 2. **Algorithm choice**
-    - We wanted to choose what algorithm we would base our work on.
+ - We wanted to choose what algorithm we would base our work on.
 3. **Funcional specification**
-    - We wanted a skeleton for the document to allow the Program manager to start adding content.
+ - We wanted a skeleton for the document to allow the Program manager to start adding content.
 4. **Planning/Deadlines**
-    - Since there are no fixed deadlines for the project, we wanted to set deadlines for ourselves so as not to end up doing everything at the last minute. We also wanted a plan to know what to focus on.
+ - Since there are no fixed deadlines for the project, we wanted to set deadlines for ourselves so as not to end up doing everything at the last minute. We also wanted a plan to know what to focus on.
 
 ## Team Morale
 Here is a graph representing the teams satisfaction for the first week. <br>
@@ -22,18 +22,18 @@ Here is a graph representing the teams satisfaction for the first week. <br>
 ## Project advancements
 
 1. **Data verification**
-    - We have verified the data. There are no extra or isolated paths and no cycles.
+ - We have verified the data. There are no extra or isolated paths and no cycles.
 2. **Algorithm choice**
-    - We narrowed down the algorithm we want to use to a few choices but still have not been able to come to an agreement.
+ - We narrowed down the algorithm we want to use to a few choices but still have not been able to come to an agreement.
 3. **Funcional specification**
-    - We have a skeleton for the document. However, the document does not have the expected amount of content.
+ - We have a skeleton for the document. However, the document does not have the expected amount of content.
 4. **Planning/Deadlines**
-    - We have fixed deadlines and created a schedule to ensure good coordination in the team using a Gantt Chart for deadlines and a RACI matrix for responsibility.
+ - We have fixed deadlines and created a schedule to ensure good coordination in the team using a Gantt Chart for deadlines and a RACI matrix for responsibility.
 
 ## Extras
 
 1. **REST API**
-    - To avoid burnout from only working on algorithms for days on end, some team members looked into REST APIs. Thanks to that, we have already hosted a server and a skeleton for our REST API. However, we know we cannot move forward until we have completed the algorithm. Therefore, we will fully focus on the algorithm before pursuing the REST API.
+ - To avoid burnout from only working on algorithms for days on end, some team members looked into REST APIs. Thanks to that, we have already hosted a server and a skeleton for our REST API. However, we know we cannot move forward until we have completed the algorithm. Therefore, we will fully focus on the algorithm before pursuing the REST API.
 
 ## Challenges
 
@@ -47,7 +47,7 @@ Here is a graph representing the teams satisfaction for the first week. <br>
 ## Plan for Next Week
 
 1. **Complete Functional Specifications**
-   - We want to have completed the Functional Specifications soon to allow the team to work on other documents.
+ - We want to have completed the Functional Specifications soon to allow the team to work on other documents.
 2. **Finish choosing an algorithm**
  - Before the end of next week, no matter what, we will have chosen an algorithm to allow us to get to work.
 3. **Start working on the code**

@@ -28,6 +28,7 @@
     - [STL Libraries Used](#stl-libraries-used)
       - [Git Large File Storage](#git-large-file-storage)
       - [REST API](#rest-api-1)
+      - [REST API](#rest-api-2)
         - [Boost.Beast](#boostbeast)
           - [Boost.Beast C++ Implementation](#boostbeast-c-implementation)
         - [Localhost](#localhost)
@@ -42,7 +43,8 @@
         - [API Flow](#api-flow)
     - [System Architecture](#system-architecture)
   - [Algorithm](#algorithm)
-    - [Algorithm Description](#algorithm-description)
+    - [Certainly! Here's the content formatted for better readability](#certainly-heres-the-content-formatted-for-better-readability)
+  - [Algorithm Description](#algorithm-description)
       - [Definition](#definition)
     - [Overview of Bidirectional Dijkstra's Algorithm](#overview-of-bidirectional-dijkstras-algorithm)
       - [How it works](#how-it-works)
@@ -112,7 +114,7 @@ The objective of this project is to develop a high-performance software solution
 
 Such a project is particularly valuable in real-world applications such as logistics, navigation, and urban planning. Efficient route optimization can help businesses reduce fuel consumption, improve delivery times, and enhance overall operational efficiency. Moreover, this software can aid travelers and commuters in making more informed decisions, saving time, and minimizing travel-related uncertainties.
 
-The software will be developed in C++ to fully exploit the language's performance capabilities, particularly for large-scale graph processing. It will expose its functionality through a REST API, allowing external users to query the system for the shortest path between two landmarks. The system will support both JSON and XML formats for API responses, ensuring broad compatibility.
+The software will be developed in **C++** to fully exploit the language's performance capabilities, particularly for large-scale graph processing. It will expose its functionality through a **REST API**, allowing external users to query the system for the shortest path between two landmarks. The system will support both **JSON** and **XML** formats for API responses, ensuring broad compatibility.
 
 ### Document Purpose
 
@@ -124,19 +126,19 @@ It sets standards for coding practices and collaboration between internal develo
 
 ### Programming Language
 
-The software must be implemented in C++ to achieve optimal performance.
+The software must be implemented in **C++** to achieve optimal performance.
 
 ### REST API
 
-The software exposes its functionality through a Representational State Transfer (REST) application programming interface (API) running on a Hypertext Transfer Protocol (HTTP) localhost server. It includes a single GET endpoint with the following features:
+The software exposes its functionality through a **Representational State Transfer (REST)** application programming interface (API) running on a **Hypertext Transfer Protocol (HTTP)** localhost server. It includes a single GET endpoint with the following features:
 
-- Input: Accept IDs of both the source and destination landmarks.
-- Output: Travel time and the ordered list of landmarks in the path.
-- Response format must accept both JSON and XML.
+- **Input**: Accept IDs of both the source and destination landmarks.
+- **Output**: Travel time and the ordered list of landmarks in the path.
+- **Response format**: Must accept both JSON and XML.
 
 ### Data Source
 
-The software uses a .csv file named 'USA-Roads.csv', containing approximately 24 million nodes (landmarks). Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
+The software uses a `.csv` file named **'USA-Roads.csv'**, containing approximately 24 million nodes (landmarks). Each line is bidirectional, meaning that if a connection exists from A to B, it exists from B to A.
 
 Each line is as follows:
 
@@ -146,7 +148,7 @@ Landmark_A_ID,Landmark_B_ID,Time
 
 ### Performance Goals
 
-The API must handle all queries within 1 second on a typical laptop.
+The API must handle all queries within **1 second** on a typical laptop.
 
 #### Typical Laptop Specifications
 
@@ -159,25 +161,22 @@ A typical laptop refers to a mid-range consumer laptop with the following likely
 
 #### Heuristics
 
-We prioritize speed over precision, meaning we may use heuristics (an approximation of calculus that can be interpreted as "good enough"). However, the returned path should not exceed the shortest path duration by more than 10%.
+We prioritize speed over precision, meaning we may use heuristics (an approximation of calculus that can be interpreted as "good enough"). However, the returned path should not exceed the shortest path duration by more than **10%**.
 
 ### Data Integrity Verification
 
-Verify whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) free of loops.
-
-Verify that the graph is fully connected and allows navigating between two landmarks.
+- Verify whether the graph is a [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) free of loops.
+- Verify that the graph is fully connected and allows navigating between two landmarks.
 
 Checks can be performed using a programming language other than C++, though we will use C++ as well to stay uniform.
 
 ### Expected Deliverables
 
-1. C++ Source Code: This should include comments and clear documentation. The code should only use libraries from the STL and those required for the web server.
-2. Time and Space Complexity: Big O notation for the main algorithms.
-3. REST API Implementation: Demonstrating the ability to handle multiple formats (XML and
-   JSON).
-4. Test Suite: Tests to validate correctness, performance, and compliance with the 10%
-   approximation rule.
-5. Data Validation Tool: A utility to verify the integrity of the provided CSV file.
+1. **C++ Source Code**: This should include comments and clear documentation. The code should only use libraries from the STL and those required for the web server.
+2. **Time and Space Complexity**: Big O notation for the main algorithms.
+3. **REST API Implementation**: Demonstrating the ability to handle multiple formats (XML and JSON).
+4. **Test Suite**: Tests to validate correctness, performance, and compliance with the 10% approximation rule.
+5. **Data Validation Tool**: A utility to verify the integrity of the provided CSV file.
 
 ## Development Environment
 
@@ -187,10 +186,10 @@ Our team selected C++ as the programming language for this project due to its po
 
 #### Why C++?
 
-- Performance: Direct memory management and low-level hardware access allow for optimized performance.
-- Scalability: Ideal for handling large datasets like the 24 million-node graph in this project.
-- Standard Template Library (STL): This library provides efficient data structures (e.g., priority queues and maps) critical for shortest-path algorithms.
-- Portability: Easily deployable across different operating systems with minimal changes.
+- **Performance**: Direct memory management and low-level hardware access allow for optimized performance.
+- **Scalability**: Ideal for handling large datasets like the 24 million-node graph in this project.
+- **Standard Template Library (STL)**: This library provides efficient data structures (e.g., priority queues and maps) critical for shortest-path algorithms.
+- **Portability**: Easily deployable across different operating systems with minimal changes.
 
 #### Compiler Recommendations
 
@@ -329,7 +328,7 @@ The `Data-Roads.csv` file is stored using Git LFS due to GitHub's limitation of 
    - Run the command:
 
 ```bash
-     git lfs fetch
+  git lfs fetch
 ```
 
 4. **Pull the Large Files**:
@@ -339,7 +338,7 @@ The `Data-Roads.csv` file is stored using Git LFS due to GitHub's limitation of 
      git lfs pull
 ```
 
-If you attempt to access the `Data-Roads.csv` file without pulling the data from Git LFS, for example, by executing a GET HTTP request like:
+If you attempt to access the **`Data-Roads.csv`** file without pulling the data from Git LFS, for example, by executing a GET HTTP request like:
 
 ```bash
 curl http://192.168.15.115:8080
@@ -353,8 +352,9 @@ oid sha256:5b60e8cb900ec11cce3dd1a6547d0ab499aadf8198f2f0bb5abb87633369adc0
 size 668512325
 ```
 
-This output indicates that the GET request only returns a pointer to the file's location rather than the actual file data itself.
-To access the content of Data-Roads.csv, it is essential to perform the git lfs pull command, which retrieves the file from the remote storage. By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
+This output indicates that the GET request only returns a pointer to the file's location rather than the actual file data itself. To access the content of Data-Roads.csv, it is essential to perform the Git LFS pull command, which retrieves the file from the remote storage. By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
+
+#### REST API
 
 #### REST API
 
@@ -362,18 +362,29 @@ A REST API (also called a RESTful API or RESTful web API) is an application prog
 
 REST APIs provide a flexible, lightweight way to integrate applications and connect components in micro-services architectures. Distributed file systems send and receive data via REST.
 
-Rest APIs have to follow 5 principles:
+REST APIs must adhere to five key principles:
 
-- Uniform interface: All API requests for the same resource should look the same, no matter where the request comes from.
-- Client-server decoupling: In REST API design, client and server applications must be completely independent of each other.
-- Statelessness: REST APIs are stateless, meaning that each request needs to include all the information necessary for processing it.
-- Cacheability: When possible, resources should be cacheable on the client or server side. Server responses also need to contain information about whether caching is allowed for the delivered resource.
-- Layered system architecture: In REST APIs, the calls and responses go through different layers. Don’t assume that the client, and server applications connect directly to each other.
+- **Uniform Interface**:
 
-For this project, we have to include a single GET endpoint. The endpoint shows where the resource is located. It typically includes a Uniform Resource Identifier (URI). In our case, the URI is located on a local-hosted server.
+  - All API requests for the same resource should look the same, regardless of where the request originates.
+- **Client-Server Decoupling**:
 
-The sequence diagram below visually represents how the user, server, and algorithm communicate.
-![alt text](./image/technicalSpecifications/sequenceDiagramAPI.png)
+  - In REST API design, client and server applications must be completely independent of each other.
+- **Statelessness**:
+
+  - REST APIs are stateless, meaning each request must contain all the information necessary for processing it.
+- **Cacheability**:
+
+  - When possible, resources should be cacheable on the client or server side. Server responses should include information about whether caching is allowed for the delivered resource.
+- **Layered System Architecture**:
+
+  - In REST APIs, the calls and responses traverse different layers. It should not be assumed that the client and server applications connect directly to each other.
+
+For this project, we need to include a single GET endpoint. This endpoint indicates where the resource is located, typically using a Uniform Resource Identifier (URI). In our case, the URI is located on a locally-hosted server.
+
+The sequence diagram below visually represents how the user, server, and algorithm communicate:
+
+![Sequence Diagram](./image/technicalSpecifications/sequenceDiagramAPI.png)
 
 ##### Boost.Beast
 
@@ -692,13 +703,17 @@ graph TD
 
 ## Algorithm
 
-### Algorithm Description
+### Certainly! Here's the content formatted for better readability
 
-For this project, we have chosen to implement a bidirectional Dijkstra algorithm as our primary method for calculating the shortest path between landmarks. This variant of Dijkstra's algorithm is a well-established approach used for finding the shortest paths from a source node to a target node in a weighted graph. It operates by simultaneously exploring the graph from both the source and the target nodes, effectively reducing the search space and improving efficiency.
+---
+
+## Algorithm Description
+
+For this project, we have chosen to implement a **bidirectional Dijkstra algorithm** as our primary method for calculating the shortest path between landmarks. This variant of Dijkstra's algorithm is a well-established approach used for finding the shortest paths from a source node to a target node in a weighted graph. It operates by simultaneously exploring the graph from both the source and the target nodes, effectively reducing the search space and improving efficiency.
 
 The bidirectional Dijkstra's algorithm works by maintaining two sets of distances: one from the source node and another from the target node. Each search proceeds until the two searches meet, at which point the shortest path can be determined. This method is particularly advantageous in large graphs, as it can significantly decrease the time complexity compared to a unidirectional search.
 
-We opted against using the A*(A star) algorithm due to the absence of a suitable heuristic for our specific use case. The A* algorithm typically relies on a heuristic function to estimate the cost from a given node to the target node, which helps guide the search process. However, in our scenario, we lack spatial coordinates or specific destination points; instead, we only have the travel times between landmarks. This limitation renders the creation of an effective heuristic impractical, as the time-based weights do not provide a meaningful estimate of distance or cost in the context of our graph.
+We opted against using the **A* (A star) algorithm**due to the absence of a suitable heuristic for our specific use case. The A* algorithm typically relies on a heuristic function to estimate the cost from a given node to the target node, which helps guide the search process. However, in our scenario, we lack spatial coordinates or specific destination points; instead, we only have the travel times between landmarks. This limitation renders the creation of an effective heuristic impractical, as the time-based weights do not provide a meaningful estimate of distance or cost in the context of our graph.
 
 The bidirectional Dijkstra's algorithm, on the other hand, is well-suited for our needs as it does not require heuristics and can efficiently handle graphs with non-negative weights. By leveraging this algorithm, we can ensure accurate and reliable calculations of the shortest paths based solely on the travel times provided in our dataset.
 
@@ -749,6 +764,36 @@ Bidirectional Dijkstra's algorithm simultaneously searches from both the source 
 
 - Once the meeting point is identified, the shortest path can be reconstructed by tracing back from the meeting point to the source and from the meeting point to the target.
 
+```mermaid
+graph TD
+    A[Start Node Search] --> B[Explore Neighbors of Start Node]
+    B --> C[Update Distances from Start Node]
+    C --> D{Is Current Node in End Node's Visited Set?}
+    D -->|Yes| E[Path Found, Terminate]
+    D -->|No| F[Switch to End Node Search]
+
+    F --> G[Explore Neighbors of End Node]
+    G --> H[Update Distances from End Node]
+    H --> I{Is Current Node in Start Node's Visited Set?}
+    I -->|Yes| E[Path Found, Terminate]
+    I -->|No| J[Switch to Start Node Search]
+
+    J --> B
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#6af,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#6af,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#f96,stroke:#333,stroke-width:2px,color:#fff
+    style E fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff
+    style F fill:#ffcc00,stroke:#333,stroke-width:2px,color:#fff
+    style G fill:#6af,stroke:#333,stroke-width:2px,color:#fff
+    style H fill:#6af,stroke:#333,stroke-width:2px,color:#fff
+    style I fill:#f96,stroke:#333,stroke-width:2px,color:#fff
+    style J fill:#ffcc00,stroke:#333,stroke-width:2px,color:#fff
+
+
+```
+
 #### Advantages
 
 - Efficiency: By searching from both ends, the algorithm can significantly reduce the number of nodes explored, leading to faster execution times, especially in large graphs.
@@ -758,10 +803,10 @@ Bidirectional Dijkstra's algorithm simultaneously searches from both the source 
 
 In the context of our project, we have decided not to implement multi-threading for the following reasons:
 
-1. Resource Intensive: Implementing multi-threading can significantly increase the computational power required to run the algorithm. Given that our primary goal is to ensure that the API responds in less than one second on typical computers, the overhead associated with managing multiple threads could hinder our ability to meet this performance requirement. The additional context switching and synchronization between threads may lead to increased latency, which is counterproductive to our objectives.
-2. Nature of Dijkstra's Bidirectional Algorithm: The bidirectional Dijkstra's algorithm inherently operates in a step-by-step manner, alternating between searches from the source and the target. This back-and-forth approach does not lend itself well to parallelization, as each step depends on the results of the previous one. Introducing multi-threading in this scenario would not provide significant performance benefits and could complicate the implementation unnecessarily.
+1. Resource Intensive: Multi-threading increases computational demands, potentially exceeding our goal of sub-second API response times. The overhead from context switching and synchronization can introduce latency, counteracting our performance objectives.
+2. Algorithm Nature: The bidirectional Dijkstra's algorithm relies on sequential steps, alternating between source and target searches. This dependency chain limits parallelization benefits, making multi-threading unnecessary and complicating the implementation.
 
-By focusing on optimizing the existing single-threaded implementation of the bidirectional Dijkstra algorithm, we can ensure that we meet our performance goals while maintaining code simplicity and clarity.
+By optimizing the single-threaded version, we maintain performance goals and code simplicity.
 
 #### Pseudocode
 
@@ -945,6 +990,7 @@ The output generated by the shortest path algorithm is crucial for users to unde
 #### Response Structure
 
 1. Successful Response: When a valid request is made, the server responds with a JSON or XML object containing the following information:
+
    - Travel Time: The total time taken to traverse the path between the source and destination landmarks.
    - Path: An ordered list of landmark IDs representing the sequence of landmarks from the source to the destination.
    - Computation Time: The time taken by the algorithm to calculate the shortest path.
@@ -1018,16 +1064,17 @@ To ensure the shortest path algorithm meets the 1-second response goal and scale
 #### Graph Preprocessing
 
 - **Dead-End Node Removal:**
+
   - **Metric:** Reduction in graph size by approximately 17%.
   - **Impact:** Decreases memory usage by ~8.6%, leading to faster processing times due to fewer nodes to evaluate.
   - **Optimization:** Removes nodes that do not contribute to valid paths, ensuring the algorithm focuses only on relevant nodes.
-
 - **Single Neighbor Compression:**
+
   - **Metric:** Reduction in node count by compressing nodes with a single neighbor.
   - **Impact:** Improves traversal speed by reducing the number of nodes and edges processed.
   - **Optimization:** Simplifies the graph structure, allowing the algorithm to process fewer nodes and edges.
-
 - **Sorting Adjacency Lists:**
+
   - **Metric:** Average reduction in search time per node due to sorted adjacency lists.
   - **Impact:** Enhances search efficiency by prioritizing the most promising paths, reducing unnecessary evaluations.
   - **Optimization:** Sorts adjacency lists based on edge weights for faster access to relevant neighbors.
@@ -1035,16 +1082,17 @@ To ensure the shortest path algorithm meets the 1-second response goal and scale
 #### Efficient Data Structures
 
 - **Adjacency List Representation:**
+
   - **Metric:** O(1) average-time complexity for neighbor lookups.
   - **Impact:** Reduces graph traversal time, improving overall algorithm speed.
   - **Optimization:** Uses `unordered_map<int, vector<pair<int, int>>>` for quick access to neighbors.
-
 - **Hash Map for Node Indexing:**
+
   - **Metric:** Reduction in node lookup time compared to linear search.
   - **Impact:** Enhances speed by minimizing redundant searches, leading to quicker node retrieval.
   - **Optimization:** Maps node IDs to indices using `unordered_map<int, size_t>` for fast retrieval.
-
 - **Boolean Vectors for Visited Nodes:**
+
   - **Metric:** Reduction in memory usage and improved cache locality.
   - **Impact:** Speeds up access times for visited node checks, enhancing memory efficiency.
   - **Optimization:** Replaces `unordered_map<int, bool>` with `vector<bool>` for better performance.
@@ -1052,11 +1100,12 @@ To ensure the shortest path algorithm meets the 1-second response goal and scale
 #### Bidirectional Dijkstra’s Algorithm
 
 - **Two Simultaneous Searches:**
+
   - **Metric:** Reduction in the number of nodes visited by approximately 50%.
   - **Impact:** Halves the search space, significantly reducing execution times.
   - **Optimization:** Runs forward and backward searches simultaneously, stopping when both fronts meet.
-
 - **Early Stopping Condition:**
+
   - **Metric:** Reduction in unnecessary computations by terminating early.
   - **Impact:** Saves time by avoiding exploration of non-improving paths.
   - **Optimization:** Stops the algorithm if the sum of the smallest distances exceeds the current best path.
@@ -1064,11 +1113,12 @@ To ensure the shortest path algorithm meets the 1-second response goal and scale
 #### Priority Queue Optimization
 
 - **Min-Heap Priority Queue:**
+
   - **Metric:** O(log V) complexity for priority queue operations.
   - **Impact:** Optimizes node processing time, enhancing overall performance.
   - **Optimization:** Maintains the next node with the smallest cost for efficient retrieval.
-
 - **Custom Comparator for Faster Processing:**
+
   - **Metric:** Speedup in priority queue operations due to specialized comparator.
   - **Impact:** Improves algorithm performance by accelerating insert and pop operations.
   - **Optimization:** Ensures logarithmic complexity for priority queue operations.
@@ -1076,11 +1126,12 @@ To ensure the shortest path algorithm meets the 1-second response goal and scale
 #### Memory Optimization
 
 - **Lazy Distance Updates:**
+
   - **Metric:** Reduction in cache misses by updating distances directly in an array.
   - **Impact:** Improves memory access patterns, leading to faster execution.
   - **Optimization:** Updates values directly in an array instead of a separate map.
-
 - **Minimized Node Storage:**
+
   - **Metric:** Reduction in memory usage by storing only essential nodes.
   - **Impact:** Allows efficient handling of larger graphs by decreasing overhead.
   - **Optimization:** Stores only necessary nodes to reduce memory consumption.
@@ -1088,11 +1139,12 @@ To ensure the shortest path algorithm meets the 1-second response goal and scale
 #### Fast Path Reconstruction
 
 - **Backtracking with Predecessor Arrays:**
+
   - **Metric:** Reduction in memory footprint by avoiding full path storage.
   - **Impact:** Speeds up path reconstruction, minimizing memory usage.
   - **Optimization:** Uses predecessor arrays for quick path reconstruction.
-
 - **Reversed Path Storage for Efficiency:**
+
   - **Metric:** Reduction in execution time by avoiding unnecessary iterations.
   - **Impact:** Streamlines path reconstruction, enhancing efficiency.
   - **Optimization:** Stores the backward search path in reverse order and appends it to the forward path.
@@ -1103,19 +1155,19 @@ By implementing these techniques, the algorithm achieves significant performance
 
 ##### Time Complexity
 
-To calculate the Big-O notation of this algorithm, we analyze its computational cost based on the operations performed. Our implementation follows **Bidirectional Dijkstra’s Algorithm**, which is optimized using **priority queues**.  
+To calculate the Big-O notation of this algorithm, we analyze its computational cost based on the operations performed. Our implementation follows **Bidirectional Dijkstra’s Algorithm**, which is optimized using **priority queues**.
 
 **Why do we calculate the complexity this way?**
 
-- **Dijkstra’s Algorithm Complexity**  
+- **Dijkstra’s Algorithm Complexity**
+
   - The classic Dijkstra’s algorithm, implemented with a **priority queue**, runs in **O((V + E) * log(V))**.
   - This is because **each node and edge is processed** while maintaining a priority queue for selecting the shortest path efficiently.
+- **Bidirectional Dijkstra’s Algorithm Complexity**
 
-- **Bidirectional Dijkstra’s Algorithm Complexity**  
   - Instead of searching from just one side, **Bidirectional Dijkstra** starts two simultaneous searches (one from the start node and one from the end node).
   - This effectively **reduces the search space by half**, leading to practical speed-ups.
-  - However, the worst-case complexity **remains the same** as regular Dijkstra’s:  
-     **O((V + E) * log(V))**
+  - However, the worst-case complexity **remains the same** as regular Dijkstra’s:**O((V + E) * log(V))**
   - The reason it doesn’t formally drop below this bound is that, while both searches reduce the number of explored nodes, they **still process nodes logarithmically via the priority queue**.
 
 ---
@@ -1175,17 +1227,18 @@ O(48,230,214 * 7.30) = O(351,080,562)
 ###### Breaking Down the Components
 
 1. **Why do we use (V + E)?**
+
    - In graph-based algorithms, complexity is typically expressed as **O(V + E)** because:
      - **V** represents the number of vertices (nodes) to be processed.
      - **E** represents the number of edges (connections) being explored.
    - Every node must be visited, and every edge must be checked at least **once** during execution.
-
 2. **Why does log(V) appear?**
+
    - The **log(V)** term appears due to the **priority queue (min-heap)**, which is used to efficiently retrieve the next shortest-distance node.
    - Operations in a **binary heap-based priority queue** (like insert and extract-min) have **O(log V)** complexity.
    - Since Dijkstra’s algorithm processes **each node and each edge**, this logarithmic cost is applied to all operations.
-
 3. **How does bidirectional search affect complexity?**
+
    - The **worst-case complexity does not formally change** because both searches **still require maintaining priority queues** and managing distances.
    - However, in practice, the **search space is reduced**, leading to significantly faster query times.
 
@@ -1202,12 +1255,13 @@ Comparing the two results:
 ###### What Does This Time Complexity Mean?
 
 - Lower Execution Time:
+
   - While a 9.9% theoretical reduction **may seem small**, in real-world execution, **memory efficiency, early stopping, and improved data structures** lead to **noticeable speed improvements**.
+- **Scalability Boost:**
 
-- **Scalability Boost:**  
   - A nearly **10% reduction** in complexity translates to **faster query responses at scale**, especially for millions of requests.
-
 - Future Improvements:
+
   - Potential optimizations, such as **graph contraction, multi-level partitioning, or A* search integration**, could **further reduce** processing time.
 
 ---
@@ -1258,39 +1312,40 @@ O(48,230,214)
 
 Comparing the two results:
 
-| **Metric**         | **January 2025**  | **February 2025** | **Improvement** |
-|--------------------|-----------------|-----------------|----------------|
-| **Total Nodes (V)** | 23,947,347       | 19,875,902       | **-17%** |
-| **Total Edges (E)** | 28,854,312       | 28,354,312       | **-1.7%** |
-| **Total Space Complexity** | **O(52,801,659)** | **O(48,230,214)** | **-8.6%** |
+| **Metric**                 | **January 2025**  | **February 2025** | **Improvement** |
+| -------------------------------- | ----------------------- | ----------------------- | --------------------- |
+| **Total Nodes (V)**        | 23,947,347              | 19,875,902              | **-17%**        |
+| **Total Edges (E)**        | 28,854,312              | 28,354,312              | **-1.7%**       |
+| **Total Space Complexity** | **O(52,801,659)** | **O(48,230,214)** | **-8.6%**       |
 
 ##### Why was the space complexity reduced?
 
-- **Dead-end node removal:**  
-  - **17% of nodes** that had **only one connection** and contributed nothing to shortest-path calculations were removed.  
+- **Dead-end node removal:**
+
+  - **17% of nodes** that had **only one connection** and contributed nothing to shortest-path calculations were removed.
   - This directly reduced **V**, leading to **fewer distance arrays and visited sets** in memory.
+- **Single-neighbor compression:**
 
-- **Single-neighbor compression:**  
   - Nodes with only **one neighbor** were compressed into a **direct edge**, reducing the **total node count** while maintaining connectivity.
+- **Graph preprocessing efficiency:**
 
-- **Graph preprocessing efficiency:**  
   - Preprocessing removed **duplicate connections** and **redundant data**, reducing overall memory usage.
 
 ##### How does this impact performance?
 
-- **Lower memory footprint:**  
+- **Lower memory footprint:**
   - The algorithm now requires **~8.6% less memory** for large datasets, improving **cache efficiency** and **reducing RAM overhead**.
-- **Faster lookup times:**  
+- **Faster lookup times:**
   - With fewer nodes to process, operations involving **visited sets, priority queues, and adjacency lists** are now **more efficient**.
 
 ---
 
 #### Big-O Notation Legacy
 
-| **Date**            | **Time Complexity**        | **Space Complexity** |
-|---------------------|--------------------------|----------------------|
-| **January 24, 2025** | **O(389,691,247)**       | **O(52,801,659)**    |
-| **February 2025**   | **O(351,080,562) (~9.9% reduction)** | **O(48,230,214)** |
+| **Date**             | **Time Complexity**                  | **Space Complexity** |
+| -------------------------- | ------------------------------------------ | -------------------------- |
+| **January 24, 2025** | **O(389,691,247)**                   | **O(52,801,659)**    |
+| **February 2025**    | **O(351,080,562) (~9.9% reduction)** | **O(48,230,214)**    |
 
 ---
 

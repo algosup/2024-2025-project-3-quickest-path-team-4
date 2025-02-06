@@ -28,7 +28,6 @@
     - [STL Libraries Used](#stl-libraries-used)
       - [Git Large File Storage](#git-large-file-storage)
       - [REST API](#rest-api-1)
-      - [REST API](#rest-api-2)
         - [Boost.Beast](#boostbeast)
           - [Boost.Beast C++ Implementation](#boostbeast-c-implementation)
         - [Localhost](#localhost)
@@ -43,7 +42,6 @@
         - [API Flow](#api-flow)
     - [System Architecture](#system-architecture)
   - [Algorithm](#algorithm)
-    - [Certainly! Here's the content formatted for better readability](#certainly-heres-the-content-formatted-for-better-readability)
   - [Algorithm Description](#algorithm-description)
       - [Definition](#definition)
     - [Overview of Bidirectional Dijkstra's Algorithm](#overview-of-bidirectional-dijkstras-algorithm)
@@ -353,8 +351,6 @@ size 668512325
 ```
 
 This output indicates that the GET request only returns a pointer to the file's location rather than the actual file data itself. To access the content of Data-Roads.csv, it is essential to perform the Git LFS pull command, which retrieves the file from the remote storage. By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
-
-#### REST API
 
 #### REST API
 
@@ -703,10 +699,6 @@ graph TD
 
 ## Algorithm
 
-### Certainly! Here's the content formatted for better readability
-
----
-
 ## Algorithm Description
 
 For this project, we have chosen to implement a **bidirectional Dijkstra algorithm** as our primary method for calculating the shortest path between landmarks. This variant of Dijkstra's algorithm is a well-established approach used for finding the shortest paths from a source node to a target node in a weighted graph. It operates by simultaneously exploring the graph from both the source and the target nodes, effectively reducing the search space and improving efficiency.
@@ -1043,7 +1035,29 @@ The data flow graph provides a visual representation of how data moves through o
 
 It outlines the sequence of operations, starting from the user input, through the API server, and into the graph data structure, where the shortest path algorithm is applied. This graph serves as a blueprint for understanding the flow of information, highlighting the critical steps taken to calculate the shortest travel path between landmarks.
 
-![I/O Diagram](image/technicalSpecifications/ioDiagram.png)
+```mermaid
+graph TD
+    A[Client] --> B[Input]
+    B --> C[GET Method, e.g., GET /data]
+    C --> D[Request to Localhost Server]
+    D --> E[Data Validation]
+    E --> F{Is Data Valid?}
+    F -->|No| G[Throw Error]
+    F -->|Yes| H[Algorithm]
+    H --> I[Output]
+    I --> J[Response: JSON + XML Format]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#6af,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#6af,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#6af,stroke:#333,stroke-width:2px,color:#fff
+    style E fill:#f96,stroke:#333,stroke-width:2px,color:#fff
+    style F fill:#f96,stroke:#333,stroke-width:2px,color:#fff
+    style G fill:#ff4444,stroke:#333,stroke-width:2px,color:#fff
+    style H fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff
+    style I fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff
+    style J fill:#6af,stroke:#333,stroke-width:2px,color:#fff
+```
 
 | Component               | Description                                                                                                                       |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------- |

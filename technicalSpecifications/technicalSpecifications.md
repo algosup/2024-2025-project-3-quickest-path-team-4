@@ -43,8 +43,8 @@
     - [System Architecture](#system-architecture)
   - [Algorithm](#algorithm)
   - [Algorithm Description](#algorithm-description)
-      - [Definition](#definition)
-    - [Overview of Bidirectional Dijkstra's Algorithm](#overview-of-bidirectional-dijkstras-algorithm)
+    - [Definition](#definition)
+    - [Overview of Bidirectional Dijkstra&#39;s Algorithm](#overview-of-bidirectional-dijkstras-algorithm)
       - [How it works](#how-it-works)
       - [Advantages](#advantages)
       - [Multi-Threading](#multi-threading)
@@ -86,14 +86,14 @@
     - [Data Preprocessing](#data-preprocessing)
     - [Request Handling](#request-handling)
   - [Client](#client)
-    - [Client's Key Features](#clients-key-features)
+    - [Client&#39;s Key Features](#clients-key-features)
       - [User Interaction](#user-interaction)
       - [HTTP Request Handling](#http-request-handling)
       - [Response Processing](#response-processing)
       - [Error Handling](#error-handling)
       - [Loop for Multiple Queries](#loop-for-multiple-queries)
-    - [Client's Pseudo Code](#clients-pseudo-code)
-    - [Client's Response](#clients-response)
+    - [Client&#39;s Pseudo Code](#clients-pseudo-code)
+    - [Client&#39;s Response](#clients-response)
     - [Client-Server Interaction Sequence Diagram](#client-server-interaction-sequence-diagram)
   - [Testing](#testing)
     - [Unit Tests](#unit-tests)
@@ -667,12 +667,25 @@ curl -H "Accept: application/json" "http://192.168.15.115:8080?source=1&destinat
 
 ```mermaid
 graph TD
- A[User] -->|Sends Request| B[API Server]
- B -->|Retrieves Data| C[Graph Data Structure]
- C -->|Data for Calculation| D[Shortest Path Algorithm]
- D -->|Calculated Path| B
- B -->|Sends Response| A
- E[CSV Data Source] -->|Populates| C
+    A[User] -->|Sends Request| B[API Server]
+    B -->|Retrieves Data| C[Graph Data Structure]
+    C -->|Data for Calculation| D[Shortest Path Algorithm]
+    D -->|Calculated Path| B
+    B -->|Sends Response| A
+    E[CSV Data Source] -->|Populates| C
+
+    style A fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style B fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style C fill:#f96,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style D fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style E fill:#ffcc00,stroke:#333,stroke-width:2px,color:#333,rounded
+
+    linkStyle 0 stroke:#4caf50,stroke-width:2px
+    linkStyle 1 stroke:#6af,stroke-width:2px
+    linkStyle 2 stroke:#f96,stroke-width:2px
+    linkStyle 3 stroke:#4caf50,stroke-width:2px
+    linkStyle 4 stroke:#6af,stroke-width:2px
+    linkStyle 5 stroke:#ffcc00,stroke-width:2px
 ```
 
 | Element                 | Description                                                                          |
@@ -689,12 +702,25 @@ This diagram illustrates the overall architecture of the ROADRUNNER system, show
 
 ```mermaid
 graph TD
-    A[Client] -->|Sends Request| B[API Server]
+    A[User] -->|Sends Request| B[API Server]
     B -->|Retrieves Data| C[Graph Data Structure]
     C -->|Data for Calculation| D[Shortest Path Algorithm]
     D -->|Calculated Path| B
     B -->|Sends Response| A
     E[CSV Data Source] -->|Populates| C
+
+    style A fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style B fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style C fill:#f96,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style D fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style E fill:#ffcc00,stroke:#333,stroke-width:2px,color:#333,rounded
+
+    linkStyle 0 stroke:#4caf50,stroke-width:2px
+    linkStyle 1 stroke:#6af,stroke-width:2px
+    linkStyle 2 stroke:#f96,stroke-width:2px
+    linkStyle 3 stroke:#4caf50,stroke-width:2px
+    linkStyle 4 stroke:#6af,stroke-width:2px
+    linkStyle 5 stroke:#ffcc00,stroke-width:2px
 ```
 
 ## Algorithm
@@ -1423,6 +1449,16 @@ flowchart TD
     G --> H[Send Response]
     F --> H
     H --> I[End]
+
+    style A fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style B fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style C fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style D fill:#f96,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style E fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style F fill:#ff4444,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style G fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style H fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style I fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
 ```
 
 ## Client

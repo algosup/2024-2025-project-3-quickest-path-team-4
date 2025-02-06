@@ -84,7 +84,7 @@ To directly run a road runner server from your computer:
         - Install hombrew: https://docs.brew.sh/Installation.
         - Install the compiler: https://formulae.brew.sh/formula/gcc.
     - For Windows : 
-        - Install Clang: https://clang.llvm.org/get_started.html.
+        - Install Clang: https://youtu.be/QGOVWA2FcQE?si=Zu_eZCeabhLEGmgH.
         - Install MinGW-w64: https://www.mingw-w64.org/downloads/.
         - Type this `vcpkg install pthreads` in the MinGW terminal.
 <br>

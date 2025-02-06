@@ -42,7 +42,7 @@ The RACI matrix of this project can be found [here](https://docs.google.com/spre
 | 10  | Miscommunication within the team.                                                | Delayed progress and inconsistencies in implementation.                                         | Medium   | Medium     | Regular team meetings and use collaborative tools for task management and communication.                  |
 | 11  | Insufficient testing on realistic edge cases.                                    | Undetected issues might arise during the final demonstration or deployment.                     | High     | Medium     | Develop comprehensive test cases covering all possible scenarios, including edge cases.                  |
 | 12  | Misinterpretation of problem requirements.                                       | The solution might fail to meet the expectations or requirements of the project.                | High     | Medium     | Frequently review requirements and get feedback from stakeholders to ensure proper alignment.            |
-| 13  | Over-reliance on third-party libraries.                                          | Could lead to issues if the library has bugs or lacks certain features.                         | Medium   | Low        | Evaluate the libraries thoroughly before use and have backup plans to develop critical features in-house. |
+| 13  | Over-reliance on A.I. libraries.                                          | Could lead to issues if we are unable to understand or explain the code.                         | High   | Low        | Make most of the code ourselves, and if we need to use A.I. make sure we understand the code very well. |
 
 ## Key Performance Indicators
 

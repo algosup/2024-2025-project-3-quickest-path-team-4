@@ -1,5 +1,4 @@
-// curl -o result.xml "http://localhost:8080/path?start=1&end=2" -H "Accept: application/xml"
-// curl -o result.json "http://localhost:8080/path?start=1&end=2"
+// clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp Bidirectional_Astar.cpp loading.cpp -o server -lpthread
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -26,14 +25,13 @@ using tcp = net::ip::tcp;
 const string SEPARATOR = "════════════════════════════════════════════════════════════";
 const string SUBSEPARATOR = "────────────────────────────────────────────────────────";
 
+
 string get_timestamp()
 {
     auto now = chrono::system_clock::now();
     auto now_time = chrono::system_clock::to_time_t(now);
-    struct tm tm;
-    localtime_s(&tm, &now_time);  // Use localtime_s instead of localtime
     stringstream ss;
-    ss << put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
+    ss << put_time(localtime(&now_time), "[%Y-%m-%d %H:%M:%S]");
     return ss.str();
 }
 

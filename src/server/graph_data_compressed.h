@@ -1,25 +1,21 @@
-#pragma once
+#ifndef GRAPH_DATA_H
+#define GRAPH_DATA_H
 
-#include <unordered_map>
 #include <vector>
-#include <string>
-#include <iostream>
-#include <sstream>
+#include <unordered_map>
 #include <limits>
-
-using namespace std;
+#include <iostream>  // Add this line
 
 struct Coordinate {
     int x, y;
 };
 
 struct graph_data {
-    vector<vector<pair<int, int>>> adjacency;
-    vector<int> node_degrees;  // Store the degree of each node
-    int min_edge_weight = numeric_limits<int>::max();  // Store the minimum edge weight
-    vector<Coordinate> coordinates;  // Store coordinates for each node
+    std::vector<std::vector<std::pair<int, int>>> adjacency;
+    std::vector<int> node_degrees;
+    int min_edge_weight = std::numeric_limits<int>::max();
+    std::vector<Coordinate> coordinates;
 
-    // Constructor to initialize the graph with a given size
     explicit graph_data(size_t size = 0) : adjacency(size), node_degrees(size, 0), coordinates(size) {}
 
     void add_edge(int from, int to, int weight) {
@@ -37,23 +33,23 @@ struct graph_data {
         node_degrees[from]++;
         node_degrees[to]++;
 
-        // Update minimum edge weight
         if (weight < min_edge_weight) {
             min_edge_weight = weight;
         }
     }
 
-    // Prints the contents of the graph_data
     void print_contents() const {
-        cout << "Graph Data:\n";
-        cout << "Adjacency List:\n";
+        std::cout << "Graph Data:\n";
+        std::cout << "Adjacency List:\n";
         for (size_t i = 0; i < adjacency.size(); ++i) {
-            cout << "Node " << i << " -> ";
-            for (const auto &[neighbor, cost] : adjacency[i]) {
-                cout << "(" << neighbor << ", " << cost << ") ";
+            std::cout << "Node " << i << " -> ";
+            for (const auto& [neighbor, cost] : adjacency[i]) {
+                std::cout << "(" << neighbor << ", " << cost << ") ";
             }
-            cout << "\n";
+            std::cout << "\n";
         }
-        cout << "Minimum edge weight: " << min_edge_weight << endl;
+        std::cout << "Minimum edge weight: " << min_edge_weight << std::endl;
     }
 };
+
+#endif // GRAPH_DATA_H

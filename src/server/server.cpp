@@ -13,9 +13,8 @@
 #include <thread>
 #include <chrono>
 #include "graph_data.h"
-#include "Dijkstra.cpp"
-#include "loading.cpp"
-#include "preprocess.cpp"
+#include "Bidirectional_Astar.h"
+#include "loading.h"
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -30,8 +29,10 @@ string get_timestamp()
 {
     auto now = chrono::system_clock::now();
     auto now_time = chrono::system_clock::to_time_t(now);
+    struct tm tm;
+    localtime_s(&tm, &now_time);  // Use localtime_s instead of localtime
     stringstream ss;
-    ss << put_time(localtime(&now_time), "[%Y-%m-%d %H:%M:%S]");
+    ss << put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
     return ss.str();
 }
 
@@ -49,7 +50,7 @@ void log_message(const string &category, const string &message, bool important =
     }
 }
 
-graph_data gdata = load_graph_data("USA-roads.csv");
+graph_data g_data = load_graph_data("USA-roads.csv");
 unordered_map<int, int> single_neighbors;
 
 // Convert response to JSON format
@@ -124,6 +125,7 @@ void handle_request(const http::request<http::string_body> &req, http::response<
     {
         string query(req.target().begin(), req.target().end());
         int start = -1, end = -1;
+        vector<int> distances(g_data.adjacency.size(), numeric_limits<int>::max());
         unordered_map<string, string> params;
 
         if (query.find('?') != string::npos)
@@ -174,19 +176,12 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             return;
         }
 
-        are_extremities_singles are_they;
-        unordered_map<int, int> distances;
-        for (const auto &[node, _] : gdata.adjacency)
-        {
-            distances[node] = numeric_limits<int>::max();
-        }
         int true_start = start, true_end = end;
         distances[start] = 0;
-        check_single_start_or_end(&start, &end, &single_neighbors, &are_they);
 
         log_message("PROCESS", "Starting path computation...");
         auto begin = chrono::steady_clock::now();
-        auto result = bidirectional_astar(gdata, start, end, distances);
+        auto result = bidirectional_astar(g_data, start, end, distances);
         auto end_time = chrono::steady_clock::now();
         auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - begin).count();
         log_message("COMPLETE", "Path computation finished in " + to_string(duration) + "ms", true);
@@ -252,8 +247,6 @@ int main()
 {
     cout << SEPARATOR << endl;
     log_message("STARTUP", "Initializing server...", true);
-
-    preprocess(&gdata, &single_neighbors);
 
     try
     {

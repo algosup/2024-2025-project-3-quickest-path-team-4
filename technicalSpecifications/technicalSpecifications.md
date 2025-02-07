@@ -43,8 +43,8 @@
     - [System Architecture](#system-architecture)
   - [Algorithm](#algorithm)
   - [Algorithm Description](#algorithm-description)
-    - [Definition](#definition)
-    - [Overview of Bidirectional Dijkstra&#39;s Algorithm](#overview-of-bidirectional-dijkstras-algorithm)
+      - [Definition](#definition)
+    - [Overview of Bidirectional Dijkstra's Algorithm](#overview-of-bidirectional-dijkstras-algorithm)
       - [How it works](#how-it-works)
       - [Advantages](#advantages)
       - [Multi-Threading](#multi-threading)
@@ -86,14 +86,14 @@
     - [Data Preprocessing](#data-preprocessing)
     - [Request Handling](#request-handling)
   - [Client](#client)
-    - [Client&#39;s Key Features](#clients-key-features)
+    - [Client's Key Features](#clients-key-features)
       - [User Interaction](#user-interaction)
       - [HTTP Request Handling](#http-request-handling)
       - [Response Processing](#response-processing)
       - [Error Handling](#error-handling)
       - [Loop for Multiple Queries](#loop-for-multiple-queries)
-    - [Client&#39;s Pseudo Code](#clients-pseudo-code)
-    - [Client&#39;s Response](#clients-response)
+    - [Client's Pseudo Code](#clients-pseudo-code)
+    - [Client's Response](#clients-response)
     - [Client-Server Interaction Sequence Diagram](#client-server-interaction-sequence-diagram)
   - [Testing](#testing)
     - [Unit Tests](#unit-tests)
@@ -214,15 +214,17 @@ For C++'s documentation: [C++ Reference](https://cplusplus.com/reference/)
 │   ├─── client
 │   │   └─── client.cpp
 │   ├─── server
-│   │   └─── dijkstra.cpp
+│   │   └─── .gitattributes
+│   │   └─── algorithm.cpp
+│   │   └─── algorithm.h
 │   │   └─── graph_data.h
 │   │   └─── loading.cpp
-│   │   └─── preprocess.cpp
+│   │   └─── loading.ch
 │   │   └─── server.cpp
 │   │   └─── USA-roads.csv
 │   └─── tests
-│   │   └─── tests.cpp
-│   │   └─── unit_tests.cpp 
+│   │   └─── autoTests.cpp
+│   │   └─── unitTests.cpp 
 ```
 
 ### Dependencies

@@ -123,7 +123,7 @@ To directly run a road runner server from your computer:
 
     - For Windows:
 
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS server.cpp algorithm.cpp loading.cpp -o server -lws2_32`.
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS server.cpp algorithm.cpp loading.cpp -o server.exe -lws2_32`.
 
         2. Then type `.\server.exe`.
 

@@ -1,6 +1,3 @@
-// curl -o result.xml "http://localhost:8080/path?start=1&end=2" -H "Accept: application/xml"
-// curl -o result.json "http://localhost:8080/path?start=1&end=2"
-
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/asio.hpp>
@@ -8,9 +5,10 @@
 #include <string>
 #include <unordered_map>
 #include <sstream>
+#include <fstream>
 #include <iomanip>
 #include <optional>
-#include <cstdlib> // For system()
+#include <cstdlib>
 #include <thread>
 #include <chrono>
 #include "graphData.h"
@@ -26,150 +24,141 @@ using tcp = net::ip::tcp;
 const string SEPARATOR = "════════════════════════════════════════════════════════════";
 const string SUBSEPARATOR = "────────────────────────────────────────────────────────";
 
-string get_timestamp()
-{
+#if defined(__APPLE__) && defined(__MACH__)
+string get_timestamp() {
     auto now = chrono::system_clock::now();
     auto now_time = chrono::system_clock::to_time_t(now);
-    struct tm tm;
-    localtime_s(&tm, &now_time);  // Use localtime_s instead of localtime
     stringstream ss;
-    ss << put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
+    ss << put_time(localtime(&now_time), "[%Y-%m-%d %H:%M:%S]");
     return ss.str();
 }
+#endif
 
-// Helper function for consistent log formatting
-void log_message(const string &category, const string &message, bool important = false)
-{
+void log_message(const string &category, const string &message, bool important = false) {
     cout << get_timestamp() << " ";
-    if (important)
-    {
+    if (important) {
         cout << "║ \033[1;32m" << left << setw(12) << category << "\033[0m │ " << message << endl;
-    }
-    else
-    {
+    } else {
         cout << "║ " << left << setw(12) << category << " │ " << message << endl;
     }
 }
 
-graph_data g_data = load_graph_data("USA-roads.csv");
-unordered_map<int, int> single_neighbors;
+string file_path = "USA-roads.csv";
+const graph_data g_data = load_graph_data(file_path);
 
-// Convert response to JSON format
-string to_json(int start, int end, const vector<int> &path, long duration)
-{
+string to_json(int start, int end, const vector<int> &path, long duration, int total_dist) {
     stringstream ss;
     ss << "{\n"
        << "    \"start\": " << start << ",\n"
        << "    \"end\": " << end << ",\n"
+       << "    \"nodes_explored\": " << path.size() << ",\n"
        << "    \"path\": [";
 
-    // Format path array with proper spacing
-    for (size_t i = 0; i < path.size(); ++i)
-    {
-        if (i % 10 == 0 && i != 0)
-        { // Line break every 10 items
-            ss << "\n        ";
-        }
+    for (size_t i = 0; i < path.size(); ++i) {
         ss << path[i];
-        if (i < path.size() - 1)
+        if (i < path.size() - 1) {
             ss << ", ";
+        }
     }
 
     ss << "],\n"
+       << "    \"distance\": " << total_dist << ",\n"
        << "    \"computation_time\": " << duration << "\n"
-       << "}";
+       << "}\n";
 
     return ss.str();
 }
 
-// Convert response to XML format
-string to_xml(int start, int end, const vector<int> &path, long duration)
-{
+string to_xml(int start, int end, const vector<int> &path, long duration, int total_dist) {
     stringstream ss;
     ss << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
        << "<response>\n"
        << "    <start>" << start << "</start>\n"
        << "    <end>" << end << "</end>\n"
-       << "    <path>\n";
+       << "    <nodes_explored>" << path.size() << "</nodes_explored>\n"
+       << "    <path>\n"
+       << "        ";
 
-    // Format path nodes with proper indentation
-    for (int node : path)
-    {
-        ss << "        <node>" << node << "</node>\n";
+    for (size_t i = 0; i < path.size(); ++i) {
+        if (i % 10 == 0 && i > 0) {
+            ss << "\n        ";
+        }
+        if (i == path.size() - 1) {
+            ss << "<node style=\"color: red\">" << path[i] << "</node>";
+        } else {
+            ss << "<node>" << path[i] << "</node>";
+            if (i < path.size() - 1) {
+                ss << " → ";
+            }
+        }
     }
 
-    ss << "    </path>\n"
+    ss << "\n    </path>\n"
+       << "    <distance>" << total_dist << "</distance>\n"
        << "    <computation_time>" << duration << "</computation_time>\n"
-       << "</response>";
+       << "</response>\n";
 
     return ss.str();
 }
 
-void handle_request(const http::request<http::string_body> &req, http::response<http::string_body> &res)
-{
+void save_to_file(const string& filename, const string& content) {
+    ofstream file(filename);
+    if (file.is_open()) {
+        file << content;
+        file.close();
+        log_message("FILE", "Successfully saved to " + filename);
+    } else {
+        log_message("ERROR", "Failed to save file: " + filename);
+    }
+}
+
+void handle_request(const http::request<http::string_body>& req, http::response<http::string_body>& res) {
     cout << SUBSEPARATOR << endl;
     log_message("REQUEST", "New request received", true);
     log_message("PATH", string(req.target()));
 
-    string response_type = "json"; // Default to JSON
-    if (req.find(http::field::accept) != req.end())
-    {
+    string response_type = "json";
+    if (req.find(http::field::accept) != req.end()) {
         string accept_header = req[http::field::accept];
-        if (accept_header.find("application/xml") != string::npos)
-        {
+        if (accept_header.find("application/xml") != string::npos) {
             response_type = "xml";
         }
     }
     log_message("FORMAT", "Response type: " + response_type);
 
-    if (req.method() == http::verb::get && req.target().starts_with("/path"))
-    {
+    if (req.method() == http::verb::get && req.target().starts_with("/path")) {
         string query(req.target().begin(), req.target().end());
         int start = -1, end = -1;
         vector<int> distances(g_data.adjacency.size(), numeric_limits<int>::max());
-        unordered_map<string, string> params;
 
-        if (query.find('?') != string::npos)
-        {
-            query = query.substr(query.find('?') + 1);
-            stringstream ss(query);
-            string token;
-
-            while (getline(ss, token, '&'))
-            {
-                auto pos = token.find('=');
-                if (pos != string::npos)
-                {
-                    string key = token.substr(0, pos);
-                    string value = token.substr(pos + 1);
-                    params[key] = value;
-                }
-            }
-            if (params.find("start") != params.end() && params.find("end") != params.end())
-            {
-                try
-                {
-                    start = stoi(params["start"]);
-                    end = stoi(params["end"]);
-                }
-                catch (const exception &)
-                {
-                    res.result(http::status::bad_request);
-                    res.body() = "Invalid start or end node.";
-                    res.set(http::field::content_type, "text/plain");
-                    res.prepare_payload();
-                    return;
+        if (query.find('?') != string::npos) {
+            size_t pos = query.find('?') + 1;
+            string params = query.substr(pos);
+            stringstream param_stream(params);
+            string param;
+        
+            while (getline(param_stream, param, '&')) {
+                size_t eq_pos = param.find('=');
+                if (eq_pos != string::npos) {
+                    string key = param.substr(0, eq_pos);
+                    string value = param.substr(eq_pos + 1);
+                    
+                    try {
+                        if (key == "start") {
+                            start = stoi(value);
+                            log_message("PARAM", "Start node: " + value);
+                        } else if (key == "end") {
+                            end = stoi(value);
+                            log_message("PARAM", "End node: " + value);
+                        }
+                    } catch (const exception& e) {
+                        log_message("ERROR", "Invalid parameter value: " + value);
+                    }
                 }
             }
         }
 
-        // Stylized log for Start and End nodes
-        stringstream nodes_message;
-        nodes_message << "Start: " << start << " End: " << end;
-        log_message("NODES", nodes_message.str());
-
-        if (start == -1 || end == -1)
-        {
+        if (start == -1 || end == -1) {
             res.result(http::status::bad_request);
             res.body() = "Missing start or end node.";
             res.set(http::field::content_type, "text/plain");
@@ -177,9 +166,7 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             return;
         }
 
-        int true_start = start, true_end = end;
-        distances[start] = 0;
-
+        // Compute path
         log_message("PROCESS", "Starting path computation...");
         auto begin = chrono::steady_clock::now();
         auto result = bidirectional_astar(g_data, start, end, distances);
@@ -187,86 +174,95 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - begin).count();
         log_message("COMPLETE", "Path computation finished in " + to_string(duration) + "ms", true);
 
-        res.result(http::status::ok);
-        if (result.has_value())
-        {
-            string filename;
-            string content;
-
-            if (response_type == "xml")
-            {
-                filename = "path_result.xml";
-                content = to_xml(true_start, true_end, result.value(), duration);
-                res.set(http::field::content_type, "application/xml");
+        if (result.has_value()) {
+            system("mkdir -p output");
+            string filename, content;
+            int path_distance = distances[end];
+        
+            if (path_distance == numeric_limits<int>::max()) {
+                res.result(http::status::internal_server_error);
+                res.body() = "Error computing path distance";
+                res.prepare_payload();
+                return;
             }
-            else
-            {
-                filename = "path_result.json";
-                content = to_json(true_start, true_end, result.value(), duration);
+        
+            if (response_type == "xml") {
+                filename = "../output/path_result.xml";  // Removed 'output/' prefix
+                content = to_xml(start, end, result.value(), duration, path_distance);
+                res.set(http::field::content_type, "application/xml");
+            } else {
+                filename = "../output/path_result.json";  // Removed 'output/' prefix
+                content = to_json(start, end, result.value(), duration, path_distance);
                 res.set(http::field::content_type, "application/json");
             }
-
-            // Set the Content-Disposition header to trigger a file download
-            res.set(http::field::content_disposition, "attachment; filename=" + filename);
+        
+            save_to_file(filename, content);
+            res.result(http::status::ok);
+            res.set(http::field::content_disposition, "attachment; filename=" + filename);  // Simplified since no path to strip
             res.body() = content;
+            log_message("SUCCESS", "Generated and saved " + filename);
+        
+        } else {
+            res.result(http::status::not_found);
+            res.body() = "No path found";
+            res.set(http::field::content_type, "text/plain");
         }
-        else
-        {
-            res.body() = "No path found from " + to_string(true_start) + " to " + to_string(true_end);
-        }
-        res.prepare_payload();
     }
-    else
-    {
-        res.result(http::status::not_found);
-        res.body() = "Route not found.";
-        res.set(http::field::content_type, "text/plain");
-        res.prepare_payload();
+    res.prepare_payload();
+}
+
+void do_session(tcp::socket socket) {
+    try {
+        bool keep_alive = true;
+        boost::system::error_code ec;
+
+        while (keep_alive && socket.is_open()) {
+            beast::flat_buffer buffer;
+            http::request<http::string_body> req;
+            http::read(socket, buffer, req, ec);
+
+            if (ec == http::error::end_of_stream) break;
+            if (ec) throw beast::system_error{ec};
+
+            keep_alive = req.keep_alive();
+            http::response<http::string_body> res;
+            handle_request(req, res);
+            res.keep_alive(keep_alive);
+            http::write(socket, res, ec);
+
+            if (ec || !keep_alive) break;
+        }
+
+        socket.shutdown(tcp::socket::shutdown_both, ec);
+        socket.close();
+    }
+    catch (const std::exception &e) {
+        log_message("ERROR", "Session error: " + string(e.what()));
+        socket.close();
     }
 }
 
-void do_session(tcp::socket socket)
-{
-    try
-    {
-        beast::flat_buffer buffer;
-        http::request<http::string_body> req;
-        http::read(socket, buffer, req);
-        log_message("SESSION", "New session started");
-
-        http::response<http::string_body> res;
-        handle_request(req, res);
-        http::write(socket, res);
-    }
-    catch (exception &e)
-    {
-        log_message("ERROR", string("Session error: ") + e.what());
-    }
-}
-
-int main()
-{
+int main() {
     cout << SEPARATOR << endl;
     log_message("STARTUP", "Initializing server...", true);
 
-    try
-    {
+    try {
         net::io_context ioc;
         tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
         acceptor.set_option(net::socket_base::reuse_address(true));
         log_message("SERVER", "Listening on port 8080", true);
         cout << SEPARATOR << endl;
 
-        while (true)
-        {
-            tcp::socket socket(ioc);
+        while (true) {
+            tcp::socket socket{ioc};
             acceptor.accept(socket);
-            do_session(std::move(socket));
+            std::thread(&do_session, std::move(socket)).detach();
         }
     }
-    catch (exception &e)
-    {
+    catch (exception &e) {
         log_message("ERROR", string("Fatal error: ") + e.what());
+        return 1;
     }
+
     return 0;
 }

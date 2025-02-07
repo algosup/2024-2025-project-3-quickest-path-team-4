@@ -6,7 +6,7 @@ Road Runner will help you find the quickest path from Landmark to Landmark in Am
 
 Road Runner isn’t just an algorithm, it's your personal helper. Powered by advanced algorithms, Road Runner navigates the roads between landmarks, providing accurately and efficiently the quickest paths.
 
-## Meet The Team
+## Meet The Team 
 
 <div align="center">
 
@@ -42,79 +42,122 @@ Road Runner isn’t just an algorithm, it's your personal helper. Powered by adv
 
 - [User Manual](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/userManual/Road_Runner_User_Manual_Team_4.pdf)
 
-## How to use Road Runner?
-
-Road Runner is available anywhere!
-
-1. Connect to the same wifi: 
-    - Be connected to the same wifi as Road Runner's server.
-<br>
-2. Open your terminal: 
-    - Type the `windows+R` keys, type `cmd` and press enter.
-<br>
-3. Type in the request: 
-    1. If you want your response in a .xml file, type in this command: `curl -o result.xml "http://localhost:8080/path?start=x&end=y" -H "Accept: application/xml"`.
-    2. If you want your response in a .JSON file, type in this command: `curl -o result.json "http://localhost:8080/path?start=x&end=y"`.
-    3. Replace the x from `start=x` and y from `end=y` to the start and end node you wish.
-<br>
-4. Type your start and end point:
-    - Give Road Runner the ID's of the starting and ending landmark.
-<br>
-5. Choose your results format:
-    - You can get your results, which include the travel times and landmarks you will pass through in `JSON` or `XML` format.
-
 ## How to download Road Runner?
 
 Maybe you want to read or modify the code, here is how you do it:
+
 1. Download the project:
-    1. Open your terminal.
-    2. Clone this repository by typing git clone `https://github.com/algosup/2024-2025-project-3-quickest-path-team-4`.
-    3. Type cd `2024-2025-project-3-quickest-path-team-4` to get into the project's directory.
-<br>
-2. Check if everything works fine:
-    1. Still in the terminal, type `cd src` to get into the source folder.
-    2. Make sure there is a `.csv` files in the `src` folder.
+
+    a. Open your terminal.
+
+    b. Clone this repository by typing git clone `https://github.com/algosup/2024-2025-project-3-quickest-path-team-4`.
+
+    c. Type cd `2024-2025-project-3-quickest-path-team-4` to get into the project's directory.
+
+2. Check if everything was installed correctly:
+
+    a. Still in the terminal, type `cd src` to get into the source folder.
+
+    b. Make sure there is a `.csv` files in the `src` folder.
 
 ## How to run the program:
 
 To directly run a road runner server from your computer:
 
 1. Install all the required software:
-    - For Mcbook : 
-        - Install hombrew: https://docs.brew.sh/Installation.
-        - Install the compiler: https://formulae.brew.sh/formula/gcc.
-    - For Windows : 
-        - Install Clang: https://youtu.be/QGOVWA2FcQE?si=Zu_eZCeabhLEGmgH.
-        - Install MinGW-w64: https://www.mingw-w64.org/downloads/.
-        - Type this `vcpkg install pthreads` in the MinGW terminal.
-<br>
 
+    - For macOS : 
+
+        - Install hombrew: https://docs.brew.sh/Installation.
+
+        - Install the compiler: https://formulae.brew.sh/formula/gcc.
+
+    - For Windows : 
+
+        - Install Clang: [https://youtu.be/QGOVWA2FcQE?si=Zu_eZCeabhLEGmgH](https://youtu.be/QGOVWA2FcQE?si=Zu_eZCeabhLEGmgH)
+
+        - Install MinGW-w64: https://www.mingw-w64.org/downloads/.
+
+        - Type this `vcpkg install pthreads` in the MinGW terminal.
 
 2. Open your terminal:
-    - accurately
-    - Type the `windows+R` keys, type `cmd` and press enter.
-<br>
+
+    - For Windows:
+        - Type the `windows+R` keys, type `cmd` and press enter.
+    - For MacOS:
+        - Type the `command+space` keys, type `terminal` and press enter.
 
 3. Navigate to the right folder:
+
     - For Windows:
+
         1. Open file explorer.
+
         2. Navigate to the folder in which the server.cpp file is located.
+
         3. copy the file path located on the top of file explorer.
+
         4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
+
         Note: Make sure to include quotes around the path if it contains spaces.
-    - For Mcbook:
+
+    - For macOS:
+
         1. Open Finder.
+
         2. Navigate to the folder containing the server.cpp file.
+
         3. Right-click the folder name at the top of Finder (or use `Control + Click) and select "Copy as Pathname".
+
         4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
-<br>
 
 4. Compile and run the code:
+
     - For Windows:
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server.exe -pthread`.
-        2. Then type `.\server.exe`.
+
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS server.cpp algorithm.cpp loading.cpp -o server -lws2_32`.
+
+        2. Then type `server`.
+
         3. Road Runner is now ready to go from your machine!
-    - For Mcbook:
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server -lpthread`.
-        2. Then type `./server.exe`.
+
+    - For macOS:
+
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 serverMac.cpp algorithm.cpp loading.cpp -o server -lpthread`.
+
+        2. Then type `./server`.
+
         3. Road Runner is now ready to go from your machine!
+
+## How to use Road Runner?
+
+Road Runner is available anywhere!
+
+1. Connect to the same wifi: 
+
+    - Be connected to the same wifi as Road Runner's server.
+
+2. Open your terminal: 
+
+    - For Windows:
+        - Type the `windows+R` keys, type `cmd` and press enter.
+    - For MacOS:
+        - Type the `command+space` keys, type `terminal` and press enter.
+
+3. Move to the client's folder: 
+    - in the terminal, type `cd "thepathtotheclientfile"
+<br>
+
+4. Compile and run the client:
+    1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS client.cpp -o client.exe -lws2_32`
+    2. run the client by writing this in your terminal: `./client.exe`
+<br>
+
+5. Type your start and end point:
+    - Give Road Runner the ID's of the starting and ending landmark.
+<br>
+
+6. Choose your results format:
+    - Type 1 to get your results in JSON format or 2 to get your results in XML format.
+
+

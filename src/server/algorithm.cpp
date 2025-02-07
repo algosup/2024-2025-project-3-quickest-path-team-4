@@ -3,123 +3,120 @@
 #include <future>
 #include <atomic>
 #include <iostream>
+#include <queue>
+#include <limits>
 
-// Ensure found is reset at the start of each function call
-std::atomic<bool> found(false);
+namespace {
+    std::atomic<bool> found{false};
+    std::atomic<int> best_distance{std::numeric_limits<int>::max()};
+}
 
 using PriorityQueue = std::priority_queue<Node, std::vector<Node>, NodeComparator>;
 
-inline int zero_heuristic(int a, int b) {
-    return 0;
-}
+inline int zero_heuristic(int, int) { return 0; }
 
 void search(const graph_data& graph, int start, int end, std::vector<bool>& visited, 
-           std::vector<int>& g, std::vector<int>& parent, PriorityQueue* queue, 
-           std::atomic<int>& meeting_node, std::vector<int>& explored_nodes, 
-           const std::vector<bool>& opposite_visited) {
+           std::vector<int>& g, std::vector<int>& parent, PriorityQueue& queue, 
+           std::atomic<int>& meeting_node, const std::vector<bool>& opposite_visited) {
     
-    while (!queue->empty() && !found.load(std::memory_order_relaxed)) {
-        Node node = queue->top();
-        queue->pop();
+    while (!queue.empty() && !found.load(std::memory_order_acquire)) {
+        Node current = queue.top();
+        queue.pop();
 
-        if (visited[node.vertex]) continue;
+        // Skip if vertex is visited or current path is worse than best found
+        if (visited[current.vertex] || current.g >= best_distance.load(std::memory_order_relaxed)) 
+            continue;
         
-        visited[node.vertex] = true;
-        explored_nodes.push_back(node.vertex);
+        visited[current.vertex] = true;
 
-        if (opposite_visited[node.vertex]) {
-            found.store(true, std::memory_order_relaxed);
-            meeting_node.store(node.vertex);
-            return;
+        // Check for meeting point
+        if (opposite_visited[current.vertex]) {
+            int total_dist = current.g;
+            if (total_dist < best_distance.load(std::memory_order_relaxed)) {
+                best_distance.store(total_dist, std::memory_order_release);
+                meeting_node.store(current.vertex, std::memory_order_release);
+                found.store(true, std::memory_order_release);
+            }
+            continue;
         }
 
-        for (const auto& [next, weight] : graph.adjacency[node.vertex]) {
+        // Process neighbors
+        for (const auto& [next, weight] : graph.adjacency[current.vertex]) {
             if (!visited[next]) {
-                int new_g = g[node.vertex] + weight;
+                int new_g = current.g + weight;
                 if (new_g < g[next]) {
                     g[next] = new_g;
-                    parent[next] = node.vertex;
-                    queue->push(Node(new_g + zero_heuristic(next, end), new_g, next));
+                    parent[next] = current.vertex;
+                    queue.push(Node(new_g + zero_heuristic(next, end), new_g, next));
                 }
             }
         }
     }
 }
 
-std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, std::vector<int>& distances) {
-    // Reset the found flag at the start of each call
-    found.store(false, std::memory_order_relaxed);
-
+std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, 
+                                                   std::vector<int>& distances) {
     if (start == end) {
         distances[start] = 0;
         return std::vector<int>{start};
     }
 
     const size_t n = graph.adjacency.size();
-    std::vector<bool> visited_forward(n, false), visited_backward(n, false);
+    if (start >= n || end >= n) return std::nullopt;
+
+    // Reset atomic variables
+    found.store(false, std::memory_order_relaxed);
+    best_distance.store(std::numeric_limits<int>::max(), std::memory_order_relaxed);
+
+    // Initialize data structures with reserve for better performance
+    std::vector<bool> visited_forward(n), visited_backward(n);
     std::vector<int> g_forward(n, std::numeric_limits<int>::max());
     std::vector<int> g_backward(n, std::numeric_limits<int>::max());
     std::vector<int> parent_forward(n, -1), parent_backward(n, -1);
-    std::atomic<int> meeting_node(-1);
-    std::vector<int> explored_forward, explored_backward;
+    std::atomic<int> meeting_node{-1};
 
     g_forward[start] = 0;
     g_backward[end] = 0;
 
     PriorityQueue forward_queue, backward_queue;
-    forward_queue.push(Node(zero_heuristic(start, end), 0, start));
-    backward_queue.push(Node(zero_heuristic(end, start), 0, end));
+    forward_queue.push(Node(0, 0, start));
+    backward_queue.push(Node(0, 0, end));
 
-    found.store(false, std::memory_order_relaxed);
-
+    // Run searches in parallel
     auto future_forward = std::async(std::launch::async, [&]() {
         search(graph, start, end, visited_forward, g_forward, parent_forward, 
-               &forward_queue, meeting_node, explored_forward, visited_backward);
+               forward_queue, meeting_node, visited_backward);
     });
 
     auto future_backward = std::async(std::launch::async, [&]() {
         search(graph, end, start, visited_backward, g_backward, parent_backward, 
-               &backward_queue, meeting_node, explored_backward, visited_forward);
+               backward_queue, meeting_node, visited_forward);
     });
 
     future_forward.get();
     future_backward.get();
 
-    if (meeting_node.load() == -1) return std::nullopt;
+    int final_node = meeting_node.load();
+    if (final_node == -1) return std::nullopt;
 
+    // Construct path efficiently
     std::vector<int> path;
-    for (int at = meeting_node; at != -1; at = parent_forward[at]) {
+    path.reserve(n/2);  // Reasonable initial capacity
+
+    for (int at = final_node; at != -1; at = parent_forward[at]) {
         path.push_back(at);
     }
     std::reverse(path.begin(), path.end());
 
-    for (int at = parent_backward[meeting_node]; at != -1; at = parent_backward[at]) {
+    for (int at = parent_backward[final_node]; at != -1; at = parent_backward[at]) {
         path.push_back(at);
     }
 
-    distances = g_forward;
+    // Update distances efficiently
+    distances = std::move(g_forward);
     for (size_t i = 0; i < n; ++i) {
-        if (g_backward[i] < distances[i]) {
-            distances[i] = g_backward[i];
-        }
+        distances[i] = std::min(distances[i], g_backward[i]);
     }
-    
-    int total_dist = g_forward[meeting_node] + g_backward[meeting_node];
 
-        path.clear();
-        for (int at = meeting_node; at != -1; at = parent_forward[at]) {
-        path.push_back(at);
-        }
-        std::reverse(path.begin(), path.end());
-
-        for (int at = parent_backward[meeting_node]; at != -1; at = parent_backward[at]) {
-        path.push_back(at);
-        }
-
-    std::cout << "Debug: Forward distance to meeting: " << g_forward[meeting_node] << std::endl;
-    std::cout << "Debug: Backward distance to meeting: " << g_backward[meeting_node] << std::endl;
-    std::cout << "Debug: Total distance: " << total_dist << std::endl;
-    distances[end] = total_dist;
-    
     return path;
 }

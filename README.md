@@ -54,7 +54,7 @@ Maybe you want to read or modify the code, here is how you do it:
 
     c. Type cd `2024-2025-project-3-quickest-path-team-4` to get into the project's directory.
 
-2. Check if everything works fine:
+2. Check if everything was installed correctly:
 
     a. Still in the terminal, type `cd src` to get into the source folder.
 
@@ -82,9 +82,10 @@ To directly run a road runner server from your computer:
 
 2. Open your terminal:
 
-    - accurately
-
-    - Type the `windows+R` keys, type `cmd` and press enter.
+    - For Windows:
+        - Type the `windows+R` keys, type `cmd` and press enter.
+    - For MacOS:
+        - Type the `command+space` keys, type `terminal` and press enter.
 
 3. Navigate to the right folder:
 
@@ -114,7 +115,7 @@ To directly run a road runner server from your computer:
 
     - For Windows:
 
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server.exe -pthread`.
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS server.cpp algorithm.cpp loading.cpp -o server -lws2_32`.
 
         2. Then type `.\server.exe`.
 
@@ -122,7 +123,7 @@ To directly run a road runner server from your computer:
 
     - For macOS:
 
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp -o server -lpthread`.
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 serverMac.cpp algorithm.cpp loading.cpp -o server -lpthread`.
 
         2. Then type `./server.exe`.
 
@@ -138,21 +139,25 @@ Road Runner is available anywhere!
 
 2. Open your terminal: 
 
-    - Type the `windows+R` keys, type `cmd` and press enter.
+    - For Windows:
+        - Type the `windows+R` keys, type `cmd` and press enter.
+    - For MacOS:
+        - Type the `command+space` keys, type `terminal` and press enter.
 
-3. Type in the request:
+3. Move to the client's folder: 
+    - in the terminal, type `cd "thepathtotheclientfile"
+<br>
 
-    a. If you want your response in a .xml file, type in this command: `curl -o result.xml "http://localhost:8080/path?start=x&end=y" -H "Accept: application/xml"`.
-  
-    b. If you want your response in a .JSON file, type in this command: `curl -o result.json "http://localhost:8080/path?start=x&end=y"`.
+4. Compile and run the client:
+    1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS client.cpp -o client.exe -lws2_32`
+    2. run the client by writing this in your terminal: `./client.exe`
+<br>
 
-    c. Replace the x from `start=x` and y from `end=y` to the start and end node you wish.
-
-4. Type your start and end point:
-
+5. Type your start and end point:
     - Give Road Runner the ID's of the starting and ending landmark.
+<br>
 
-5. Choose your results format:
+6. Choose your results format:
+    - Type 1 to get your results in JSON format or 2 to get your results in XML format.
 
-    - You can get your results, which include the travel times and landmarks you will pass through in `JSON` or `XML` format.
 

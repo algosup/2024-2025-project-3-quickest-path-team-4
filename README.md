@@ -49,20 +49,24 @@ Maybe you want to read or modify the code, here is how you do it:
 1. Download the project:
 
     1. Open your terminal.
+   
         - For Windows:
+   
             - Type the `windows+R` keys, type `cmd` and press enter.
+   
         - For MacOS:
+   
             - Type the `command+space` keys, type `terminal` and press enter.
 
     2. Clone this repository by typing git clone `https://github.com/algosup/2024-2025-project-3-quickest-path-team-4`.
 
     3. Type cd `2024-2025-project-3-quickest-path-team-4` to get into the project's directory.
 
-2. Check if everything was installed correctly:
+3. Check if everything was installed correctly:
 
-    a. Still in the terminal, type `cd src` to get into the source folder.
+    1. Still in the terminal, type `cd src` to get into the source folder.
 
-    b. Make sure there is a `.csv` files in the `src` folder.
+    2. Make sure there is a `.csv` files in the `src` folder.
 
 ## How to run the program:
 
@@ -72,15 +76,15 @@ To directly run a road runner server from your computer:
 
     - For macOS : 
 
-        - Install hombrew: https://docs.brew.sh/Installation.
+        - Install hombrew: [https://docs.brew.sh/Installation](https://docs.brew.sh/Installation).
 
-        - Install the compiler: https://formulae.brew.sh/formula/gcc.
+        - Install the compiler: [https://formulae.brew.sh/formula/gcc](https://formulae.brew.sh/formula/gcc).
 
     - For Windows : 
 
         - Install Clang: [https://youtu.be/QGOVWA2FcQE?si=Zu_eZCeabhLEGmgH](https://youtu.be/QGOVWA2FcQE?si=Zu_eZCeabhLEGmgH)
 
-        - Install MinGW-w64: https://www.mingw-w64.org/downloads/.
+        - Install MinGW-w64: [https://www.mingw-w64.org/downloads/](https://www.mingw-w64.org/downloads/).
 
         - Type this `vcpkg install pthreads` in the MinGW terminal.
 
@@ -88,7 +92,7 @@ To directly run a road runner server from your computer:
 
     - For Windows:
         - Type the `windows+R` keys, type `cmd` and press enter.
-    - For MacOS:
+    - For macOS:
         - Type the `command+space` keys, type `terminal` and press enter.
 
 3. Navigate to the right folder:
@@ -112,7 +116,7 @@ To directly run a road runner server from your computer:
         2. Navigate to the folder containing the server.cpp file.
 
         3. Right-click the folder name at the top of Finder (or use `Control + Click) and select "Copy as Pathname".
-
+      
         4. In the terminal, type: `cd "thefilepathyoujustcopied"`.
 
 4. Compile and run the code:
@@ -121,7 +125,7 @@ To directly run a road runner server from your computer:
 
         1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS server.cpp algorithm.cpp loading.cpp -o server -lws2_32`.
 
-        2. Then type `server`.
+        2. Then type `.\server.exe`.
 
         3. Road Runner is now ready to go from your machine!
 
@@ -145,26 +149,26 @@ Road Runner is available anywhere!
 
     - For Windows:
         - Type the `windows+R` keys, type `cmd` and press enter.
-    - For MacOS:
+    - For macOS:
         - Type the `command+space` keys, type `terminal` and press enter.
 
 3. Move to the client's folder: 
     - in the terminal, type `cd "thepathtotheclientfile"
-<br>
+
 
 4. Compile and run the client:
     - for Windows:
         1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS client.cpp -o client.exe -lws2_32`
         2. run the client by writing this in your terminal: `.\client.exe`
     
-    - for MacOS:
+    - for macOS:
         1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 client.cpp -o client -lpthread`
-        2. run the client by writing this in your terminal : `./client.exe`
-<br>
+        2. run the client by writing this in your terminal : `./client`
+
 
 5. Type your start and end point:
     - Give Road Runner the ID's of the starting and ending landmark.
-<br>
+
 
 6. Choose your results format:
     - Type 1 to get your results in JSON format or 2 to get your results in XML format.

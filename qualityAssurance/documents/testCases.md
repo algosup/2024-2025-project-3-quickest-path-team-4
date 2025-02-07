@@ -1,3 +1,9 @@
+# Test Cases
+
+<details>
+<summary> Table of Contents</summary>
+
+- [Test Cases](#test-cases)
 - [Note](#note)
 - [Data Validation (DV)](#data-validation-dv)
   - [Input validation](#input-validation)
@@ -38,6 +44,10 @@
     - [Parsing time for large datasets \[RA\_031\]](#parsing-time-for-large-datasets-ra_031)
     - [API response time \[RA\_032\]](#api-response-time-ra_032)
     - [Memory Usage \[RA\_033\]](#memory-usage-ra_033)
+
+</details>
+
+<br>
 
 # Note
 

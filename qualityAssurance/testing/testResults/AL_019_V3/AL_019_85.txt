@@ -1,5 +1,0 @@
-Test ID: AL_019_85
-Source: 1 Destination: 2
-Path: 1 2 
-Nodes Count: 2
-Execution Time: 0 ms

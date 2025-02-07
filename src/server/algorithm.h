@@ -3,6 +3,7 @@
 #include <vector>
 #include <optional>
 #include <queue>
+#include <algorithm> //Only on WINDOWS
 
 struct Node {
     int f;

@@ -15,6 +15,7 @@
 #include "graph_data.h"
 #include "Bidirectional_Astar.h"
 #include "loading.h"
+#include "save_load_binary_compressed.h" // Include the header for loading compressed paths
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -24,7 +25,6 @@ using tcp = net::ip::tcp;
 
 const string SEPARATOR = "════════════════════════════════════════════════════════════";
 const string SUBSEPARATOR = "────────────────────────────────────────────────────────";
-
 
 string get_timestamp()
 {
@@ -49,39 +49,29 @@ void log_message(const string &category, const string &message, bool important =
     }
 }
 
-graph_data g_data = load_graph_data("USA-roads.csv");
+string file_path = "USA-roads.csv";
+string compressed_paths_file = "compressed_paths.bin";
+
+graph_data g_data = load_graph_data(file_path);
 unordered_map<int, int> single_neighbors;
 
 // Convert response to JSON format
-string to_json(int start, int end, const vector<int> &path, long duration)
+string to_json(int start, int end, const vector<int> &path, long duration, int distance)
 {
     stringstream ss;
     ss << "{\n"
        << "    \"start\": " << start << ",\n"
        << "    \"end\": " << end << ",\n"
-       << "    \"path\": [";
-
-    // Format path array with proper spacing
-    for (size_t i = 0; i < path.size(); ++i)
-    {
-        if (i % 10 == 0 && i != 0)
-        { // Line break every 10 items
-            ss << "\n        ";
-        }
-        ss << path[i];
-        if (i < path.size() - 1)
-            ss << ", ";
-    }
-
-    ss << "],\n"
+       << "    \"nodes_explored\": " << path.size() << ",\n"
+       << "    \"distance\": " << distance << ",\n"
        << "    \"computation_time\": " << duration << "\n"
-       << "}";
+       << "}" "\n";
 
     return ss.str();
 }
 
 // Convert response to XML format
-string to_xml(int start, int end, const vector<int> &path, long duration)
+string to_xml(int start, int end, const vector<int> &path, long duration, int distance)
 {
     stringstream ss;
     ss << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -97,13 +87,14 @@ string to_xml(int start, int end, const vector<int> &path, long duration)
     }
 
     ss << "    </path>\n"
+       << "    <distance>" << distance << "</distance>\n"
        << "    <computation_time>" << duration << "</computation_time>\n"
        << "</response>";
 
     return ss.str();
 }
 
-void handle_request(const http::request<http::string_body> &req, http::response<http::string_body> &res)
+void handle_request(const http::request<http::string_body>& req, http::response<http::string_body>& res)
 {
     cout << SUBSEPARATOR << endl;
     log_message("REQUEST", "New request received", true);
@@ -123,6 +114,8 @@ void handle_request(const http::request<http::string_body> &req, http::response<
     if (req.method() == http::verb::get && req.target().starts_with("/path"))
     {
         string query(req.target().begin(), req.target().end());
+        log_message("DEBUG", "Processing query: " + query);
+        
         int start = -1, end = -1;
         vector<int> distances(g_data.adjacency.size(), numeric_limits<int>::max());
         unordered_map<string, string> params;
@@ -141,23 +134,45 @@ void handle_request(const http::request<http::string_body> &req, http::response<
                     string key = token.substr(0, pos);
                     string value = token.substr(pos + 1);
                     params[key] = value;
+                    log_message("DEBUG", "Parsed parameter: " + key + "=" + value);
                 }
             }
-            if (params.find("start") != params.end() && params.find("end") != params.end())
-            {
-                try
-                {
+
+            try {
+                if (params.find("start") != params.end() && params.find("end") != params.end()) {
                     start = stoi(params["start"]);
                     end = stoi(params["end"]);
+                    
+                    // Validate nodes and graph
+                    if (start < 0 || end < 0 || start >= g_data.adjacency.size() || end >= g_data.adjacency.size()) {
+                        log_message("ERROR", "Node out of range. Graph size: " + to_string(g_data.adjacency.size()));
+                        throw std::out_of_range("Node index out of range");
+                    }
+                    
+                    // Debug connectivity and path possibilities
+                    log_message("DEBUG", "Start node " + to_string(start) + " neighbors:");
+                    for (const auto& neighbor : g_data.adjacency[start]) {
+                        log_message("DEBUG", "  -> Node " + to_string(neighbor.first) + " (weight: " + to_string(neighbor.second) + ")");
+                    }
+                    
+                    log_message("DEBUG", "End node " + to_string(end) + " neighbors:");
+                    for (const auto& neighbor : g_data.adjacency[end]) {
+                        log_message("DEBUG", "  -> Node " + to_string(neighbor.first) + " (weight: " + to_string(neighbor.second) + ")");
+                    }
+                    
+                    log_message("DEBUG", "Graph size: " + to_string(g_data.adjacency.size()));
+                    log_message("DEBUG", "Attempting path computation...");
+                } else {
+                    log_message("ERROR", "Missing start or end parameters");
+                    throw std::invalid_argument("Missing parameters");
                 }
-                catch (const exception &)
-                {
-                    res.result(http::status::bad_request);
-                    res.body() = "Invalid start or end node.";
-                    res.set(http::field::content_type, "text/plain");
-                    res.prepare_payload();
-                    return;
-                }
+            }
+            catch (const std::exception& e) {
+                res.result(http::status::bad_request);
+                res.body() = "Invalid parameters: " + string(e.what());
+                res.set(http::field::content_type, "text/plain");
+                res.prepare_payload();
+                return;
             }
         }
 
@@ -190,28 +205,42 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         {
             string filename;
             string content;
+            int path_distance = distances[end];
+
+            if (path_distance == numeric_limits<int>::max()) {
+                log_message("ERROR", "Invalid path distance computed");
+                res.result(http::status::internal_server_error);
+                res.body() = "Error computing path distance";
+                res.prepare_payload();
+                return;
+            }
+
+            log_message("DISTANCE", "Total distance: " + to_string(path_distance));
 
             if (response_type == "xml")
             {
                 filename = "path_result.xml";
-                content = to_xml(true_start, true_end, result.value(), duration);
+                content = to_xml(true_start, true_end, result.value(), duration, path_distance);
                 res.set(http::field::content_type, "application/xml");
             }
             else
             {
                 filename = "path_result.json";
-                content = to_json(true_start, true_end, result.value(), duration);
+                content = to_json(true_start, true_end, result.value(), duration, path_distance);
                 res.set(http::field::content_type, "application/json");
             }
 
-            // Set the Content-Disposition header to trigger a file download
+            res.result(http::status::ok);
             res.set(http::field::content_disposition, "attachment; filename=" + filename);
             res.body() = content;
         }
         else
         {
+            res.result(http::status::not_found);
             res.body() = "No path found from " + to_string(true_start) + " to " + to_string(true_end);
+            res.set(http::field::content_type, "text/plain");
         }
+
         res.prepare_payload();
     }
     else
@@ -227,27 +256,70 @@ void do_session(tcp::socket socket)
 {
     try
     {
-        beast::flat_buffer buffer;
-        http::request<http::string_body> req;
-        http::read(socket, buffer, req);
-        log_message("SESSION", "New session started");
-
-        http::response<http::string_body> res;
-        handle_request(req, res);
-        http::write(socket, res);
+        bool keep_alive = true;
+        boost::system::error_code ec;
+        
+        while (keep_alive && socket.is_open())
+        {
+            beast::flat_buffer buffer;
+            http::request<http::string_body> req;
+            
+            log_message("DEBUG", "Waiting for request...");
+            http::read(socket, buffer, req, ec);
+            
+            if (ec == http::error::end_of_stream)
+            {
+                log_message("DEBUG", "Client closed connection");
+                break;
+            }
+            
+            if (ec)
+            {
+                log_message("ERROR", "Read error: " + ec.message());
+                throw beast::system_error{ec};
+            }
+            
+            log_message("SESSION", "New session started");
+            log_message("DEBUG", "Request path: " + string(req.target()));
+            
+            keep_alive = req.keep_alive();
+            
+            http::response<http::string_body> res;
+            handle_request(req, res);   // Removed compressed_paths parameter
+            res.keep_alive(keep_alive);
+            
+            log_message("DEBUG", "Sending response...");
+            http::write(socket, res, ec);
+            
+            if (ec)
+            {
+                log_message("ERROR", "Write error: " + ec.message());
+                throw beast::system_error{ec};
+            }
+            
+            if (!keep_alive)
+            {
+                log_message("DEBUG", "Connection not keep-alive, closing");
+                break;
+            }
+        }
+        
+        socket.shutdown(tcp::socket::shutdown_both, ec);
+        socket.close();
     }
-    catch (exception &e)
+    catch (const std::exception& e)
     {
-        log_message("ERROR", string("Session error: ") + e.what());
+        log_message("ERROR", "Session error: " + string(e.what()));
+        socket.close();
     }
 }
 
 int main()
-{
+{   
     cout << SEPARATOR << endl;
     log_message("STARTUP", "Initializing server...", true);
-
-    try
+    
+    try 
     {
         net::io_context ioc;
         tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
@@ -255,16 +327,18 @@ int main()
         log_message("SERVER", "Listening on port 8080", true);
         cout << SEPARATOR << endl;
 
-        while (true)
+        while (true)  // Add main server loop
         {
-            tcp::socket socket(ioc);
+            tcp::socket socket{ioc};
             acceptor.accept(socket);
-            do_session(std::move(socket));
+            std::thread(&do_session, std::move(socket)).detach();
         }
     }
     catch (exception &e)
     {
         log_message("ERROR", string("Fatal error: ") + e.what());
+        return 1;
     }
+
     return 0;
 }

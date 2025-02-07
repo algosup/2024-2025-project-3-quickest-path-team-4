@@ -101,6 +101,9 @@ int main()
         cout << "\033[1;33mEnter the end node: \033[0m";
         cin >> end_node;
 
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
         // Prompt user for the response format
         int choice;
         cout << "\033[1;33mChoose response format (1 for JSON, 2 for XML): \033[0m";

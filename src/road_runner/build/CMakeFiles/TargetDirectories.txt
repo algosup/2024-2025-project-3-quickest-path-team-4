@@ -1,7 +1,0 @@
-/Users/ian/Desktop/road_runner/build/CMakeFiles/pathfinding_server.dir
-/Users/ian/Desktop/road_runner/build/CMakeFiles/edit_cache.dir
-/Users/ian/Desktop/road_runner/build/CMakeFiles/rebuild_cache.dir
-/Users/ian/Desktop/road_runner/build/CMakeFiles/list_install_components.dir
-/Users/ian/Desktop/road_runner/build/CMakeFiles/install.dir
-/Users/ian/Desktop/road_runner/build/CMakeFiles/install/local.dir
-/Users/ian/Desktop/road_runner/build/CMakeFiles/install/strip.dir

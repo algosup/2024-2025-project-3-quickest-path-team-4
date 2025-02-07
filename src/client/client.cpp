@@ -79,6 +79,28 @@ void print_header()
     cout << "\033[1;35m========================================\033[0m\n";
 }
 
+bool is_valid_input(const string& input, int& value) {
+    if (input.empty()) return false;
+    
+    // Check if input contains only digits
+    if (!all_of(input.begin(), input.end(), ::isdigit)) {
+        cout << "\033[1;31mError: Input must contain only numbers\033[0m\n";
+        return false;
+    }
+    
+    try {
+        value = stoi(input);
+        if (value < 1 || value > 23947347) {
+            cout << "\033[1;31mError: Input must be between 1 and 23947347\033[0m\n";
+            return false;
+        }
+        return true;
+    } catch (const exception& e) {
+        cout << "\033[1;31mError: Invalid number format\033[0m\n";
+        return false;
+    }
+}
+
 void print_footer()
 {
     cout << "\033[1;35m========================================\033[0m\n";
@@ -86,46 +108,53 @@ void print_footer()
     cout << "\033[1;35m========================================\033[0m\n";
 }
 
-int main()
-{
+int main() {
     char repeat_choice;
-    do
-    {
-        // Print the header
+    do {
         print_header();
-
-        // Prompt user for start and end nodes
+    
+        // Prompt user for start and end nodes with validation
         int start_node, end_node;
-        cout << "\033[1;33mEnter the start node: \033[0m"; // Yellow color for prompts
-        cin >> start_node;
-        cout << "\033[1;33mEnter the end node: \033[0m";
-        cin >> end_node;
-
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
+        string input;
+        bool valid_input = false;
+    
+        // Get valid start node
+        do {
+            cout << "\033[1;33mEnter the start node: \033[0m";
+            getline(cin, input);
+            valid_input = is_valid_input(input, start_node);
+        } while (!valid_input);
+    
+        // Get valid end node
+        do {
+            cout << "\033[1;33mEnter the end node: \033[0m";
+            getline(cin, input);
+            valid_input = is_valid_input(input, end_node);
+        } while (!valid_input);
+    
         // Prompt user for the response format
         int choice;
-        cout << "\033[1;33mChoose response format (1 for JSON, 2 for XML): \033[0m";
-        cin >> choice;
+        bool valid_choice = false;
+        do {
+            cout << "\033[1;33mChoose response format (1 for JSON, 2 for XML): \033[0m";
+            getline(cin, input);
+            if (input == "1" || input == "2") {
+                choice = stoi(input);
+                valid_choice = true;
+            } else {
+                cout << "\033[1;31mError: Please enter 1 or 2\033[0m\n";
+            }
+        } while (!valid_choice);
+    
         string format = (choice == 1) ? "application/json" : "application/xml";
-
-        // Construct the URL with query parameters
         stringstream path;
         path << "/path?start=" << start_node << "&end=" << end_node;
-
-        // Server info - localhost
-        string server = "localhost";
-
-        // Send the request
-        cout << "\n\033[1;34mSending request to server...\033[0m\n"; // Blue color for status messages
-        send_request(server, path.str(), format);
-
-        // Ask user if they want to calculate another path
-        cout << "\n\033[1;33mDo you want to calculate another path? (y for yes, n for no): \033[0m";
-        cin >> repeat_choice;
-
-    } while (repeat_choice == 'y' || repeat_choice == 'Y');
+        send_request("localhost", path.str(), format);
+        cout << "\n\033[1;33mDo you want to find another path? (y/N): \033[0m";
+        string repeat_input;
+        getline(cin, repeat_input);
+        repeat_choice = repeat_input.empty() ? 'n' : tolower(repeat_input[0]);
+    } while (repeat_choice == 'y');
 
     // Print the footer
     print_footer();

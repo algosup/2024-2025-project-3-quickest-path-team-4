@@ -1,4 +1,4 @@
-#include "Bidirectional_Astar_compressed.h"
+#include "algorithmCompressed.h"
 #include <iostream>  // Add this line
 #include <algorithm>
 #include <thread>

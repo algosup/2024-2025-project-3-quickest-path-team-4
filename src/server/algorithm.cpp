@@ -1,4 +1,4 @@
-#include "Bidirectional_Astar.h"
+#include "algorithm.h"
 #include <thread>
 #include <future>
 #include <atomic>
@@ -103,6 +103,23 @@ std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int
             distances[i] = g_backward[i];
         }
     }
+    
+    int total_dist = g_forward[meeting_node] + g_backward[meeting_node];
 
+        path.clear();
+        for (int at = meeting_node; at != -1; at = parent_forward[at]) {
+        path.push_back(at);
+        }
+        std::reverse(path.begin(), path.end());
+
+        for (int at = parent_backward[meeting_node]; at != -1; at = parent_backward[at]) {
+        path.push_back(at);
+        }
+
+    std::cout << "Debug: Forward distance to meeting: " << g_forward[meeting_node] << std::endl;
+    std::cout << "Debug: Backward distance to meeting: " << g_backward[meeting_node] << std::endl;
+    std::cout << "Debug: Total distance: " << total_dist << std::endl;
+    distances[end] = total_dist;
+    
     return path;
 }

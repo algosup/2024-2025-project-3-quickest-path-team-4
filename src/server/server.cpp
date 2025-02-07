@@ -13,8 +13,8 @@
 #include <cstdlib> // For system()
 #include <thread>
 #include <chrono>
-#include "graph_data.h"
-#include "Bidirectional_Astar.h"
+#include "graphData.h"
+#include "algorithm.h"
 #include "loading.h"
 
 namespace beast = boost::beast;

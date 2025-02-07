@@ -12,10 +12,10 @@
 #include <cstdlib> // For system()
 #include <thread>
 #include <chrono>
-#include "graph_data.h"
-#include "Bidirectional_Astar.h"
+#include "graphData.h"
+#include "algorithm.h"
 #include "loading.h"
-#include "save_load_binary_compressed.h" // Include the header for loading compressed paths
+#include "saveLoadBinaryCompressed.h" // Include the header for loading compressed paths
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -26,6 +26,9 @@ using tcp = net::ip::tcp;
 const string SEPARATOR = "════════════════════════════════════════════════════════════";
 const string SUBSEPARATOR = "────────────────────────────────────────────────────────";
 
+
+//Check if the computer is mac or windows and use the correct function
+#if defined(__APPLE__) && defined(__MACH__)
 string get_timestamp()
 {
     auto now = chrono::system_clock::now();
@@ -34,6 +37,18 @@ string get_timestamp()
     ss << put_time(localtime(&now_time), "[%Y-%m-%d %H:%M:%S]");
     return ss.str();
 }
+#elif defined(_WIN32) || defined(_WIN64)
+string get_timestamp()
+{
+    auto now = chrono::system_clock::now();
+    auto now_time = chrono::system_clock::to_time_t(now);
+    struct tm tm;
+    localtime_s(&tm, &now_time);  // Use localtime_s instead of localtime
+    stringstream ss;
+    ss << put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
+    return ss.str();
+}
+#endif
 
 // Helper function for consistent log formatting
 void log_message(const string &category, const string &message, bool important = false)
@@ -52,18 +67,18 @@ void log_message(const string &category, const string &message, bool important =
 string file_path = "USA-roads.csv";
 string compressed_paths_file = "compressed_paths.bin";
 
-graph_data g_data = load_graph_data(file_path);
+const graph_data g_data = load_graph_data(file_path);
 unordered_map<int, int> single_neighbors;
 
 // Convert response to JSON format
-string to_json(int start, int end, const vector<int> &path, long duration, int distance)
+string to_json(int start, int end, const vector<int> &path, long duration, int total_dist)
 {
     stringstream ss;
     ss << "{\n"
        << "    \"start\": " << start << ",\n"
        << "    \"end\": " << end << ",\n"
        << "    \"nodes_explored\": " << path.size() << ",\n"
-       << "    \"distance\": " << distance << ",\n"
+       << "    \"distance\": " << total_dist << ",\n"
        << "    \"computation_time\": " << duration << "\n"
        << "}" "\n";
 

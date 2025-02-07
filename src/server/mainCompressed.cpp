@@ -1,10 +1,10 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
-#include "loading_compressed.h"
-#include "preprocess_compressed.h"
-#include "Bidirectional_Astar_compressed.h"
-#include "save_load_binary_compressed.h"  // Include the new header file
+#include "loadingCompressed.h"
+#include "preprocessCompressed.h"
+#include "algorithmCompressed.h"
+#include "saveLoadBinaryCompressed.h"  // Include the new header file
 
 using namespace std;
 

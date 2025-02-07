@@ -1,7 +1,7 @@
 #ifndef PREPROCESS_H
 #define PREPROCESS_H
 
-#include "graph_data_compressed.h"
+#include "graphDataCompressed.h"
 #include <unordered_map>
 
 struct are_extremities_singles {

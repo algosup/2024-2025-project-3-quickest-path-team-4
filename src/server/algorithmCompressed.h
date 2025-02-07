@@ -1,7 +1,7 @@
 #ifndef BIDIRECTIONAL_ASTAR_H
 #define BIDIRECTIONAL_ASTAR_H
 
-#include "graph_data_compressed.h"
+#include "graphDataCompressed.h"
 #include <optional>
 #include <vector>
 

@@ -1,4 +1,4 @@
-#include "loading_compressed.h"
+#include "loadingCompressed.h"
 #include <fstream>  // Add this line
 #include <sstream>  // Add this line
 #include <iostream> // Add this line

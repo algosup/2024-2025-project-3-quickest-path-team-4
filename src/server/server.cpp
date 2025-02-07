@@ -42,17 +42,24 @@ string get_timestamp()
     auto now = chrono::system_clock::now();
     auto now_time = chrono::system_clock::to_time_t(now);
     struct tm tm;
-    localtime_s(&tm, &now_time);  // Use localtime_s instead of localtime
+    localtime_s(&tm, &now_time); // Use localtime_s instead of localtime
     stringstream ss;
     ss << put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
     return ss.str();
 }
 #endif
 
+// Update the log_message function to filter out path details
 void log_message(const string &category, const string &message, bool important = false)
 {
-    // Skip detailed path logging
-    if (category == "PATH" || category == "PARAM")
+    // Skip ALL path-related output
+    if (category == "PATH" ||
+        category == "PARAM" ||
+        category == "NODES" ||
+        message.find("path") != string::npos ||
+        message.find("node") != string::npos ||
+        message.find("→") != string::npos ||
+        message.find("explored") != string::npos)
     {
         return;
     }
@@ -78,20 +85,20 @@ string to_json(int start, int end, const vector<int> &path, long duration, int t
        << "    \"start\": " << start << ",\n"
        << "    \"end\": " << end << ",\n"
        << "    \"nodes_explored\": " << path.size() << ",\n"
+       << "    \"distance\": " << total_dist << ",\n"
+       << "    \"computation_time\": " << duration << ",\n"
        << "    \"path\": [";
 
-    for (size_t i = 0; i < path.size(); ++i)
-    {
-        ss << path[i];
-        if (i < path.size() - 1)
-        {
-            ss << ", ";
-        }
-    }
-
-    ss << "],\n"
-       << "    \"distance\": " << total_dist << ",\n"
-       << "    \"computation_time\": " << duration << "\n"
+       for (size_t i = 0; i < path.size(); ++i)
+       {
+           ss << path[i];
+           if (i < path.size() - 1)
+           {
+               ss << ", ";
+           }
+       }
+   
+       ss << "]\n"
        << "}\n";
 
     return ss.str();
@@ -105,6 +112,8 @@ string to_xml(int start, int end, const vector<int> &path, long duration, int to
        << "    <start>" << start << "</start>\n"
        << "    <end>" << end << "</end>\n"
        << "    <nodes_explored>" << path.size() << "</nodes_explored>\n"
+       << "    <distance>" << total_dist << "</distance>\n"
+       << "    <computation_time>" << duration << "ms" << "</computation_time>\n"
        << "    <path>\n"
        << "        ";
 
@@ -116,7 +125,7 @@ string to_xml(int start, int end, const vector<int> &path, long duration, int to
         }
         if (i == path.size() - 1)
         {
-            ss << "<node style=\"color: red\">" << path[i] << "</node>";
+            ss << "last node\">" << path[i] << "</node>";
         }
         else
         {
@@ -129,8 +138,6 @@ string to_xml(int start, int end, const vector<int> &path, long duration, int to
     }
 
     ss << "\n    </path>\n"
-       << "    <distance>" << total_dist << "</distance>\n"
-       << "    <computation_time>" << duration << "</computation_time>\n"
        << "</response>\n";
 
     return ss.str();
@@ -248,7 +255,7 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             string filename, content;
             int path_distance = distances[end];
 
-            // Calculate actual path distance by summing edge weights
+            // Calculate actual path distance
             path_distance = 0;
             const vector<int> &path = result.value();
             for (size_t i = 0; i < path.size() - 1; ++i)
@@ -267,16 +274,17 @@ void handle_request(const http::request<http::string_body> &req, http::response<
 
             if (path_distance == 0 && start != end)
             {
-                log_message("ERROR", "Failed to compute path distance");
                 res.result(http::status::internal_server_error);
                 res.body() = "Error computing path distance";
                 res.prepare_payload();
                 return;
             }
-            log_message("INFO", "Found path from " + to_string(start) +
-                                    " to " + to_string(end) +
-                                    " (distance: " + to_string(path_distance) + ")");
 
+            // Only log summary information
+            log_message("INFO", "Distance: " + to_string(path_distance) + "m");
+            log_message("TIME", to_string(duration) + "ms");
+
+            // Create output directory and file
             ensure_output_directory("output");
 
             if (response_type == "xml")
@@ -295,32 +303,9 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             save_to_file(filename, content);
             res.result(http::status::ok);
             res.set(http::field::content_disposition, "attachment; filename=" +
-                                                          filesystem::path(filename).filename().string());
+            filesystem::path(filename).filename().string());
             res.body() = content;
-            log_message("INFO", "Path found - Distance: " + to_string(path_distance) +
-                                    "m, Time: " + to_string(duration) + "ms");
-
-            ensure_output_directory("output");
-
-            if (response_type == "xml")
-            {
-                filename = "output/path_result.xml";
-                content = to_xml(start, end, result.value(), duration, path_distance);
-                res.set(http::field::content_type, "application/xml");
-            }
-            else
-            {
-                filename = "output/path_result.json";
-                content = to_json(start, end, result.value(), duration, path_distance);
-                res.set(http::field::content_type, "application/json");
-            }
-
-            save_to_file(filename, content);
-            res.result(http::status::ok);
-            res.set(http::field::content_disposition, "attachment; filename=" +
-                                                          filesystem::path(filename).filename().string());
-            res.body() = content;
-            log_message("SUCCESS", "File saved: " + filename);
+            log_message("SUCCESS", "File generated");
         }
         else
         {
@@ -333,69 +318,69 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         res.prepare_payload();
     }
 }
-    void do_session(tcp::socket socket)
+void do_session(tcp::socket socket)
+{
+    try
     {
-        try
+        bool keep_alive = true;
+        boost::system::error_code ec;
+
+        while (keep_alive && socket.is_open())
         {
-            bool keep_alive = true;
-            boost::system::error_code ec;
+            beast::flat_buffer buffer;
+            http::request<http::string_body> req;
+            http::read(socket, buffer, req, ec);
 
-            while (keep_alive && socket.is_open())
-            {
-                beast::flat_buffer buffer;
-                http::request<http::string_body> req;
-                http::read(socket, buffer, req, ec);
+            if (ec == http::error::end_of_stream)
+                break;
+            if (ec)
+                throw beast::system_error{ec};
 
-                if (ec == http::error::end_of_stream)
-                    break;
-                if (ec)
-                    throw beast::system_error{ec};
+            keep_alive = req.keep_alive();
+            http::response<http::string_body> res;
+            handle_request(req, res);
+            res.keep_alive(keep_alive);
+            http::write(socket, res, ec);
 
-                keep_alive = req.keep_alive();
-                http::response<http::string_body> res;
-                handle_request(req, res);
-                res.keep_alive(keep_alive);
-                http::write(socket, res, ec);
-
-                if (ec || !keep_alive)
-                    break;
-            }
-
-            socket.shutdown(tcp::socket::shutdown_both, ec);
-            socket.close();
+            if (ec || !keep_alive)
+                break;
         }
-        catch (const std::exception &e)
-        {
-            log_message("ERROR", "Session error: " + string(e.what()));
-            socket.close();
-        }
+
+        socket.shutdown(tcp::socket::shutdown_both, ec);
+        socket.close();
     }
-
-    int main()
+    catch (const std::exception &e)
     {
+        log_message("ERROR", "Session error: " + string(e.what()));
+        socket.close();
+    }
+}
+
+int main()
+{
+    cout << SEPARATOR << endl;
+    log_message("STARTUP", "Initializing server...", true);
+
+    try
+    {
+        net::io_context ioc;
+        tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
+        acceptor.set_option(net::socket_base::reuse_address(true));
+        log_message("SERVER", "Listening on port 8080", true);
         cout << SEPARATOR << endl;
-        log_message("STARTUP", "Initializing server...", true);
 
-        try
+        while (true)
         {
-            net::io_context ioc;
-            tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
-            acceptor.set_option(net::socket_base::reuse_address(true));
-            log_message("SERVER", "Listening on port 8080", true);
-            cout << SEPARATOR << endl;
-
-            while (true)
-            {
-                tcp::socket socket{ioc};
-                acceptor.accept(socket);
-                std::thread(&do_session, std::move(socket)).detach();
-            }
+            tcp::socket socket{ioc};
+            acceptor.accept(socket);
+            std::thread(&do_session, std::move(socket)).detach();
         }
-        catch (exception &e)
-        {
-            log_message("ERROR", string("Fatal error: ") + e.what());
-            return 1;
-        }
-
-        return 0;
     }
+    catch (exception &e)
+    {
+        log_message("ERROR", string("Fatal error: ") + e.what());
+        return 1;
+    }
+
+    return 0;
+}

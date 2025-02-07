@@ -117,7 +117,7 @@ To directly run a road runner server from your computer:
 
         1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS server.cpp algorithm.cpp loading.cpp -o server -lws2_32`.
 
-        2. Then type `.\server.exe`.
+        2. Then type `server`.
 
         3. Road Runner is now ready to go from your machine!
 
@@ -125,7 +125,7 @@ To directly run a road runner server from your computer:
 
         1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 serverMac.cpp algorithm.cpp loading.cpp -o server -lpthread`.
 
-        2. Then type `./server.exe`.
+        2. Then type `./server`.
 
         3. Road Runner is now ready to go from your machine!
 

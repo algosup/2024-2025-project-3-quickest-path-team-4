@@ -33,7 +33,7 @@ Road Runner isn’t just an algorithm, it's your personal helper. Powered by adv
 - [Management Artifact](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/management/managementArtifacts.md)
 - [Weekly Reports](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/management/weeklyReports/globalReport.md)
 
-### Quality Assurance
+### Quality Assurance       
 
 - [Test Plan](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/qualityAssurance/documents/testPlan.md)
 - [Test Cases](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/qualityAssurance/documents/testCases.md)
@@ -48,11 +48,15 @@ Maybe you want to read or modify the code, here is how you do it:
 
 1. Download the project:
 
-    a. Open your terminal.
+    1. Open your terminal.
+        - For Windows:
+            - Type the `windows+R` keys, type `cmd` and press enter.
+        - For MacOS:
+            - Type the `command+space` keys, type `terminal` and press enter.
 
-    b. Clone this repository by typing git clone `https://github.com/algosup/2024-2025-project-3-quickest-path-team-4`.
+    2. Clone this repository by typing git clone `https://github.com/algosup/2024-2025-project-3-quickest-path-team-4`.
 
-    c. Type cd `2024-2025-project-3-quickest-path-team-4` to get into the project's directory.
+    3. Type cd `2024-2025-project-3-quickest-path-team-4` to get into the project's directory.
 
 2. Check if everything was installed correctly:
 
@@ -149,8 +153,13 @@ Road Runner is available anywhere!
 <br>
 
 4. Compile and run the client:
-    1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS client.cpp -o client.exe -lws2_32`
-    2. run the client by writing this in your terminal: `./client.exe`
+    - for Windows:
+        1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS client.cpp -o client.exe -lws2_32`
+        2. run the client by writing this in your terminal: `.\client.exe`
+    
+    - for MacOS:
+        1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 client.cpp -o client -lpthread`
+        2. run the client by writing this in your terminal : `./client.exe`
 <br>
 
 5. Type your start and end point:
@@ -159,5 +168,3 @@ Road Runner is available anywhere!
 
 6. Choose your results format:
     - Type 1 to get your results in JSON format or 2 to get your results in XML format.
-
-

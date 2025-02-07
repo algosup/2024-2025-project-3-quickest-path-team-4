@@ -5,6 +5,7 @@
 #include <atomic>
 #include <iostream>
 
+// Ensure found is reset at the start of each function call
 std::atomic<bool> found(false);
 
 // Comparator for priority queue
@@ -51,6 +52,9 @@ void search(const graph_data& graph, int start, int end, std::vector<bool>& visi
 }
 
 std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, std::vector<int>& distances) {
+    // Reset the found flag at the start of each call
+    found.store(false, std::memory_order_relaxed);
+
     if (start == end) {
         distances[start] = 0;
         return std::vector<int>{start};
@@ -108,5 +112,3 @@ std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int
 
     return path;
 }
-
-// 9489093 → 22377087 : 13323 Nodes

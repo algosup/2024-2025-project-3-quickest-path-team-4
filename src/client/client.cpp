@@ -13,35 +13,35 @@ namespace net = boost::asio;
 using tcp = net::ip::tcp;
 using namespace std;
 
-// Handle the response from the server
+// Function to handle the response from the server
 void handle_response(const string &response)
 {
     cout << "\n\033[1;36mResponse from server:\033[0m\n"; // Cyan color for header
     
     try {
-        // Check if response is JSON
+        // Check if it's JSON format
         if (response[0] == '{') {
             stringstream ss(response);
             string line;
             while (getline(ss, line)) {
-                // Skip the path array line
-                if (line.find("\"path\":") != string::npos) {
-                    while (getline(ss, line) && line.find("],") == string::npos) {
-                        continue; // Skip path array contents
-                    }
-                    continue;
+            // Skip the path array line
+            if (line.find("\"path\":") != string::npos) {
+                while (getline(ss, line) && line.find("],") == string::npos) {
+                continue; // Skip path array contents
                 }
-                // Print relevant information
-                if (line.find("start") != string::npos ||
-                    line.find("end") != string::npos ||
-                    line.find("nodes_explored") != string::npos ||
-                    line.find("distance") != string::npos ||
-                    line.find("computation_time") != string::npos) {
-                    cout << "\033[1;32m" << line << "\033[0m\n";
-                }
+                continue;
+            }
+            // Print other information
+            if (line.find("start") != string::npos ||
+                line.find("end") != string::npos ||
+                line.find("nodes_explored") != string::npos ||
+                line.find("distance") != string::npos ||
+                line.find("computation_time") != string::npos) {
+                cout << "\033[1;32m" << line << "\033[0m\n";
+            }
             }
         }
-        // Check if response is XML
+        // Check if it's XML format
         else if (response.find("<?xml") != string::npos) {
             stringstream ss(response);
             string line;
@@ -56,7 +56,6 @@ void handle_response(const string &response)
                     skip_path = false;
                     continue;
                 }
-                // Print relevant information
                 if (!skip_path && (
                     line.find("<start>") != string::npos ||
                     line.find("<end>") != string::npos ||
@@ -68,7 +67,7 @@ void handle_response(const string &response)
             }
         }
         else {
-            // Handle other responses
+            // Handle error messages or other responses
             cout << "\033[1;32m" << response << "\033[0m\n";
         }
     }
@@ -77,7 +76,7 @@ void handle_response(const string &response)
     }
 }
 
-// Send a request using Boost.Beast (plain HTTP)
+// Function to send a request using Boost.Beast (plain HTTP)
 void send_request(const string &server, const string &path, const string &accept_header)
 {
     try
@@ -91,6 +90,8 @@ void send_request(const string &server, const string &path, const string &accept
 
         // Create and connect the TCP stream
         beast::tcp_stream stream(ioc);
+
+        // Connect to the server
         stream.connect(results);
 
         // Set up the HTTP GET request
@@ -127,7 +128,6 @@ void send_request(const string &server, const string &path, const string &accept
     }
 }
 
-// Print the header
 void print_header()
 {
     cout << "\033[1;35m========================================\033[0m\n"; // Magenta color for the header
@@ -135,7 +135,6 @@ void print_header()
     cout << "\033[1;35m========================================\033[0m\n";
 }
 
-// Validate user input
 bool is_valid_input(const string& input, int& value) {
     if (input.empty()) return false;
     
@@ -158,7 +157,6 @@ bool is_valid_input(const string& input, int& value) {
     }
 }
 
-// Print the footer
 void print_footer()
 {
     cout << "\033[1;35m========================================\033[0m\n";

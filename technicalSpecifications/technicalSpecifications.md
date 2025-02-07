@@ -112,7 +112,7 @@ The objective of this project is to develop a high-performance software solution
 
 Such a project is particularly valuable in real-world applications such as logistics, navigation, and urban planning. Efficient route optimization can help businesses reduce fuel consumption, improve delivery times, and enhance overall operational efficiency. Moreover, this software can aid travelers and commuters in making more informed decisions, saving time, and minimizing travel-related uncertainties.
 
-The software will be developed in **C++** to fully exploit the language's performance capabilities, particularly for large-scale graph processing. It will expose its functionality through a **REST API**, allowing external users to query the system for the shortest path between two landmarks. The system will support both **JSON** and **XML** formats for API responses, ensuring broad compatibility.
+The software will be developed in C++ to fully exploit the language's performance capabilities, particularly for large-scale graph processing. It will expose its functionality through a REST API, allowing external users to query the system for the shortest path between two landmarks. The system will support both JSON and XML formats for API responses, ensuring broad compatibility.
 
 ### Document Purpose
 
@@ -350,7 +350,7 @@ oid sha256:5b60e8cb900ec11cce3dd1a6547d0ab499aadf8198f2f0bb5abb87633369adc0
 size 668512325
 ```
 
-This output indicates that the GET request only returns a pointer to the file's location rather than the actual file data itself. To access the content of Data-Roads.csv, it is essential to perform the Git LFS pull command, which retrieves the file from the remote storage. By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
+This output indicates that the GET request only returns a pointer to the file's location rather than the data itself. To access the content of Data-Roads.csv, it is essential to perform the Git LFS pull command, which retrieves the file from the remote storage. By utilizing Git LFS, you can efficiently manage large files in the Git repository, ensuring that your version control system remains responsive and performant.
 
 #### REST API
 
@@ -363,20 +363,32 @@ REST APIs must adhere to five key principles:
 - **Uniform Interface**:
 
   - All API requests for the same resource should look the same, regardless of where the request originates.
+
+---
+
 - **Client-Server Decoupling**:
 
-  - In REST API design, client and server applications must be completely independent of each other.
+  - In REST API design, client and server applications must be completely independent.
+
+---
+
 - **Statelessness**:
 
   - REST APIs are stateless, meaning each request must contain all the information necessary for processing it.
+
+---
+
 - **Cacheability**:
 
   - When possible, resources should be cacheable on the client or server side. Server responses should include information about whether caching is allowed for the delivered resource.
+
+---
+
 - **Layered System Architecture**:
 
   - In REST APIs, the calls and responses traverse different layers. It should not be assumed that the client and server applications connect directly to each other.
 
-For this project, we need to include a single GET endpoint. This endpoint indicates where the resource is located, typically using a Uniform Resource Identifier (URI). In our case, the URI is located on a locally-hosted server.
+For this project, we need to include a single GET endpoint. This endpoint indicates where the resource is located, typically using a Uniform Resource Identifier (URI). In our case, the URI is located on a locally hosted server.
 
 The sequence diagram below visually represents how the user, server, and algorithm communicate:
 
@@ -1450,15 +1462,24 @@ flowchart TD
     F --> H
     H --> I[End]
 
-    style A fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
-    style B fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded
-    style C fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded
-    style D fill:#f96,stroke:#333,stroke-width:2px,color:#fff,rounded
-    style E fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
-    style F fill:#ff4444,stroke:#333,stroke-width:2px,color:#fff,rounded
-    style G fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded
-    style H fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
-    style I fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded
+    style A fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#4caf50,#2e7d32
+    style B fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#6af,#2196f3
+    style C fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#6af,#2196f3
+    style D fill:#f96,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#f96,#e65100
+    style E fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#4caf50,#2e7d32
+    style F fill:#ff4444,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#ff4444,#d32f2f
+    style G fill:#6af,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#6af,#2196f3
+    style H fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#4caf50,#2e7d32
+    style I fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff,rounded,gradient:#4caf50,#2e7d32
+
+    linkStyle 0 stroke:#4caf50,stroke-width:2px
+    linkStyle 1 stroke:#6af,stroke-width:2px
+    linkStyle 2 stroke:#f96,stroke-width:2px
+    linkStyle 3 stroke:#4caf50,stroke-width:2px
+    linkStyle 4 stroke:#ff4444,stroke-width:2px
+    linkStyle 5 stroke:#6af,stroke-width:2px
+    linkStyle 6 stroke:#4caf50,stroke-width:2px
+    linkStyle 7 stroke:#4caf50,stroke-width:2px
 ```
 
 ## Client

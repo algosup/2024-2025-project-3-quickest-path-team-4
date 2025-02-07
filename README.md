@@ -6,7 +6,7 @@ Road Runner will help you find the quickest path from Landmark to Landmark in Am
 
 Road Runner isn’t just an algorithm, it's your personal helper. Powered by advanced algorithms, Road Runner navigates the roads between landmarks, providing accurately and efficiently the quickest paths.
 
-## Meet The Team
+## Meet The Team 
 
 <div align="center">
 

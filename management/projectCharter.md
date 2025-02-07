@@ -40,13 +40,13 @@ After the final presentation which will take place on the 14th of January 2025, 
 
 ## Milestones
 
-| Date       | Time   | Milestones                        |
-| ---------- | ------ | --------------------------------- |
+| Date       | Time   | Milestones                         |
+| ---------- | ------ | ---------------------------------  |
 | 2025/01/06 | 2 P.M. | Project meeting with the team.     |
 | 2025/01/17 | 5 P.M. | Functional Specification delivery. |
 | 2025/01/24 | 5 P.M. | Technical Specification delivery.  |
 | 2025/01/31 | 5 P.M. | Test Plan delivery.                |
-| 2025/02/07 | 5 P.M. | Final product codebase delivery.   |
+| 2025/02/07 | 5 P.M. | Algorithm and server delivery.     |
 | 2025/02/07 | 5 P.M. | User Manual delivery.              |
 | 2025/02/14 | 9 A.M. | Final Presentation pitch.          |
 
@@ -76,7 +76,18 @@ Total human hours estimation: 336h.
 
 ## Risks
 
-| Type                                                                | Description                                                                                                                | Likelihood | Impact                  | Mitigation                                                     |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------------- | -------------------------------------------------------------- |
-| Wrong interpretation of the requirements.                            | We might forget a key point in our solution or misinterpret a requirement.                                                  | Medium     | High                    | Regular communications about what's being done with the client. |
-| Runtime issues on different machines than the ones used for testing. | We might test on computers that are too performant, thus overestimating the level of optimisation our algorithm has.         | Low        | Very High               | Testing on very old machines of machines of very poor quality.  |
+| ID  | Description                                                                      | Consequence                                                                                      | Impact   | Likelihood | Mitigation/Avoidance                                                                                      |
+| --- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------- | ---------- | --------------------------------------------------------------------------------------------------------- |
+| 1   | We are not yet used to Rest API.                                                 | Development pace might be hindered                                                              | High     | Medium     | Ask for help to the other team members or Georgios, our teacher                                           |
+| 2   | We might have issues with the web hosting server on d-day.                       | We would be unable to present our work and thus be discredited.                                 | Critical | Low        | Make extensive testing and have at least one backup server.                                              |
+| 3   | We might create a clone of an already existing solution and infringe a patent.   | We would be in breach of the call for tender.                                                   | High     | Low        | Only use other algorithms as a basis for our own and verify if our solution already exists.              |
+| 4   | Team member leaving.                                                             | Tasks left to the remaining members without any assignee.                                       | High     | Unlikely   | Sharing the tasks among the remaining team members.                                                      |
+| 5   | Dataset may contain corrupted or incomplete entries.                             | Algorithm might fail or produce incorrect results.                                              | High     | Medium     | Perform data cleaning and validation before running the algorithm.                                       |
+| 6   | Unexpected complexity in the dataset structure.                                  | Increased development time and potential roadblocks.                                            | High     | Medium     | Allocate additional time for understanding the dataset and preparing the data accordingly.               |
+| 7   | Algorithm performance might not meet the required speed for large datasets.      | Could render the solution impractical for real-world applications.                              | High     | Medium     | Optimize the algorithm and test extensively on subsets of the dataset before scaling up.                 |
+| 8   | Incorrect assumptions about the connectivity of nodes in the dataset.            | Algorithm might fail to find a valid path or produce invalid results.                           | Critical | Low        | Verify dataset assumptions early and adjust the algorithm to handle edge cases, such as isolated nodes.  |
+| 9   | Lack of clarity in defining "shortest path" criteria (e.g., distance vs. weight).| Discrepancies in expected and actual results from the algorithm.                                | Medium   | Medium     | Clearly define path criteria and ensure team alignment on the algorithm's goal.                          |
+| 10  | Miscommunication within the team.                                                | Delayed progress and inconsistencies in implementation.                                         | Medium   | Medium     | Regular team meetings and use collaborative tools for task management and communication.                  |
+| 11  | Insufficient testing on realistic edge cases.                                    | Undetected issues might arise during the final demonstration or deployment.                     | High     | Medium     | Develop comprehensive test cases covering all possible scenarios, including edge cases.                  |
+| 12  | Misinterpretation of problem requirements.                                       | The solution might fail to meet the expectations or requirements of the project.                | High     | Medium     | Frequently review requirements and get feedback from stakeholders to ensure proper alignment.            |
+| 13  | Over-reliance on A.I. libraries.                                          | Could lead to issues if we are unable to understand or explain the code.                         | High   | Low        | Make most of the code ourselves, and if we need to use A.I. make sure we understand the code very well. |

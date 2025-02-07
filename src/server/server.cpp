@@ -36,6 +36,19 @@ string get_timestamp()
 }
 #endif
 
+#if defined(_WIN32)
+string get_timestamp()
+{
+    auto now = chrono::system_clock::now();
+    auto now_time = chrono::system_clock::to_time_t(now);
+    struct tm tm;
+    localtime_s(&tm, &now_time);  // Use localtime_s instead of localtime
+    stringstream ss;
+    ss << put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
+    return ss.str();
+}
+#endif
+
 void log_message(const string &category, const string &message, bool important = false)
 {
     // Skip detailed path logging

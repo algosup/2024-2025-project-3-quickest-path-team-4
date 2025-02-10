@@ -49,10 +49,10 @@ string get_timestamp()
 }
 #endif
 
-// Update the log_message function to filter out path details
+// Log messages with optional importance
 void log_message(const string &category, const string &message, bool important = false)
 {
-    // Skip ALL path-related output
+    // Skip path-related output
     if (category == "PATH" ||
         category == "PARAM" ||
         category == "NODES" ||
@@ -78,6 +78,7 @@ void log_message(const string &category, const string &message, bool important =
 string file_path = "USA-roads.csv";
 const graph_data g_data = load_graph_data(file_path);
 
+// Convert path data to JSON format
 string to_json(int start, int end, const vector<int> &path, long duration, int total_dist)
 {
     stringstream ss;
@@ -89,21 +90,22 @@ string to_json(int start, int end, const vector<int> &path, long duration, int t
        << "    \"computation_time\": " << duration << ",\n"
        << "    \"path\": [";
 
-       for (size_t i = 0; i < path.size(); ++i)
-       {
-           ss << path[i];
-           if (i < path.size() - 1)
-           {
-               ss << ", ";
-           }
-       }
-   
-       ss << "]\n"
+    for (size_t i = 0; i < path.size(); ++i)
+    {
+        ss << path[i];
+        if (i < path.size() - 1)
+        {
+            ss << ", ";
+        }
+    }
+
+    ss << "]\n"
        << "}\n";
 
     return ss.str();
 }
 
+// Convert path data to XML format
 string to_xml(int start, int end, const vector<int> &path, long duration, int total_dist)
 {
     stringstream ss;
@@ -143,6 +145,7 @@ string to_xml(int start, int end, const vector<int> &path, long duration, int to
     return ss.str();
 }
 
+// Save content to a file
 void save_to_file(const string &filename, const string &content)
 {
     ofstream file(filename);
@@ -158,6 +161,7 @@ void save_to_file(const string &filename, const string &content)
     }
 }
 
+// Ensure the output directory exists
 void ensure_output_directory(const string &path)
 {
     filesystem::path dir_path = filesystem::absolute(filesystem::path(path));
@@ -174,9 +178,10 @@ void ensure_output_directory(const string &path)
         }
     }
 }
+
+// Handle HTTP requests
 void handle_request(const http::request<http::string_body> &req, http::response<http::string_body> &res)
 {
-
     cout << SUBSEPARATOR << endl;
     log_message("REQUEST", "New path request received", true);
 
@@ -303,7 +308,7 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             save_to_file(filename, content);
             res.result(http::status::ok);
             res.set(http::field::content_disposition, "attachment; filename=" +
-            filesystem::path(filename).filename().string());
+                filesystem::path(filename).filename().string());
             res.body() = content;
             log_message("SUCCESS", "File generated");
         }
@@ -318,6 +323,8 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         res.prepare_payload();
     }
 }
+
+// Handle a single session
 void do_session(tcp::socket socket)
 {
     try

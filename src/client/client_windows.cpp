@@ -11,11 +11,8 @@ void execute_curl(const string& server, const string& path, const string& accept
     // Construct the curl command
     string curl_command = "curl -X GET \"http://" + server + ":8080" + path + "\" -H \"Accept: " + accept_header + "\"";
 
-    // Construct the command to open a new terminal and run curl
-    string full_command = "start cmd /k " + curl_command;
-
     // Execute the command
-    int result = system(full_command.c_str());
+    int result = system(curl_command.c_str());
 
     if (result != 0) {
         cerr << "\033[1;31mError: Failed to execute curl command\033[0m\n";

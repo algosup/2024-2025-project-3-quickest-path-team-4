@@ -6,19 +6,15 @@
 #include <queue>
 #include <limits>
 
-// Anonymous namespace for internal linkage
 namespace {
-    std::atomic<bool> found{false}; // Atomic flag to indicate if the path is found
-    std::atomic<int> best_distance{std::numeric_limits<int>::max()}; // Atomic variable to store the best distance found
+    std::atomic<bool> found{false};
+    std::atomic<int> best_distance{std::numeric_limits<int>::max()};
 }
 
-// Type alias for priority queue used in the search
 using PriorityQueue = std::priority_queue<Node, std::vector<Node>, NodeComparator>;
 
-// Heuristic function that returns zero (used for A* algorithm)
 inline int zero_heuristic(int, int) { return 0; }
 
-// Function to perform the search from one direction
 void search(const graph_data& graph, int start, int end, std::vector<bool>& visited, 
            std::vector<int>& g, std::vector<int>& parent, PriorityQueue& queue, 
            std::atomic<int>& meeting_node, const std::vector<bool>& opposite_visited) {
@@ -58,7 +54,6 @@ void search(const graph_data& graph, int start, int end, std::vector<bool>& visi
     }
 }
 
-// Function to perform bidirectional A* search
 std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, 
                                                    std::vector<int>& distances) {
     if (start == end) {
@@ -106,7 +101,7 @@ std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int
 
     // Construct path efficiently
     std::vector<int> path;
-    path.reserve(n / 2);  // Reasonable initial capacity
+    path.reserve(n/2);  // Reasonable initial capacity
 
     for (int at = final_node; at != -1; at = parent_forward[at]) {
         path.push_back(at);

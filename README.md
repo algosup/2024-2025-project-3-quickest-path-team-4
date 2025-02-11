@@ -42,6 +42,14 @@ Road Runner isn’t just an algorithm, it's your personal helper. Powered by adv
 
 - [User Manual](https://github.com/algosup/2024-2025-project-3-quickest-path-team-4/blob/main/userManual/Road_Runner_User_Manual_Team_4.pdf)
 
+## If you just want to use Road Runner and not modify it.
+
+If you are someone who justs wants to Road Runner here is how you do it!
+    
+1. Go to the release tab on our github.
+
+2. Look at the latest release and follow the instruction over there.
+
 ## How to download Road Runner?
 
 Maybe you want to read or modify the code, here is how you do it:
@@ -82,11 +90,15 @@ To directly run a road runner server from your computer:
 
     - For Windows : 
 
+        - Install VScode: [https://code.visualstudio.com/download](https://code.visualstudio.com/download)
+
         - Install Clang: [https://youtu.be/QGOVWA2FcQE?si=Zu_eZCeabhLEGmgH](https://youtu.be/QGOVWA2FcQE?si=Zu_eZCeabhLEGmgH)
 
         - Install MinGW-w64: [https://www.mingw-w64.org/downloads/](https://www.mingw-w64.org/downloads/).
 
         - Type this `vcpkg install pthreads` in the MinGW terminal.
+
+        - link clang with vscode.
 
 2. Open your terminal:
 

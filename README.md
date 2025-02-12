@@ -48,7 +48,7 @@ If you are someone who justs wants to Road Runner here is how you do it!
     
 1. Go to the release tab on our github.
 
-2. Look at the latest release and follow the instruction over there.
+2. Look at the latest release and follow the instructions over there.
 
 ## How to download Road Runner?
 
@@ -143,7 +143,7 @@ To directly run a road runner server from your computer:
 
     - For macOS:
 
-        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 serverMac.cpp algorithm.cpp loading.cpp -o server -lpthread`.
+        1. In the terminal, type: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 server.cpp algorithm.cpp loading.cpp -o server -lpthread`.
 
         2. Then type `./server`.
 
@@ -170,11 +170,11 @@ Road Runner is available anywhere!
 
 4. Compile and run the client:
     - for Windows:
-        1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS client.cpp -o client.exe -lws2_32`
+        1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 -D_WIN32_WINNT=0x0601 -D_CRT_SECURE_NO_WARNINGS clientWindows.cpp -o client.exe -lws2_32`
         2. run the client by writing this in your terminal: `.\client.exe`
     
     - for macOS:
-        1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 client.cpp -o client -lpthread`
+        1. compile the client by writing this in your terminal: `clang++ -std=gnu++20 -O3 -I../boost_1_82_0 clientMac.cpp -o client -lpthread`
         2. run the client by writing this in your terminal : `./client`
 
 

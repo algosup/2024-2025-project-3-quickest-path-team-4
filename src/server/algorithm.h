@@ -19,7 +19,7 @@ struct NodeComparator {
 };
 
 // Remove compressed_paths parameter
-std::optional<std::vector<int>> bidirectional_astar(
+std::optional<std::vector<int>> biDirectionalDijkstra(
     const graph_data& graph,
     int start,
     int end,

@@ -54,7 +54,7 @@ void search(const graph_data& graph, int start, int end, std::vector<bool>& visi
     }
 }
 
-std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int start, int end, 
+std::optional<std::vector<int>> biDirectionalDijkstra(const graph_data& graph, int start, int end, 
                                                    std::vector<int>& distances) {
     if (start == end) {
         distances[start] = 0;
@@ -95,7 +95,6 @@ std::optional<std::vector<int>> bidirectional_astar(const graph_data& graph, int
 
     future_forward.get();
     future_backward.get();
-
     int final_node = meeting_node.load();
     if (final_node == -1) return std::nullopt;
 

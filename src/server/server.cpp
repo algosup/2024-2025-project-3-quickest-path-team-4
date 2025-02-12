@@ -250,7 +250,7 @@ void handle_request(const http::request<http::string_body> &req, http::response<
         // Compute path
         log_message("PROCESS", "Starting path computation...");
         auto begin = chrono::steady_clock::now();
-        auto result = bidirectional_astar(g_data, start, end, distances);
+        auto result = biDirectionalDijkstra(g_data, start, end, distances);
         auto end_time = chrono::steady_clock::now();
         auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - begin).count();
         log_message("COMPLETE", "Path computation finished in " + to_string(duration) + "ms", true);

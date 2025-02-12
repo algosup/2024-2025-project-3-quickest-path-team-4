@@ -34,9 +34,9 @@ void handle_response(const string &response)
                 // Print relevant information
                 if (line.find("start") != string::npos ||
                     line.find("end") != string::npos ||
-                    line.find("nodes_explored") != string::npos ||
+                    line.find("number of nodes explored") != string::npos ||
                     line.find("distance") != string::npos ||
-                    line.find("computation_time") != string::npos) {
+                    line.find("computation time") != string::npos) {
                     cout << "\033[1;32m" << line << "\033[0m\n";
                 }
             }

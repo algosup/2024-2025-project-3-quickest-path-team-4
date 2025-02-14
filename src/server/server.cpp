@@ -86,7 +86,7 @@ string to_json(int start, int end, const vector<int> &path, long duration, int t
        << "    \"start\": " << start << ",\n"
        << "    \"end\": " << end << ",\n"
        << "    \"nodes_explored\": " << path.size() << ",\n"
-       << "    \"distance\": " << total_dist << ",\n"
+       << "    \"travel_time\": " << total_dist << ",\n"
        << "    \"computation_time\": " << duration << ",\n"
        << "    \"path\": [";
 
@@ -114,7 +114,7 @@ string to_xml(int start, int end, const vector<int> &path, long duration, int to
        << "    <start>" << start << "</start>\n"
        << "    <end>" << end << "</end>\n"
        << "    <nodes_explored>" << path.size() << "</nodes_explored>\n"
-       << "    <distance>" << total_dist << "</distance>\n"
+       << "    <travel_time>" << total_dist << "</travel_time>\n"
        << "    <computation_time>" << duration << "ms" << "</computation_time>\n"
        << "    <path>\n"
        << "        ";
@@ -286,8 +286,8 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             }
 
             // Only log summary information
-            log_message("INFO", "Distance: " + to_string(path_distance) + "m");
-            log_message("TIME", to_string(duration) + "ms");
+            log_message("INFO", "Travel_Time: " + to_string(path_distance));
+            log_message("Computation_Time", to_string(duration) + "ms");
 
             // Create output directory and file
             ensure_output_directory("output");
@@ -306,11 +306,13 @@ void handle_request(const http::request<http::string_body> &req, http::response<
             }
 
             save_to_file(filename, content);
+
+            // Set the response to return the file content
             res.result(http::status::ok);
             res.set(http::field::content_disposition, "attachment; filename=" +
                 filesystem::path(filename).filename().string());
             res.body() = content;
-            log_message("SUCCESS", "File generated");
+            log_message("SUCCESS", "File generated and sent to client");
         }
         else
         {

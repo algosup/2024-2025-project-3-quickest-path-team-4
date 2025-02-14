@@ -103,6 +103,79 @@ string to_xml(int start, int end, const vector<int> &path, long duration)
     return ss.str();
 }
 
+<<<<<<< Updated upstream
+=======
+// Keep the first definition (around line 149):
+void save_to_file(const string &filename, const string &content)
+{
+    try {
+        // Use absolute path based on executable location
+        filesystem::path exec_path = filesystem::current_path();
+        filesystem::path file_path = exec_path / filename;
+        
+        log_message("FILE", "Attempting to save to: " + file_path.string());
+        
+        ofstream file(file_path, ios::out | ios::trunc);
+        if (file.is_open())
+        {
+            file << content;
+            file.close();
+            
+            if (filesystem::exists(file_path)) {
+                log_message("FILE", "Successfully saved to " + file_path.string());
+            } else {
+                log_message("ERROR", "File not found after writing: " + file_path.string());
+            }
+        }
+        else
+        {
+            log_message("ERROR", "Could not open file for writing: " + file_path.string());
+            throw runtime_error("Failed to open file for writing");
+        }
+    }
+    catch (const exception &e) {
+        log_message("ERROR", "File operation failed: " + string(e.what()));
+        throw;
+    }
+}
+
+// DELETE the second definition (around line 214)
+// Ensure the output directory exists
+// Modify the ensure_output_directory function
+void ensure_output_directory(const string &path)
+{
+    // Use current working directory as base
+    filesystem::path current_path = filesystem::current_path();
+    filesystem::path dir_path = current_path / path;
+    
+    log_message("FILE", "Attempting to create/verify directory: " + dir_path.string());
+    
+    if (!filesystem::exists(dir_path))
+    {
+        try
+        {
+            bool created = filesystem::create_directories(dir_path);
+            if (created) {
+                log_message("DIRECTORY", "Created output directory: " + dir_path.string());
+            } else {
+                log_message("ERROR", "Failed to create directory: " + dir_path.string());
+            }
+        }
+        catch (const filesystem::filesystem_error &e)
+        {
+            log_message("ERROR", "Directory error: " + string(e.what()));
+            throw;
+        }
+    } else {
+        log_message("DIRECTORY", "Directory already exists: " + dir_path.string());
+    }
+}
+
+// Modify the save_to_file function
+
+
+// Handle HTTP requests
+>>>>>>> Stashed changes
 void handle_request(const http::request<http::string_body> &req, http::response<http::string_body> &res)
 {
     cout << SUBSEPARATOR << endl;
@@ -256,13 +329,23 @@ int main()
     preprocess(&gdata, &single_neighbors);
 
     try
-    {
-        net::io_context ioc;
-        tcp::acceptor acceptor{ioc, tcp::endpoint(tcp::v4(), 8080)};
-        acceptor.set_option(net::socket_base::reuse_address(true));
-        log_message("SERVER", "Listening on port 8080", true);
-        cout << SEPARATOR << endl;
+    {   
+        // Create output directory at startup with absolute path
+        filesystem::path exec_path = filesystem::current_path();
+        filesystem::path output_dir = exec_path / "output";
+        
+        if (!filesystem::exists(output_dir)) {
+            filesystem::create_directories(output_dir);
+            log_message("STARTUP", "Created output directory: " + output_dir.string(), true);
+        }
 
+        net::io_context ioc;
+        // Bind to all interfaces (0.0.0.0) instead of just localhost
+        tcp::acceptor acceptor{ioc, tcp::endpoint(net::ip::address_v4::any(), 8080)};
+        acceptor.set_option(net::socket_base::reuse_address(true));
+        log_message("SERVER", "Listening on all interfaces, port 8080", true);
+        cout << SEPARATOR << endl;
+        
         while (true)
         {
             tcp::socket socket(ioc);

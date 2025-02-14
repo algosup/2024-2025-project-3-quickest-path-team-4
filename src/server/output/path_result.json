@@ -1,8 +1,0 @@
-{
-    "start": 1,
-    "end": 2,
-    "nodes_explored": 2,
-    "distance": 5062,
-    "computation_time": 135,
-    "path": [1, 2]
-}

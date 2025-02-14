@@ -34,9 +34,9 @@ void handle_response(const string &response)
                 // Print relevant information
                 if (line.find("start") != string::npos ||
                     line.find("end") != string::npos ||
-                    line.find("number of nodes explored") != string::npos ||
+                    line.find("total_nodes_explored") != string::npos ||
                     line.find("distance") != string::npos ||
-                    line.find("computation time") != string::npos) {
+                    line.find("computation_time") != string::npos) {
                     cout << "\033[1;32m" << line << "\033[0m\n";
                 }
             }
@@ -85,7 +85,7 @@ void send_request(const string &server, const string &path, const string &accept
         // Create the IO context
         net::io_context ioc;
 
-        // Create the resolver
+        // Create the resolver and endpoint
         tcp::resolver resolver(ioc);
         auto const results = resolver.resolve(server, "8080");
 
@@ -93,37 +93,60 @@ void send_request(const string &server, const string &path, const string &accept
         beast::tcp_stream stream(ioc);
         stream.connect(results);
 
+        // Set timeout
+        stream.expires_after(std::chrono::seconds(30));
+
         // Set up the HTTP GET request
         http::request<http::empty_body> req{http::verb::get, path, 11};
         req.set(http::field::host, server);
         req.set(http::field::accept, accept_header);
         req.set(http::field::user_agent, "Boost Beast Client");
+        req.set(http::field::connection, "close"); // Add connection: close header
 
         // Send the HTTP request
         http::write(stream, req);
 
-        // Receive the response
+        // This buffer is used for reading and must be persisted
         beast::flat_buffer buffer;
+
+        // Declare a container to hold the response
         http::response<http::dynamic_body> res;
-        http::read(stream, buffer, res);
+
+        // Receive the HTTP response
+        beast::error_code ec;
+        http::read(stream, buffer, res, ec);
+
+        if(ec == http::error::end_of_stream)
+        {
+            // Gracefully close the socket
+            stream.socket().shutdown(tcp::socket::shutdown_both, ec);
+            if(ec && ec != beast::errc::not_connected)
+                throw beast::system_error{ec};
+            return;
+        }
+
+        if(ec)
+            throw beast::system_error{ec};
 
         // Handle the response
         string response_content = boost::beast::buffers_to_string(res.body().data());
         handle_response(response_content);
 
-        // Gracefully close the stream
-        beast::error_code ec;
+        // Gracefully close the socket
         stream.socket().shutdown(tcp::socket::shutdown_both, ec);
-        if (ec && ec != beast::errc::not_connected)
+        if(ec && ec != beast::errc::not_connected)
             throw beast::system_error{ec};
     }
-    catch (const beast::system_error &e)
+    catch(const beast::system_error& e)
     {
-        cerr << "\033[1;31mError: " << e.what() << "\033[0m\n"; // Red color for errors
+        if(e.code() == http::error::end_of_stream)
+            cerr << "\033[1;31mConnection closed by server\033[0m\n";
+        else
+            cerr << "\033[1;31mError: " << e.what() << "\033[0m\n";
     }
-    catch (const std::exception &e)
+    catch(const std::exception& e)
     {
-        cerr << "\033[1;31mException: " << e.what() << "\033[0m\n"; // Red color for exceptions
+        cerr << "\033[1;31mException: " << e.what() << "\033[0m\n";
     }
 }
 
